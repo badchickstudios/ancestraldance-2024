@@ -46,8 +46,12 @@ function onStart() {
         }
     };
 
-    // Add the event listener to the Interactable component
-    interactable.onTriggerStart.add(onTriggerStartCallback);
+    // UIKit buttons (SIK 2.0) expose onTriggerUp; older SIK Interactables expose onTriggerStart
+    if (interactable.onTriggerUp) {
+        interactable.onTriggerUp.add(onTriggerStartCallback);
+    } else {
+        interactable.onTriggerStart.add(onTriggerStartCallback);
+    }
 }
 
 // Start the script

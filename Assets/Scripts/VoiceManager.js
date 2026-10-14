@@ -5,6 +5,7 @@ const asrModule = require("LensStudio:AsrModule");
 // @input Component.Text resultText {"hint":"Text component to show results"}
 //@input SceneObject UIRiseShrink
 //@input SceneObject HaloLines1
+//@input float fallbackSeconds = 10 {"hint": "Advance automatically if nobody says 'rise' within this many seconds. In Collective on glasses the mic is blocked, so this is the only path there."}
 
 var isListening = false;
 var options;
@@ -37,7 +38,7 @@ function initialize() {
 }
 
 function startFallbackTimer() {
-    print("*** STARTING 10-SECOND FALLBACK TIMER ***");
+    print("*** STARTING " + script.fallbackSeconds + "-SECOND FALLBACK TIMER ***");
     
     if (fallbackTimeout) {
         fallbackTimeout.enabled = false; // Cancel any existing timer
@@ -57,7 +58,7 @@ function startFallbackTimer() {
             print("*** Fallback timer expired but rise already triggered ***");
         }
     });
-    fallbackTimeout.reset(8.0); // 10 second timeout
+    fallbackTimeout.reset(script.fallbackSeconds);
 }
 
 function onTranscriptionUpdate(eventArgs) {
@@ -140,46 +141,14 @@ function handleRiseCommand() {
         print("*** Rise already triggered from voice - ignoring duplicate ***");
         return;
     }
-    
-    // Check if this is single player mode
-    var isSinglePlayerMode = !global.sessionController || 
-                            (global.sessionController && global.sessionController.getUsers().length <= 1);
-    
-    print("Single player mode: " + isSinglePlayerMode);
-    print("Current game state: " + (global.currentState ? global.currentState() : "unknown"));
-    print("Is host: " + (global.isHost ? global.isHost() : "unknown"));
-    print("Player count: " + (global.sessionController ? global.sessionController.getUsers().length : "no session"));
-    
-    if(isRiseTriggered){
-        if (isSinglePlayerMode) {
-            // Single player: trigger immediately
-            print("SINGLE PLAYER detected rise - triggering command");
-            voiceRiseTriggered = true;
-            callSendAncestorsRise();
-            
-        } else if (global.isHost && global.isHost()) {
-            // Multiplayer host: trigger immediately
-            print("MULTIPLAYER HOST detected rise - sending network event immediately");
-            voiceRiseTriggered = true;
-            callSendAncestorsRise();
-            
-        } else {
-            // Multiplayer non-host: give host 3 seconds, then trigger
-            print("MULTIPLAYER NON-HOST detected rise - giving host 3 seconds...");
-            
-            if (!voiceRiseTimeout) {
-                voiceRiseTimeout = script.createEvent("DelayedCallbackEvent");
-                voiceRiseTimeout.bind(function() {
-                    if (!voiceRiseTriggered) {
-                        print("*** HOST didn't respond to voice - Keep Going ***");
-                        voiceRiseTriggered = true;
-                        callSendAncestorsRise();
-                    }
-                });
-                voiceRiseTimeout.reset(5.0); // 3 second timeout
-            }
-        }
-        
+
+    if (isRiseTriggered) {
+        // Any player's "rise" advances everyone right away (solo or Collective).
+        // GameManager ignores the event if another player already triggered it.
+        var solo = global.isSinglePlayerMode ? global.isSinglePlayerMode() : true;
+        print((solo ? "SOLO" : "COLLECTIVE") + " rise - advancing");
+        voiceRiseTriggered = true;
+        callSendAncestorsRise();
         isRiseTriggered = false; // Reset the detection flag
     }
 }

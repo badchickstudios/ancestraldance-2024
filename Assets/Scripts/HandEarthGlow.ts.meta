@@ -1,0 +1,70 @@
+- !<AssetImportMetadata/89125a45-ac70-4b3a-94a9-6d0c42da3e2d>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 9d486d1c-a621-441e-82e3-36aba5515ed9
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 9d486d1c-a621-441e-82e3-36aba5515ed9
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> c98539ac-5166-4c60-a175-afc9c6be748f
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/c98539ac-5166-4c60-a175-afc9c6be748f>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 368539d7-f901-491c-adda-e161321c7935
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    contactDistance: false
+    earth: false
+    glowColor: false
+    glowMaterial: false
+    glowStartDistance: false
+    leftHandMeshes: false
+    maxLineWeight: false
+    rightHandMeshes: false
+    sendTouchTrigger: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - earth: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      glowMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      leftHandMeshes: !<reference.RenderMeshVisual[]>
+        []
+      rightHandMeshes: !<reference.RenderMeshVisual[]>
+        []
+      glowStartDistance: !<float> 60.000000
+      contactDistance: !<float> 40.000000
+      glowColor: !<Vec4> {x: 0.550000, y: 1.000000, z: 0.650000, w: 1.000000}
+      maxLineWeight: -0.600000
+      sendTouchTrigger: true
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input SceneObject earth {"hint":"Centre of the Earth the players reach for"}'
+    - '// @input Asset.Material glowMaterial {"hint":"Outline material to draw the glow (SIK TargetOutlineMaterial)"}'
+    - '// @input Component.RenderMeshVisual[] leftHandMeshes {"hint":"Left hand meshes (SIK LeftHandMeshFull / LeftHandMeshIndexThumb)"}'
+    - '// @input Component.RenderMeshVisual[] rightHandMeshes {"hint":"Right hand meshes (SIK RightHandMeshFull / RightHandMeshIndexThumb)"}'
+    - "// @input float glowStartDistance = 60 {\"hint\":\"Distance (cm) from the Earth's centre where the glow starts to appear\"}"
+    - '// @input float contactDistance = 40 {"hint":"Distance (cm) that counts as touching the Earth"}'
+    - '// @input vec4 glowColor = {0.55,1,0.65,1} {"widget":"color"}'
+    - '// @input float maxLineWeight = -0.6 {"hint":"Outline thickness at full glow (SIK uses negative values for outward)"}'
+    - "// @input bool sendTouchTrigger = true {\"hint\":\"Also send the 'earthtouched' trigger on first contact\"}"

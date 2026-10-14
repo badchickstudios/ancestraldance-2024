@@ -29,6 +29,7 @@
     Gifts: false
     GiftsShrink: false
     HaloLines2: false
+    autoPickSeconds: false
     leftWristGifts: false
     rightWristGifts: false
   ScriptTypesHidden:
@@ -48,6 +49,7 @@
       rightWristGifts: !<reference.SceneObject[]>
         []
       HaloLines2: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      autoPickSeconds: !<float> 30.000000
   ScriptTypes:
     -
       {}

@@ -12,6 +12,9 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
+    targetingVisual: true
+    ignoreInteractionPlane: true
+    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -19,13 +22,15 @@
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    isSynced: true
-    acceptableSyncInteractionTypes: true
+    useFilteredPinch: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
+      targetingVisual: !<float> 1.000000
+      ignoreInteractionPlane: false
+      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -33,8 +38,7 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      isSynced: true
-      acceptableSyncInteractionTypes: !<float> 7.000000
+      useFilteredPinch: false
   ScriptTypes:
     "":
       {}
@@ -118,51 +122,43 @@
   Enabled: true
   ScriptAsset: !<reference> 664b556b-1946-4c2c-866a-e675b4e86006
   ScriptInputsDefault:
-    minimumScaleFactor: true
-    maximumScaleFactor: true
     enableTranslation: true
     enableRotation: true
     enableScale: true
+    minimumScaleFactor: true
+    maximumScaleFactor: true
     enableStretchZ: true
-    showStretchZProperties: true
     zStretchFactorMin: true
     zStretchFactorMax: true
     useFilter: true
-    showFilterProperties: true
-    minCutoff: true
-    beta: true
-    dcutoff: true
     showTranslationProperties: true
     _enableXTranslation: true
     _enableYTranslation: true
     _enableZTranslation: true
     showRotationProperties: true
     _rotationAxis: true
+    isSynced: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       manipulateRootSceneObject: !<reference.SceneObject> e3263e70-c9f3-40a9-afc0-f1652655d8bb
-      minimumScaleFactor: 0.250000
-      maximumScaleFactor: !<float> 20.000000
       enableTranslation: true
       enableRotation: true
       enableScale: true
+      minimumScaleFactor: 0.250000
+      maximumScaleFactor: !<float> 20.000000
       enableStretchZ: true
-      showStretchZProperties: false
       zStretchFactorMin: !<float> 1.000000
       zStretchFactorMax: !<float> 12.000000
       useFilter: true
-      showFilterProperties: false
-      minCutoff: !<float> 2.000000
-      beta: 0.015000
-      dcutoff: !<float> 1.000000
       showTranslationProperties: false
       _enableXTranslation: true
       _enableYTranslation: true
       _enableZTranslation: true
       showRotationProperties: false
       _rotationAxis: All
+      isSynced: false
   ScriptTypes:
     "":
       {}

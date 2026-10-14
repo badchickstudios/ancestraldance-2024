@@ -28,6 +28,7 @@
   ScriptInputsHidden:
     HaloLines1: false
     UIRiseShrink: false
+    fallbackSeconds: false
     resultText: false
     statusText: false
   ScriptTypesHidden:
@@ -43,6 +44,7 @@
       resultText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       UIRiseShrink: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       HaloLines1: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      fallbackSeconds: !<float> 10.000000
   ScriptTypes:
     -
       {}

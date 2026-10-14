@@ -43,7 +43,7 @@
     - _renderOrder: 0
       size: !<Vec2> {x: 20.000000, y: 1.800000}
       orientation: Vertical
-      scrollWindow: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      scrollWindow: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       _playAudio: false
   ScriptTypes:
     -
@@ -52,5 +52,5 @@
     - '// @input int _renderOrder = "0"'
     - "// @input vec2 size = {20,1.8}"
     - '// @input string orientation = "Vertical" {"widget":"combobox", "values":[{"label":"Horizontal", "value":"Horizontal"}, {"label":"Vertical", "value":"Vertical"}]}'
-    - // @input AssignableType_1 scrollWindow
+    - // @input AssignableType scrollWindow
     - // @input bool _playAudio

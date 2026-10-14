@@ -15,10 +15,19 @@ function onAwake() {
 }
 
 function onStart() {
-    // You could also retrieve the Interactable component like this:
-    interactable = interactionManager.getInteractableBySceneObject(
-        script.buttonObj
-    );
+    // The UIKit button creates its Interactable in its own OnStart, so it may not
+    // exist yet: retry each frame until it does.
+    var findEvent = script.createEvent('UpdateEvent');
+    findEvent.bind(function() {
+        var found = interactionManager.getInteractableBySceneObject(script.buttonObj);
+        if (found) {
+            findEvent.enabled = false;
+            connect(found);
+        }
+    });
+}
+
+function connect(interactable) {
 
     // Define the desired callback logic for the relevant Interactable event.
     var onTriggerStartCallback = function(event) {
@@ -55,7 +64,7 @@ function onStart() {
         }
     };
 
-    interactable.onInteractorTriggerStart(onTriggerStartCallback);
+    interactable.onInteractorTriggerStart.add(onTriggerStartCallback);
 }
 
 onAwake();

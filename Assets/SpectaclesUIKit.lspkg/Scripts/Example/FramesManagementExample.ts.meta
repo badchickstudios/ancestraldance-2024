@@ -37,12 +37,12 @@
   Attachments:
     []
   DefaultScriptInputs:
-    - framedLayoutItems: !<MappingBased.AssignableType_1[]>
+    - framedLayoutItems: !<MappingBased.AssignableType[]>
         []
       _fallbackStrategy: ""
   ScriptTypes:
     -
       {}
   InputLines:
-    - "// @input AssignableType_1[] framedLayoutItems = {}"
+    - "// @input AssignableType[] framedLayoutItems = {}"
     - '// @input string _fallbackStrategy {"widget":"combobox", "values":[{"label":"Closest Available", "value":"closestAvailable"}, {"label":"Push", "value":"push"}]}'

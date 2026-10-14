@@ -38,7 +38,7 @@ function onStart() {
         }
     };
 
-    interactable.onInteractorTriggerStart(onTriggerStartCallback);
+    interactable.onInteractorTriggerStart.add(onTriggerStartCallback);
     global.behaviorSystem.addCustomTriggerResponse('earthtouched', onTrigger);
 }
 

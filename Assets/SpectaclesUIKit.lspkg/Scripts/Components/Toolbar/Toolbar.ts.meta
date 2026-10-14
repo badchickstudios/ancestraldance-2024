@@ -51,7 +51,7 @@
   Attachments:
     []
   DefaultScriptInputs:
-    - frame: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+    - frame: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       autoHideWhenFrameNotTargeted: false
       direction: horizontal
       size: !<Vec2> {x: 25.000000, y: 5.000000}
@@ -72,7 +72,7 @@
       {}
   InputLines:
     - '// @ui {"widget":"group_start", "label":"Toolbar Settings"}'
-    - '// @input AssignableType_1 frame {"hint":"Optional: Frame component to attach the toolbar to. Leave empty for standalone toolbar."}'
+    - '// @input AssignableType frame {"hint":"Optional: Frame component to attach the toolbar to. Leave empty for standalone toolbar."}'
     - '// @input bool autoHideWhenFrameNotTargeted {"hint":"When enabled, toolbar fades when not targeted. With a Frame attached, targeting the Frame shows it; otherwise targeting the toolbar shows it."}'
     - '// @input string direction {"hint":"Direction items are laid out in the toolbar.", "widget":"combobox", "values":[{"label":"Horizontal", "value":"horizontal"}, {"label":"Vertical", "value":"vertical"}]}'
     - '// @ui {"widget":"group_end"}'

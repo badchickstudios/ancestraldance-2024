@@ -88,7 +88,7 @@
     {}
   ScriptInputs:
     "":
-      SpatialLayout: !<MappingBased.AssignableType_1> 326dd1f4-7ae4-4ec0-8cae-e23c9a20c179
+      SpatialLayout: !<MappingBased.AssignableType> 326dd1f4-7ae4-4ec0-8cae-e23c9a20c179
       layoutItemPrefab: !<reference.ObjectPrefab> d383c86a-e5c2-4652-850f-66d4d45f577f
       _fallbackStrategy: push
   ScriptTypes:

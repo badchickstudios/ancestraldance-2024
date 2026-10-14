@@ -1,7 +1,5 @@
 const SIK = require('SpectaclesInteractionKit.lspkg/SIK').SIK;
 const interactionManager = SIK.InteractionManager;
-const interactorInputType = require('SpectaclesInteractionKit.lspkg/Core/Interactor/Interactor').InteractorInputType;
-const interactionConfiguration = SIK.InteractionConfiguration;
 
 
 //@input SceneObject[] Gifts
@@ -9,6 +7,7 @@ const interactionConfiguration = SIK.InteractionConfiguration;
 //@input SceneObject[] leftWristGifts
 //@input SceneObject[] rightWristGifts
 //@input SceneObject HaloLines2
+//@input float autoPickSeconds = 30 {"hint": "If this player hasn't chosen a gift after this many seconds, one is picked at random"}
 var localselections = 0;
 var isaGiftClicked = false;
 
@@ -23,71 +22,41 @@ function onAwake() {
 }
 
 function onStart() {
+  for (var i = 0; i < script.Gifts.length; i++) {
+    var interactable = interactionManager.getInteractableBySceneObject(script.Gifts[i]);
+    if (interactable) {
+      interactable.onInteractorTriggerStart.add(onGiftTriggered(i));
+    }
+  }
 
-  // You could also retrieve the Interactable component like this:
-  interactable0 = interactionManager.getInteractableBySceneObject(
-    script.Gifts[0]
-  );
-    
-      interactable1 = interactionManager.getInteractableBySceneObject(
-    script.Gifts[1]
-  );
-      interactable2 = interactionManager.getInteractableBySceneObject(
-    script.Gifts[2]
-  );
+  // Fallback so one player who never chooses can't stall the story for everyone
+  var autoPick = script.createEvent("DelayedCallbackEvent");
+  autoPick.bind(function() {
+    if (!isaGiftClicked) {
+      var index = Math.floor(Math.random() * script.Gifts.length);
+      print("No gift chosen after " + script.autoPickSeconds + "s - picking gift " + index);
+      pickGift(index);
+    }
+  });
+  autoPick.reset(script.autoPickSeconds);
+}
 
-  // Define the desired callback logic for the relevant Interactable event.
-  var onTriggerStartCallback0 = (event) => {
- 
-    if (isaGiftClicked== false ) {
-        print("Clicked the first ancestor!");
-             localselections+=1;
-               script.leftWristGifts[0].enabled = true;
-            script.rightWristGifts[0].enabled =true;
-            isaGiftClicked = true;
-  
-       print("local selections: " + localselections);   
-     checkIfAllSelected();
-            
-     }
-        
+function onGiftTriggered(index) {
+  return function(event) {
+    pickGift(index);
   };
-    
-    var onTriggerStartCallback1 = (event) => {
- 
-    if (isaGiftClicked == false ) {
-        print("Clicked the first ancestor!");
-             localselections+=1;
-               script.leftWristGifts[1].enabled = true;
-            script.rightWristGifts[1].enabled =true;
-            isaGiftClicked = true;
-     
-       print("local selections: " + localselections);   
-     checkIfAllSelected();
-            
-     }
-        
-  };
-    
-        var onTriggerStartCallback2 = (event) => {
- 
-    if (isaGiftClicked == false ) {
-        print("Clicked the first ancestor!");
-             localselections+=1;
-            script.leftWristGifts[2].enabled = true;
-            script.rightWristGifts[2].enabled =true;
-            isaGiftClicked = true;
-     
-       print("local selections: " + localselections);   
-    checkIfAllSelected();
-            
-     }
-        
-  };
+}
 
-  interactable0.onInteractorTriggerStart(onTriggerStartCallback0);
-    interactable1.onInteractorTriggerStart(onTriggerStartCallback1);
-    interactable2.onInteractorTriggerStart(onTriggerStartCallback2);
+function pickGift(index) {
+  if (isaGiftClicked) return;
+  isaGiftClicked = true;
+  print("Picked gift " + index);
+  localselections += 1;
+  script.leftWristGifts[index].enabled = true;
+  script.rightWristGifts[index].enabled = true;
+
+  print("local selections: " + localselections);
+  checkIfAllSelected();
 }
 
 

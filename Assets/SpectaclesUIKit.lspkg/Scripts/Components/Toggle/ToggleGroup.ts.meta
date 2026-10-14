@@ -43,7 +43,7 @@
       addCallbacks: false
       onToggleSelectedCallbacks:
         []
-      _toggles: !<MappingBased.AssignableType_1[]>
+      _toggles: !<MappingBased.AssignableType[]>
         []
   ScriptTypes:
     -
@@ -57,4 +57,4 @@
     - "@property {string} functionName"
     - "*/"
     - '// @input Callback[] onToggleSelectedCallbacks = {} {"label":"On Toggle Selected Callbacks", "showIf":"addCallbacks"}'
-    - "// @input AssignableType_1[] _toggles = {}"
+    - "// @input AssignableType[] _toggles = {}"

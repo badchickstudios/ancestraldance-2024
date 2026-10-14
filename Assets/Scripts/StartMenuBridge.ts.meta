@@ -1,0 +1,50 @@
+- !<AssetImportMetadata/39561f82-1dbc-453e-b12b-eddc0e310a92>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 02731242-a8fb-4596-9de2-6a9c97e82889
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 02731242-a8fb-4596-9de2-6a9c97e82889
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> e7bb5d52-b7da-4e09-84b6-00d6c0145b9e
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/e7bb5d52-b7da-4e09-84b6-00d6c0145b9e>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 9e424bab-fc23-4f7b-b8e6-9f95cf8ab49f
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    multiplayerButton: false
+    soloButton: false
+    startMenu: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - startMenu: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      soloButton: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      multiplayerButton: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input SceneObject startMenu {"hint":"The SyncKit StartMenu object (has the StartMenu script)"}'
+    - '// @input AssignableType soloButton {"hint":"Start menu Solo button (shown as Individual)"}'
+    - '// @input AssignableType_1 multiplayerButton {"hint":"Start menu Multiplayer button (shown as Collective)"}'

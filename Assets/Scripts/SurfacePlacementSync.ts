@@ -13,7 +13,7 @@ declare global {
 }
 
 @component
-export class Example extends BaseScriptComponent {
+export class SurfacePlacementSync extends BaseScriptComponent {
     @input
     @allowUndefined
     objectVisuals: SceneObject;
@@ -59,19 +59,9 @@ export class Example extends BaseScriptComponent {
             this.objectVisuals.enabled = false;
         }
 
-        // Check if we're joining an existing session and request sync
-        if ((global as any).sessionController && 
-            (global as any).sessionController.getUsers().length > 1) {
-            // Small delay to ensure network is ready
-            const delayedEvent = this.createEvent("DelayedCallbackEvent");
-            delayedEvent.bind(() => {
-                (global as any).requestPlacementSync?.();
-            });
-            delayedEvent.reset(0.1);
-        }
-
         if (this.autoStart) {
-            // Call the global startAssetPlacement function
+            // GameManager decides who places: Individual places locally; in Collective
+            // only the host gets the tracker and joiners request the host's placement.
             (global as any).startAssetPlacement?.();
         }
     }
@@ -109,11 +99,13 @@ export class Example extends BaseScriptComponent {
         );
     }
 
+    // Position/rotation are local to the parent, which sits under ColocatedWorld,
+    // so they mean the same physical spot on every device.
     private getCurrentPlacementState() {
         return {
             isPlaced: this.isObjectPlaced,
-            position: this.currentPosition,
-            rotation: this.currentRotation,
+            position: this.transform.getLocalPosition(),
+            rotation: this.transform.getLocalRotation(),
             visible: this.objectVisuals ? this.objectVisuals.enabled : false
         };
     }
@@ -124,9 +116,17 @@ export class Example extends BaseScriptComponent {
         if (data && data.data) {
             placementData = data.data;
         }
-        
-        if (placementData && placementData.visible !== undefined) {
-            // Only sync visibility - SyncTransform handles position/rotation automatically
+        if (!placementData) return;
+
+        const p = placementData.position;
+        const r = placementData.rotation;
+        if (p && this.transform) {
+            this.transform.setLocalPosition(new vec3(p.x, p.y, p.z));
+        }
+        if (r && this.transform) {
+            this.transform.setLocalRotation(new quat(r.w, r.x, r.y, r.z));
+        }
+        if (placementData.visible !== undefined) {
             if (this.objectVisuals) {
                 this.objectVisuals.enabled = placementData.visible;
             }
@@ -146,10 +146,9 @@ export class Example extends BaseScriptComponent {
     }
 
     private onSurfaceDetected(pos: vec3, rot: quat) {
-        // Check if this player should be placing the object (host only in multiplayer)
-        const isHost = (global as any).sessionController ? 
-            !(global as any).sessionController || (global as any).sessionController.getUsers().length <= 1 :
-            true;
+        // Only the host places in Collective (GameManager: Individual always counts as host)
+        const isHostFn = (global as any).isHost;
+        const isHost = isHostFn ? isHostFn() === true : true;
             
         print("=== SURFACE DETECTED ===");
         print("Is Host: " + isHost);
@@ -176,8 +175,8 @@ export class Example extends BaseScriptComponent {
             this.currentRotation = rot;
             this.isObjectPlaced = true;
 
-            // Only sync visibility state - let SyncTransform handle position/rotation automatically
-            (global as any).sendObjectPlaced?.(vec3.zero(), quat.quatIdentity(), true);
+            // Share the placement in the colocated frame so other players see it in the same spot
+            (global as any).sendObjectPlaced?.(this.transform.getLocalPosition(), this.transform.getLocalRotation(), true);
         }
     }
 }

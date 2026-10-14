@@ -26,7 +26,7 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
-    {}
+    targetLocalScale: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -36,10 +36,9 @@
   Attachments:
     []
   DefaultScriptInputs:
-    -
-      {}
+    - targetLocalScale: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
   ScriptTypes:
     -
       {}
   InputLines:
-    []
+    - '// @input vec3 targetLocalScale {"hint":"Local scale the Earth grows to"}'

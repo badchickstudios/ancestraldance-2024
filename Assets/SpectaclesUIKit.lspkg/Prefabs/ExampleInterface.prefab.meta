@@ -318,10 +318,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -401,10 +399,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -663,10 +659,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -979,10 +973,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -1255,10 +1247,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -1338,10 +1328,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -1567,10 +1555,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -1967,7 +1953,7 @@
       addCallbacks: false
       onToggleSelectedCallbacks:
         []
-      _switches: !<MappingBased.AssignableType_1[]>
+      _switches: !<MappingBased.AssignableType[]>
         - !<reference> f513b411-b0b2-49a1-6512-dcd8f87191f2
         - !<reference> 2706344e-8cb7-4fd5-6f84-da19b189839a
         - !<reference> c103633a-488d-4f40-5b7c-a4b9fac9691e
@@ -2052,7 +2038,7 @@
       addCallbacks: false
       onToggleSelectedCallbacks:
         []
-      _toggles: !<MappingBased.AssignableType_1[]>
+      _toggles: !<MappingBased.AssignableType[]>
         []
   ScriptTypes:
     "":
@@ -2350,7 +2336,7 @@
       _renderOrder: 0
       size: !<Vec2> {x: 20.000000, y: 1.800000}
       orientation: Vertical
-      scrollWindow: !<MappingBased.AssignableType_1> 369c1cb7-d4f0-480a-6997-14810a28a7e3
+      scrollWindow: !<MappingBased.AssignableType> 369c1cb7-d4f0-480a-6997-14810a28a7e3
       _playAudio: false
   ScriptTypes:
     "":
@@ -2420,7 +2406,7 @@
       addCallbacks: false
       onToggleSelectedCallbacks:
         []
-      _toggles: !<MappingBased.AssignableType_1[]>
+      _toggles: !<MappingBased.AssignableType[]>
         []
   ScriptTypes:
     "":
@@ -2488,10 +2474,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -2796,7 +2780,7 @@
       addCallbacks: false
       onToggleSelectedCallbacks:
         []
-      _switches: !<MappingBased.AssignableType_1[]>
+      _switches: !<MappingBased.AssignableType[]>
         - !<reference> 9dce3ad7-ba6b-477d-b86d-d3f1aa84ce83
         - !<reference> 414ae543-ad5f-4ded-80dd-f200745c0a16
         - !<reference> 63b22a79-11d6-4b53-a1f3-57dbca3ef1b5
@@ -2820,10 +2804,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -2963,10 +2945,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -3046,10 +3026,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -3169,7 +3147,7 @@
       addCallbacks: false
       onToggleSelectedCallbacks:
         []
-      _switches: !<MappingBased.AssignableType_1[]>
+      _switches: !<MappingBased.AssignableType[]>
         - !<reference> 0c1ee671-fce8-45bd-9d3c-53c6156e15e1
         - !<reference> 8b0e7dea-021b-4f29-aa5a-eb1d953360bc
         - !<reference> a344f8bf-9ac1-47b5-8611-c4fb792f8f7f
@@ -3371,10 +3349,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -3560,10 +3536,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -3865,10 +3839,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4088,10 +4060,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4308,7 +4278,7 @@
       addCallbacks: false
       onToggleSelectedCallbacks:
         []
-      _toggles: !<MappingBased.AssignableType_1[]>
+      _toggles: !<MappingBased.AssignableType[]>
         []
   ScriptTypes:
     "":
@@ -4405,10 +4375,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4594,10 +4562,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4793,10 +4759,8 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48.000000
+  FontSize: 48
   Font: !<reference> 00000000-0000-0000-0000-000000000000
-  FontWeight: 400
-  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000

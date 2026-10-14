@@ -151,6 +151,7 @@
     onMinValueReachedFunctionNames: true
     customFunctionForOnMaxValueReached: true
     onMaxValueReachedFunctionNames: true
+    isSynced: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -186,6 +187,7 @@
       customFunctionForOnMaxValueReached: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
       onMaxValueReachedFunctionNames: !<string[]>
         []
+      isSynced: false
   ScriptTypes:
     "":
       {}
@@ -280,9 +282,9 @@
     _onIcon: true
     _offIcon: true
     _isToggledOn: true
-    editEventCallbacks: true
     customFunctionForOnStateChanged: true
     onStateChangedFunctionNames: true
+    isSynced: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -294,6 +296,7 @@
       customFunctionForOnStateChanged: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
       onStateChangedFunctionNames: !<string[]>
         []
+      isSynced: false
   ScriptTypes:
     "":
       {}
@@ -798,6 +801,9 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
+    targetingVisual: true
+    ignoreInteractionPlane: true
+    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -805,13 +811,15 @@
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    isSynced: true
-    acceptableSyncInteractionTypes: true
+    useFilteredPinch: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
+      targetingVisual: !<float> 1.000000
+      ignoreInteractionPlane: false
+      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -819,8 +827,7 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      isSynced: true
-      acceptableSyncInteractionTypes: !<float> 7.000000
+      useFilteredPinch: false
   ScriptTypes:
     "":
       {}

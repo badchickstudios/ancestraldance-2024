@@ -63,11 +63,35 @@ var minPlayersRequired = 2;
 var globalSelectionCount = 0;
 var globalEarthHealedCount = 0;
 
+// Players actually in this game, keyed by connection id. getUsers() can include
+// stale connections, so the count comes from a presence handshake instead.
+var presentPlayers = {};
+// Who has finished each stage, keyed by connection id (so repeats don't double-count)
+var completedSelections = {};
+var completedHealers = {};
+var fuseRequested = false;
+
+// "solo" (Individual) or "collective", set by the start menu choice
+var playMode = "solo";
+var syncReady = false;
+// Collective: placement asked for before the SyncEntity knew who the host is
+var placementPending = false;
+// Collective joiners: has the host's placement arrived yet?
+var placementReceived = false;
+// Collective: players taking part, fixed when the host begins (connection id -> true).
+// Stages wait for these players only, so a late joiner can't stall the story.
+var roster = null;
+var gameStarted = false;
+// Placement was asked for (content enabled) / this device ran the host's surface tracker
+var assetPlacementRequested = false;
+var hostPlacementStarted = false;
+
 // Audio track number
 var currentStemIndex = -1;
 var currentVOIndex = -1;
 var ancestorSelectionStarted = false;
 var ancestorsRiseTriggered = false;
+var riseReceived = false;
 var ancestorsRiseTimeout = null;
 
 // UI references
@@ -86,7 +110,7 @@ function setupReadyButton() {
         var touchComponent = script.readyButton.getComponent("Component.TouchComponent");
         if (touchComponent) {
             touchComponent.onTouchStart.add(function() {
-                var isSinglePlayerMode = !global.sessionController || totalPlayersCount <= 1;
+                var isSinglePlayerMode = playMode !== "collective";
                 
                 if (isSinglePlayerMode || isHost()) {
                     print("Starting game...");
@@ -149,7 +173,11 @@ function onSyncReady() {
     } catch (e) {
       //  print("Failed to add event listeners: " + e);
     }
-    
+
+    setupPresence();
+    syncReady = true;
+    syncEntity.onEventReceived.add('gameInProgress', onReceiveGameInProgress);
+    watchForHostRole();
     updatePlayerCount();
     setupPlayerCountMonitoring();
     
@@ -164,7 +192,12 @@ function onSyncReady() {
     if (currentState == GameState.WAITING_FOR_PLAYERS) {
         checkHostStatusAndShowUI();
     }
-    
+
+    if (placementPending) {
+        placementPending = false;
+        startAssetPlacement();
+    }
+
  //   print("GameManager ready");
 }
 
@@ -187,6 +220,7 @@ function setupGlobalFunctions() {
     global.startMultiplayer = startMultiplayer;
     global.beginGame = beginGame;
     global.isHost = isHost;
+    global.isSinglePlayerMode = isSinglePlayerMode;
     global.getHostName = getHostName;
     global.sendAncestorsRise = sendAncestorsRise;
     global.sendShowFireflies = sendShowFireflies;
@@ -236,20 +270,21 @@ function onStateExit(state) {
 }
 
 // Helper functions
+// Host = owner of this GameManager's SyncEntity (the first player into the session)
 function isHost() {
-    if (!global.sessionController || totalPlayersCount <= 1) return true;
-    return syncEntity && syncEntity.doIOwnStore();
+    if (playMode !== "collective") return true;
+    return !!(syncEntity && syncEntity.doIOwnStore());
 }
 
 function isSinglePlayerMode() {
-    return !global.sessionController || totalPlayersCount <= 1;
+    return playMode !== "collective";
 }
 
 function getHostName() {
     if (syncEntity && syncEntity.ownerInfo && syncEntity.ownerInfo.displayName) {
         return syncEntity.ownerInfo.displayName;
     }
-    return "Player 1";
+    return "the host";
 }
 
 function enableReadyButton(enable) {
@@ -279,6 +314,7 @@ function showMenu() {
 
 function startSinglePlayer() {
    // print("Starting single player mode");
+    playMode = "solo";
     isGameManagerActive = true;
     totalPlayersCount = 1;
     
@@ -296,6 +332,7 @@ function startSinglePlayer() {
 
 function startMultiplayer() {
  //   print("Starting multiplayer mode");
+    playMode = "collective";
     isGameManagerActive = true;
     enableReadyButton(false);
      script.bkndComponent.play(1);
@@ -305,15 +342,98 @@ function startMultiplayer() {
 
 function showWaitingForPlayers() {
     enableReadyButton(false);
-    
-    if (syncEntity && isHost() !== undefined) {
+
+    if (roleKnown()) {
         checkHostStatusAndShowUI();
     } else {
-        setUIVisibility("waitingMessage", false);
-        setUIVisibility("hostWaitingMessage", true);
-        setUIVisibility("playerCountText", true);
-        updateHostWaitingMessage();
-        updatePlayerCountDisplay();
+        // Host isn't decided yet; watchForHostRole() shows the right message once it is
+        setUIVisibility("hostWaitingMessage", false);
+        setUIVisibility("waitingMessage", true);
+        setUIText("waitingMessage", "Connecting...");
+    }
+}
+
+// The host is whoever owns this SyncEntity; that isn't known until the session
+// settles ownership, which can be a moment after the SyncEntity is ready.
+function roleKnown() {
+    return syncReady && syncEntity && syncEntity.isStoreOwned();
+}
+
+// How long the recorded host can be absent (never announced itself) before someone takes over
+var HOST_TAKEOVER_SECONDS = 3;
+var roleAnnounced = false;
+var hostMissingSince = -1;
+var takeoverRequested = false;
+
+function watchForHostRole() {
+    if (syncEntity.onOwnerUpdated) {
+        syncEntity.onOwnerUpdated.add(function() {
+            hostMissingSince = -1;
+            onRoleKnown();
+        });
+    }
+    // Per-frame: ownership may settle before we subscribed, and the host may be gone
+    script.createEvent("UpdateEvent").bind(function() {
+        if (!syncReady || playMode !== "collective") return;
+        if (!roleAnnounced && roleKnown()) {
+            roleAnnounced = true;
+            onRoleKnown();
+        }
+        checkHostPresent();
+    });
+}
+
+// The host is whoever owns this SyncEntity. If that owner never shows up (it left, or
+// it's a stale connection), the present player with the lowest connection id takes over.
+function checkHostPresent() {
+    if (takeoverRequested || syncEntity.doIOwnStore()) {
+        hostMissingSince = -1;
+        return;
+    }
+    var owner = syncEntity.ownerInfo;
+    var ownerHere = syncEntity.isStoreOwned() && owner && presentPlayers[owner.connectionId];
+    if (ownerHere) {
+        hostMissingSince = -1;
+        return;
+    }
+    var now = getTime();
+    if (hostMissingSince < 0) {
+        hostMissingSince = now;
+        return;
+    }
+    if (now - hostMissingSince < HOST_TAKEOVER_SECONDS || !isFirstPresentPlayer()) return;
+
+    takeoverRequested = true;
+    print("Host is not here - taking over as host");
+    syncEntity.requestOwnership(function() {
+        takeoverRequested = false;
+        hostMissingSince = -1;
+        onRoleKnown();
+    }, function(error) {
+        print("Host takeover failed: " + error);
+        takeoverRequested = false;
+        hostMissingSince = -1;
+    });
+}
+
+function isFirstPresentPlayer() {
+    var ids = Object.keys(presentPlayers).sort();
+    return ids.length > 0 && ids[0] === localConnectionId();
+}
+
+function onRoleKnown() {
+    if (!roleKnown() || playMode !== "collective") return;
+    if (currentState == GameState.WAITING_FOR_PLAYERS) {
+        checkHostStatusAndShowUI();
+    } else if (currentState == GameState.READY_TO_START) {
+        showReadyToStart();
+    }
+    if (placementPending) {
+        placementPending = false;
+        startAssetPlacement();
+    } else if (assetPlacementRequested && isHost() && !hostPlacementStarted && !placementReceived) {
+        // Took over as host before anything was placed: this player places now
+        startAssetPlacement();
     }
 }
 
@@ -326,10 +446,10 @@ function checkHostStatusAndShowUI() {
         if (script.visualsForPlayer2) script.visualsForPlayer2.enabled = false;
         
         if (totalPlayersCount >= minPlayersRequired) {
-            setUIText("waitingMessage", "Ready to start!");
             setState(GameState.READY_TO_START);
+            showReadyToStart();
         } else {
-            setUIText("waitingMessage", "Waiting for players... (" + totalPlayersCount + "/" + minPlayersRequired + ")");
+            setUIText("waitingMessage", "Waiting for others to join...");
         }
     } else {
         setUIVisibility("waitingMessage", false);
@@ -345,7 +465,7 @@ function checkHostStatusAndShowUI() {
 }
 
 function showReadyToStart() {
-    var isSinglePlayerMode = !global.sessionController || totalPlayersCount <= 1;
+    var isSinglePlayerMode = playMode !== "collective";
     
     if (isSinglePlayerMode) {
         enableReadyButton(true);
@@ -360,7 +480,7 @@ function showReadyToStart() {
         setUIVisibility("waitingMessage", true);
         setUIVisibility("hostWaitingMessage", false);
         setUIVisibility("playerCountText", true);
-        setUIText("waitingMessage", "");
+        setUIText("waitingMessage", totalPlayersCount + " players here. Begin when everyone has joined.");
         
         if (script.visualsForPlayer2) script.visualsForPlayer2.enabled = true;
     } else {
@@ -375,7 +495,7 @@ function showReadyToStart() {
 }
 
 function beginGame() {
-    var isSinglePlayerMode = !global.sessionController || totalPlayersCount <= 1;
+    var isSinglePlayerMode = playMode !== "collective";
     
     if (isSinglePlayerMode) {
         currentState = GameState.INTRO_PLAYING;
@@ -716,13 +836,28 @@ function showGameComplete() {
 
 // ===== PLACEMENT SYNC FUNCTIONS - NEW =====
 
+// Individual: place locally. Collective: only the host runs the surface tracker;
+// everyone else waits for the host's placement (or asks for it if they joined late).
 function startAssetPlacement() {
-    var isSinglePlayerMode = !global.sessionController || totalPlayersCount <= 1;
-    
-    if (isSinglePlayerMode) {
+    assetPlacementRequested = true;
+    if (playMode !== "collective") {
         onReceivePlacement();
-    } else if (syncEntity && syncEntity.doIOwnStore()) {
-        syncEntity.sendEvent('assetPlacement');
+        return;
+    }
+    if (!roleKnown()) {
+        // Host isn't known yet; onRoleKnown retries
+        placementPending = true;
+        return;
+    }
+    if (isHost()) {
+        if (hostPlacementStarted || placementReceived) return;
+        hostPlacementStarted = true;
+        setUIVisibility("hostWaitingMessage", false);
+        onReceivePlacement();
+    } else if (!placementReceived) {
+        setUIVisibility("hostWaitingMessage", true);
+        updateHostWaitingMessage();
+        requestPlacementSync();
     }
 }
 
@@ -739,7 +874,7 @@ function sendObjectPlaced(position, rotation, isVisible) {
 }
 
 function requestPlacementSync() {
-    if (syncEntity && !syncEntity.doIOwnStore()) {
+    if (syncReady && syncEntity && !syncEntity.doIOwnStore()) {
         syncEntity.sendEvent('requestPlacementSync', {
             userId: global.sessionController.getLocalUserId()
         });
@@ -756,6 +891,8 @@ function onReceiveObjectPlaced(eventData, messageInfo) {
     if (eventData && global.onObjectPlacementReceived) {
         global.onObjectPlacementReceived(eventData);
     }
+    placementReceived = true;
+    updateHostWaitingMessage();
 }
 
 function onReceiveRequestPlacementSync(eventData, messageInfo) {
@@ -771,12 +908,13 @@ function onReceiveRequestPlacementSync(eventData, messageInfo) {
 
 function sendStartIntro() {
     if (syncEntity && syncEntity.doIOwnStore()) {
-        syncEntity.sendEvent('startIntro');
+        // Everyone here now takes part; later joiners are told the journey has begun
+        syncEntity.sendEvent('startIntro', { roster: Object.keys(presentPlayers) });
     }
 }
 
 function sendShowFireflies() {
-    var isSinglePlayerMode = !global.sessionController || totalPlayersCount <= 1;
+    var isSinglePlayerMode = playMode !== "collective";
     
     if ((syncEntity && syncEntity.doIOwnStore()) || isSinglePlayerMode) {
         if (isSinglePlayerMode) {
@@ -791,7 +929,7 @@ function sendAncestorsRise() {
     if (ancestorsRiseTriggered) return;
     
     ancestorsRiseTriggered = true;
-    var isSinglePlayerMode = !global.sessionController || totalPlayersCount <= 1;
+    var isSinglePlayerMode = playMode !== "collective";
     
     if (isSinglePlayerMode) {
         onReceiveAncestorsRise();
@@ -838,7 +976,7 @@ function sendPlayerHealed() {
 }
 
 function sendAncestorFusion() {
-    var isSinglePlayerMode = !global.sessionController || totalPlayersCount <= 1;
+    var isSinglePlayerMode = playMode !== "collective";
     
     if (isSinglePlayerMode) {
         onReceiveAncestorFusion();
@@ -849,6 +987,11 @@ function sendAncestorFusion() {
 
 // Network message receivers
 function onReceiveStartIntro(eventData, messageInfo) {
+    var ids = (eventData && eventData.data && eventData.data.roster) || Object.keys(presentPlayers);
+    roster = {};
+    for (var i = 0; i < ids.length; i++) roster[ids[i]] = true;
+    gameStarted = true;
+    print("Journey begins with " + ids.length + " players");
     currentState = GameState.INTRO_PLAYING;
     playIntro();
 }
@@ -859,6 +1002,9 @@ function onReceiveShowFireflies(eventData, messageInfo) {
 }
 
 function onReceiveAncestorsRise(eventData, messageInfo) {
+    // Any player's "rise" (or their timeout) can send this; only act on the first
+    if (riseReceived) return;
+    riseReceived = true;
     currentState = GameState.ANCESTOR_SELECTION;
     startAncestorSelection();
 }
@@ -867,22 +1013,26 @@ function onReceivePlayerCompleted(eventData, messageInfo) {
     if (isSinglePlayerMode()) {
         totalPlayersCount = 1;
     }
-    
-    globalSelectionCount += 1;
-    var playerName = (eventData && eventData.userName) ? eventData.userName : "Unknown Player";
-  //  print("Player completed: " + playerName + " (" + globalSelectionCount + "/" + totalPlayersCount + ")");
-    
-    if (globalSelectionCount >= totalPlayersCount) {
-        if (isSinglePlayerMode()) {
-            var nextEventData = { userId: "single_player", userName: "Player", timestamp: Date.now() };
-            onReceiveReadyToFuse(nextEventData, null);
-        } else {
-            var delayedEvent = script.createEvent("DelayedCallbackEvent");
-            delayedEvent.bind(function() {
-                sendReadyToFuse();
-            });
-            delayedEvent.reset(0.5);
-        }
+
+    completedSelections[senderId(eventData)] = true;
+    globalSelectionCount = countParticipants(completedSelections);
+    print("Player completed selections (" + globalSelectionCount + "/" + requiredPlayers() + ")");
+    checkSelectionsComplete();
+}
+
+function checkSelectionsComplete() {
+    if (fuseRequested || globalSelectionCount < requiredPlayers()) return;
+    fuseRequested = true;
+
+    if (isSinglePlayerMode()) {
+        var nextEventData = { userId: "single_player", userName: "Player", timestamp: Date.now() };
+        onReceiveReadyToFuse(nextEventData, null);
+    } else {
+        var delayedEvent = script.createEvent("DelayedCallbackEvent");
+        delayedEvent.bind(function() {
+            sendReadyToFuse();
+        });
+        delayedEvent.reset(0.5);
     }
 }
 
@@ -896,11 +1046,15 @@ function onReceivePlayerHealed(eventData, messageInfo) {
         totalPlayersCount = 1;
     }
     
-    globalEarthHealedCount += 1;
-    var playerName = (eventData && eventData.userName) ? eventData.userName : "Unknown Player";
-  //  print("Player healed earth: " + playerName + " (" + globalEarthHealedCount + "/" + totalPlayersCount + ")");
-    
-    if (globalEarthHealedCount >= totalPlayersCount) {
+    completedHealers[senderId(eventData)] = true;
+    globalEarthHealedCount = countParticipants(completedHealers);
+    print("Player healed earth (" + globalEarthHealedCount + "/" + requiredPlayers() + ")");
+    checkHealingComplete();
+}
+
+function checkHealingComplete() {
+    if (currentState == GameState.ANCESTOR_FUSION) return;
+    if (globalEarthHealedCount >= requiredPlayers()) {
         if ((syncEntity && syncEntity.doIOwnStore()) || isSinglePlayerMode()) {
             currentState = GameState.ANCESTOR_FUSION;
             sendAncestorFusion();
@@ -913,10 +1067,86 @@ function onReceiveAncestorFusion(eventData, messageInfo) {
     playAncestorFusion();
 }
 
+// Presence: each device announces itself once its SyncEntity is ready and re-announces
+// when it hears a newcomer, so late joiners learn who is already here. Stale
+// connections never announce, so they aren't counted.
+function setupPresence() {
+    presentPlayers[localConnectionId()] = true;
+    syncEntity.onEventReceived.add('playerPresent', onReceivePresence);
+    // remoteOnly: our own copy is already recorded above
+    syncEntity.sendEvent('playerPresent', { id: localConnectionId() }, true);
+
+    if (global.sessionController && global.sessionController.onUserLeftSession) {
+        global.sessionController.onUserLeftSession.add(function(session, userInfo) {
+            var id = userInfo && userInfo.connectionId;
+            if (!id || !presentPlayers[id]) return;
+            delete presentPlayers[id];
+            if (roster) delete roster[id];
+            delete completedSelections[id];
+            delete completedHealers[id];
+            globalSelectionCount = countParticipants(completedSelections);
+            globalEarthHealedCount = countParticipants(completedHealers);
+            updatePlayerCount();
+            // Someone leaving may mean everyone remaining is now done
+            if (currentState == GameState.ANCESTOR_SELECTION && globalSelectionCount > 0) checkSelectionsComplete();
+            if (currentState == GameState.EARTH_HEALING && globalEarthHealedCount > 0) checkHealingComplete();
+        });
+    }
+}
+
+function onReceivePresence(message) {
+    var id = message && message.data && message.data.id;
+    if (!id || presentPlayers[id]) return;
+    presentPlayers[id] = true;
+    syncEntity.sendEvent('playerPresent', { id: localConnectionId() }, true);
+    // Someone arrived after the journey began: let them know instead of leaving them waiting
+    if (gameStarted && isHost()) {
+        syncEntity.sendEvent('gameInProgress', { to: id }, true);
+    }
+    updatePlayerCount();
+    if (currentState == GameState.READY_TO_START && isHost()) showReadyToStart();
+}
+
+function onReceiveGameInProgress(message) {
+    var to = message && message.data && message.data.to;
+    if (to !== localConnectionId() || gameStarted) return;
+    setUIVisibility("waitingMessage", false);
+    setUIVisibility("hostWaitingMessage", true);
+    setUIText("hostWaitingMessage", "This journey has already begun. Please join the next one.");
+}
+
+// Players each stage waits for: the roster once the journey has begun, otherwise everyone present
+function requiredPlayers() {
+    if (isSinglePlayerMode()) return 1;
+    return roster ? Math.max(1, countKeys(roster)) : totalPlayersCount;
+}
+
+// Count only players in the roster (single player and pre-roster: everyone)
+function countParticipants(done) {
+    if (!roster || isSinglePlayerMode()) return countKeys(done);
+    var n = 0;
+    for (var id in done) if (roster[id]) n++;
+    return n;
+}
+
+function localConnectionId() {
+    var id = global.sessionController && global.sessionController.getLocalConnectionId();
+    return id || "local";
+}
+
+// Connection id of whoever sent a network message (local calls pass no message)
+function senderId(message) {
+    return (message && message.senderConnectionId) || "local";
+}
+
+function countKeys(obj) {
+    return Object.keys(obj).length;
+}
+
 // Utility functions
 function updatePlayerCount() {
     if (global.sessionController) {
-        totalPlayersCount = global.sessionController.getUsers().length;
+        totalPlayersCount = Math.max(1, countKeys(presentPlayers));
     } else {
         totalPlayersCount = 1;
     }
@@ -951,7 +1181,9 @@ function setupPlayerCountMonitoring() {
 
 function updateHostWaitingMessage() {
     var hostName = getHostName();
-    var message = "Waiting for " + hostName + " to start...";
+    var message = placementReceived
+        ? "Waiting for " + hostName + " to start..."
+        : "Waiting for " + hostName + " to place the experience...";
     setUIText("hostWaitingMessage", message);
 }
 
@@ -974,13 +1206,9 @@ function setUIText(elementName, text) {
 
 function updatePlayerCountDisplay() {
     var message = "Players: " + totalPlayersCount;
-    
+
     if (currentState == GameState.WAITING_FOR_PLAYERS || currentState == GameState.READY_TO_START) {
-        if (isHost()) {
-            message += "/" + minPlayersRequired + " (Hosting)";
-        } else {
-            message += "/" + minPlayersRequired + " (Joined)";
-        }
+        message += isHost() ? " (Hosting)" : " (Joined)";
     }
     
     setUIText("playerCountText", message);
@@ -1009,11 +1237,14 @@ function hideAllUI() {
 // Reset functions
 function resetGlobalSelections() {
     globalSelectionCount = 0;
+    completedSelections = {};
+    fuseRequested = false;
     ancestorSelectionStarted = false;
 }
 
 function resetEarthHealing() {
     globalEarthHealedCount = 0;
+    completedHealers = {};
 }
 
 // Audio functions

@@ -127,7 +127,7 @@
       toggleManualSize: !<Vec2> {x: 6.000000, y: 3.000000}
       toggleCrossAxisSize: !<float> 3.000000
       isAttachedComponent: false
-      attachTo: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      attachTo: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       attachmentPosition: right
       attachmentOffset: !<Vec2> {x: 0.000000, y: 0.000000}
       inactive: false
@@ -259,7 +259,7 @@
       toggleManualSize: !<Vec2> {x: 6.000000, y: 3.000000}
       toggleCrossAxisSize: !<float> 3.000000
       isAttachedComponent: false
-      attachTo: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      attachTo: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       attachmentPosition: right
       attachmentOffset: !<Vec2> {x: 0.000000, y: 0.000000}
       inactive: false
@@ -288,7 +288,7 @@
     {}
   ScriptInputs:
     "":
-      frame: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      frame: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       autoHideWhenFrameNotTargeted: false
       direction: vertical
       size: !<Vec2> {x: 6.000000, y: 30.000000}
@@ -398,7 +398,7 @@
       toggleManualSize: !<Vec2> {x: 6.000000, y: 3.000000}
       toggleCrossAxisSize: !<float> 3.000000
       isAttachedComponent: false
-      attachTo: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      attachTo: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       attachmentPosition: right
       attachmentOffset: !<Vec2> {x: 0.000000, y: 0.000000}
       inactive: false
@@ -498,7 +498,7 @@
       toggleManualSize: !<Vec2> {x: 6.000000, y: 3.000000}
       toggleCrossAxisSize: !<float> 3.000000
       isAttachedComponent: false
-      attachTo: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      attachTo: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       attachmentPosition: right
       attachmentOffset: !<Vec2> {x: 0.000000, y: 0.000000}
       inactive: false
@@ -615,7 +615,7 @@
       toggleManualSize: !<Vec2> {x: 6.000000, y: 3.000000}
       toggleCrossAxisSize: !<float> 3.000000
       isAttachedComponent: false
-      attachTo: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      attachTo: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       attachmentPosition: right
       attachmentOffset: !<Vec2> {x: 0.000000, y: 0.000000}
       inactive: false

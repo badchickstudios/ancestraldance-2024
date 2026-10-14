@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: ec323b03-3f92-4c7e-896a-77251bba5aa6
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     enableOnSingleplayerNodes: false
     multiPlayerButton: false

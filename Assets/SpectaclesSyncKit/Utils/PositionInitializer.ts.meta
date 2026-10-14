@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: 38d71e85-54de-4f5b-b7ee-cdc9cd0a156e
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     positionInFrontOfCamera: false
     shouldFaceCamera: false

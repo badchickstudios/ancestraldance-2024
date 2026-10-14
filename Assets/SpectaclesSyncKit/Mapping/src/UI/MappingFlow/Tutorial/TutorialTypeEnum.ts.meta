@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: 3037e376-1234-46d0-802d-e5cf0f09fc3a
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden: {}
   ScriptTypesHidden: {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000

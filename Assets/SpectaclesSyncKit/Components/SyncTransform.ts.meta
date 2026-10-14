@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: a0fb5d40-a41b-47ec-925d-46a7ad7e0b19
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     customNetworkId: false
     interpolationTarget: false

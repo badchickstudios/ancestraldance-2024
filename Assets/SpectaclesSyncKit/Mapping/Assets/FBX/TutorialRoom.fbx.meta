@@ -14,11 +14,13 @@
   ImporterName: FbxImporter
   PrimaryAsset: !<reference> e749b96f-c63a-4c36-a62e-b2f486a71e90
   PackageType: LegacyPackage
-  PackagePolicy: CanBeUnpackedTransparent
-  ExtraData: {}
+  LegacyPackagePolicy: CanBeUnpackedTransparent
+  ExtraData:
+    {}
   AssetDataMap:
     Scene: !<own> 2f3fe269-5d04-483a-b191-c55a17fb037d
-  DependentFiles: []
+  DependentFiles:
+    []
   ImporterSettings: !<FbxImporterSettings>
     UseLegacyImporter: false
     WithMaterials: true
@@ -53,40 +55,11 @@
     ExtensionMappings:
       mesh: None Compression
       jpg: Performance Compression
-    Overrides: {}
-- !<ObjectPrefab/088d287a-9bc7-4c5e-9d00-e97dafd63049>
-  PackagePath: ""
-  objects:
-    - !<own> fe3c4a59-9cf6-4374-bdc1-3bf747d04933
-  LazyLoading: false
-  RetainAssets: true
-- !<RenderMeshVisual/2abd9664-0e4f-4f19-8663-3533d95029ad>
-  PrefabRemaps: []
-  Name: component_0
-  Enabled: true
-  RenderOrder: 0
-  StretchMode: Stretch
-  VerticalAlignment: Center
-  HorizontalAlignment: Center
-  MeshShadowMode: None
-  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
-  ShadowDensity: 1.000000
-  Materials:
-    - !<reference> 28885a1c-0e50-4516-b321-627d27d57f4e
-  Mesh: !<reference> 7687f1d3-ca30-4880-b88e-c44ff04a3c68
-  Skin: !<reference> 00000000-0000-0000-0000-000000000000
-  BlendShapesEnabled: true
-  BlendNormals: false
-  BlendShapes: {}
-- !<ObjectPrefabAssetData/2f3fe269-5d04-483a-b191-c55a17fb037d>
-  SourceRemaps:
-    - 2157cbce-3336-4259-a534-22dc54c1a859: 94411675-c554-44eb-9e16-0417ef4ed871
-    - 3aeec192-b717-4da2-af26-378fd9e6656d: fe3c4a59-9cf6-4374-bdc1-3bf747d04933
-    - 64ba5b36-9493-4416-8c3f-e610c94ded17: 63de2e67-e67e-4bea-898f-6d3fe37c7dad
-    - ae7d6e9c-18c7-40c2-8311-743a4d7fa8b5: 2abd9664-0e4f-4f19-8663-3533d95029ad
-  SourceState: !<own> 088d287a-9bc7-4c5e-9d00-e97dafd63049
-- !<SceneObject/63de2e67-e67e-4bea-898f-6d3fe37c7dad>
-  PrefabRemaps: []
+    Overrides:
+      {}
+- !<SceneObject/0e3c9936-e62a-4d6d-6ea9-265367759981>
+  PrefabRemaps:
+    []
   Name: room_all
   Enabled: true
   Layers: 1
@@ -95,11 +68,18 @@
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
-    - !<own> 2abd9664-0e4f-4f19-8663-3533d95029ad
-- !<AnimationPlayer/94411675-c554-44eb-9e16-0417ef4ed871>
-  PrefabRemaps: []
+    - !<own> d60fd630-53c9-40cb-6b04-d2f6d505d683
+- !<ObjectPrefabAssetData/2f3fe269-5d04-483a-b191-c55a17fb037d>
+  Prototype: !<ObjectOwner/177813a6-76fb-473d-bd14-ca25a2e56d45>
+    PackagePath: ""
+    objects:
+      - !<own> ea772c76-fb43-436b-77d7-5b93a9489911
+- !<AnimationPlayer/ad0beaeb-e1c2-4971-7b94-32e8bc66ef84>
+  PrefabRemaps:
+    []
   Name: component_1
   Enabled: true
   Autoplay: true
@@ -118,9 +98,30 @@
       BlendMode: Default
       ScaleMode: Multiply
       PlaybackMode: Loop
-- !<SceneObject/fe3c4a59-9cf6-4374-bdc1-3bf747d04933>
-  PrefabRemaps: []
-  Name: room_optimised
+- !<RenderMeshVisual/d60fd630-53c9-40cb-6b04-d2f6d505d683>
+  PrefabRemaps:
+    []
+  Name: component_0
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 28885a1c-0e50-4516-b321-627d27d57f4e
+  Mesh: !<reference> 7687f1d3-ca30-4880-b88e-c44ff04a3c68
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<SceneObject/ea772c76-fb43-436b-77d7-5b93a9489911>
+  PrefabRemaps:
+    []
+  Name: TutorialRoom
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
@@ -129,6 +130,6 @@
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
   Children:
-    - !<own> 63de2e67-e67e-4bea-898f-6d3fe37c7dad
+    - !<own> 0e3c9936-e62a-4d6d-6ea9-265367759981
   Components:
-    - !<own> 94411675-c554-44eb-9e16-0417ef4ed871
+    - !<own> ad0beaeb-e1c2-4971-7b94-32e8bc66ef84

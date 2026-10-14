@@ -22,8 +22,6 @@
   VersionPatch: 3
   ComponentUid: b4425ca6-5916-411a-a86a-3cdda7637a36
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     addHead: false
     particleTrailsMaterial: false

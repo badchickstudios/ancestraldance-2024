@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: db9ce6d8-ea8c-4c87-9866-a21689888e71
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     connectedLensModule: false
     isColocated: false

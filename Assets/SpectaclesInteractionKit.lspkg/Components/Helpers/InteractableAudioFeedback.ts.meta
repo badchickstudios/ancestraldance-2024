@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: 9a2ce527-1fec-40b9-b48c-5b2ca1e669fa
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     _hoverAudioTrack: false
     _playAudioOnHover: false

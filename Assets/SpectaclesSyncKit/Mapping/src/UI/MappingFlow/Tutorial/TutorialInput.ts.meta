@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: b095c74a-0eeb-4db9-80e3-6a80cd7f4751
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     connectedPlayerObject: false
     headLockBehaviorInput: false

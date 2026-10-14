@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: 8a40c633-5e6b-4276-8c8f-3c449d549eee
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     _axisBufferDegrees: false
     _axisEasing: false

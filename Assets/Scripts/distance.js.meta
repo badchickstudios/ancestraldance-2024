@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: cbfe11df-98e5-45f3-a006-95dd5ff4acbf
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     distanceText: false
     handObject: false

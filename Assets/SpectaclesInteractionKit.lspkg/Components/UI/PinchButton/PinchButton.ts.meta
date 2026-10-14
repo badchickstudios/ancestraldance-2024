@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: bc4cc45a-9e9e-4805-ae25-b77c360f76af
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     customFunctionForOnButtonPinched: false
     editEventCallbacks: false

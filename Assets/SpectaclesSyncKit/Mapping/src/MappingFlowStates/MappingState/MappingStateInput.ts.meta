@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: bb293c58-7d10-4431-9cc0-9b5593f236ff
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     mappingProgressInput: false
     progressBarParametersInput: false

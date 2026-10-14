@@ -657,6 +657,9 @@ export class MockMultiplayerSession implements MultiplayerSession {
     return Date.now()
   }
 
+  // Stub for the LS 5.15 API (not used in the mock)
+  getSnapchatUser(userInfo: ConnectedLensModule.UserInfo, snapchatUserCallback: (snapchatUser: SnapchatUser) => void): void {}
+
   sendMessage(message: string): void {
     if (this._options.onMessageReceived) {
       this.latencyHelper(this.testOptions.messageLatency, () => {

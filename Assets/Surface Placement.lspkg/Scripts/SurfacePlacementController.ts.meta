@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: bbe100f2-6e29-4791-af34-18dcd96a880d
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     handHintsPrefab: false
     placementModePrefabs: false

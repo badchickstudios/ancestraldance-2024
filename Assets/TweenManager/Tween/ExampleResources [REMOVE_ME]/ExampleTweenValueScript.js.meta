@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: 087472d5-d228-43bd-9f97-e2badf2988c5
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     objectWithTweens: false
     sceneObjectReference: false

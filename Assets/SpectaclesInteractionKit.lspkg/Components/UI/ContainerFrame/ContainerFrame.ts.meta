@@ -21,8 +21,6 @@
   VersionPatch: 0
   ComponentUid: 7770857d-cabb-451a-82dc-80e8e17bcd3a
   ExportUid: 00000000-0000-0000-0000-000000000000
-  CurrentVisibility: Editable
-  MaxVisibility: Editable
   ScriptInputsHidden:
     _enableInteractionPlane: false
     allowScaling: false

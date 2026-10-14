@@ -1308,7 +1308,7 @@
   PrefabRemaps:
     []
   Name: InteractableOutlineFeedback
-  Enabled: true
+  Enabled: false
   ScriptAsset: !<reference> 657cbbe5-2a9c-4889-93fb-fd72ba8a1d52
   ScriptInputsDefault:
     targetOutlineMaterial: true
@@ -1318,9 +1318,9 @@
   ScriptInputs:
     "":
       targetOutlineMaterial: !<reference.Material> 7ac80b6c-979a-4a00-a694-099f296be161
-      hoveringColor: !<Vec4> {x: 1.000000, y: 0.820000, z: 0.300000, w: 1.000000}
+      hoveringColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
       activatingColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
-      outlineWeight: -0.500000
+      outlineWeight: -0.120000
       meshVisuals: !<reference.RenderMeshVisual[]>
         - !<reference> 113c2ca2-b3bf-4073-9a66-aebf2ebbef05
   ScriptTypes:
@@ -3272,69 +3272,6 @@
     - !<own> f1090f70-1820-48f3-94c3-941cd35da513
   Components:
     []
-- !<ScriptComponent/1188e307-27f9-402a-8ee9-1327a53d5b76>
-  PrefabRemaps:
-    []
-  Name: ContainerFrame
-  Enabled: true
-  ScriptAsset: !<reference> 94ea82ba-1d42-4617-b71f-c92262f5960b
-  ScriptInputsDefault:
-    autoShowHide: true
-    border: true
-    constantPadding: true
-    allowScaling: true
-    autoScaleContent: true
-    relativeZ: true
-    isContentInteractable: true
-    allowTranslation: true
-    cutOut: true
-    minimumSize: true
-    maximumSize: true
-    xOnTranslate: true
-    xAlways: true
-    yOnTranslate: true
-    yAlways: true
-    useSnapping: true
-    itemSnapping: true
-    worldSnapping: true
-    showFollowButton: true
-    _enableInteractionPlane: true
-    _targetingVisual: true
-    isSynced: true
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      autoShowHide: true
-      innerSize: !<Vec2> {x: 32.000000, y: 4.000000}
-      border: !<float> 4.000000
-      constantPadding: !<Vec2> {x: 0.000000, y: 0.000000}
-      allowScaling: true
-      autoScaleContent: true
-      relativeZ: false
-      isContentInteractable: false
-      allowTranslation: true
-      cutOut: false
-      minimumSize: !<Vec2> {x: 10.000000, y: 10.000000}
-      maximumSize: !<Vec2> {x: 300.000000, y: 300.000000}
-      useBillboarding: true
-      xOnTranslate: false
-      xAlways: false
-      yOnTranslate: false
-      yAlways: false
-      useSnapping: false
-      itemSnapping: false
-      worldSnapping: false
-      showFollowButton: false
-      useFOVFollow: true
-      isFollowing: true
-      showCloseButton: false
-      _enableInteractionPlane: false
-      _targetingVisual: !<float> 1.000000
-      isSynced: false
-  ScriptTypes:
-    "":
-      {}
 - !<SceneObject/1189c635-1851-4509-83ef-f2d93e81a4c4>
   PrefabRemaps:
     []
@@ -3564,7 +3501,8 @@
   Children:
     - !<own> 2ce520de-8157-411f-b43b-337ff60a09a4
   Components:
-    - !<own> 1188e307-27f9-402a-8ee9-1327a53d5b76
+    - !<own> 46441419-edf9-4781-9ba9-db5efd462265
+    - !<own> f7e35f21-da10-40af-980e-b334489c203a
 - !<ScreenTransform/13e7b5e9-8ae1-4ec7-b759-84cd5fa0056e>
   PrefabRemaps:
     []
@@ -4958,7 +4896,7 @@
   PrefabRemaps:
     []
   Name: InteractableOutlineFeedback
-  Enabled: true
+  Enabled: false
   ScriptAsset: !<reference> 657cbbe5-2a9c-4889-93fb-fd72ba8a1d52
   ScriptInputsDefault:
     targetOutlineMaterial: true
@@ -4968,9 +4906,9 @@
   ScriptInputs:
     "":
       targetOutlineMaterial: !<reference.Material> 7ac80b6c-979a-4a00-a694-099f296be161
-      hoveringColor: !<Vec4> {x: 1.000000, y: 0.820000, z: 0.300000, w: 1.000000}
+      hoveringColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
       activatingColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
-      outlineWeight: -0.500000
+      outlineWeight: -0.100000
       meshVisuals: !<reference.RenderMeshVisual[]>
         - !<reference> ac977816-22ba-49df-bdf1-864d33352589
   ScriptTypes:
@@ -5015,6 +4953,7 @@
   Enabled: false
   ScriptAsset: !<reference> 34a3faa9-993f-4c28-aac7-012d229b442f
   ScriptInputsDefault:
+    {}
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -6460,7 +6399,7 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 951431c5-c123-4caf-a935-2061dc328409
+    - !<reference> c051bf6c-b222-4d35-a8d8-dca301c92a95
   Mesh: !<reference> b65568f8-3141-4fc6-b034-96009f5bfd8f
   Skin: !<reference> fc24b70e-90b6-40c7-9b32-609b594a64b2
   BlendShapesEnabled: true
@@ -7066,7 +7005,6 @@
   Enabled: true
   ScriptAsset: !<reference> f9b29b39-ec8c-41bd-8b53-769ae9b818b8
   ScriptInputsDefault:
-    selectVisual: true
     autoJointMapping: true
     wrist: true
     thumbToWrist: true
@@ -7100,8 +7038,8 @@
   ScriptInputs:
     "":
       handType: left
-      _meshType: IndexThumb
-      selectVisual: Default
+      _meshType: Full
+      selectVisual: AlwaysOn
       handInteractor: !<MappingBased.AssignableType> b0c70d91-a467-43d5-989f-15b56933d1e2
       root: !<reference.SceneObject> 6cfc43b2-989e-438c-8bfe-a185651d8618
       handMeshFull: !<reference.RenderMeshVisual> 3a8e3426-0a0d-46d0-83bd-7115621c411a
@@ -7763,6 +7701,7 @@
     - !<own> 0a9c9edb-6ba1-4674-90d5-6bddb8fcd6a7
   Components:
     - !<own> 865d2739-cb7d-4cf6-b27c-377c7e8d33cb
+    - !<own> 68eaa52b-730e-4dbc-9916-c2074117f1f6
 - !<SceneObject/3676a18c-db07-4af6-ad48-79f551657ead>
   PrefabRemaps:
     []
@@ -8162,7 +8101,7 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 951431c5-c123-4caf-a935-2061dc328409
+    - !<reference> c051bf6c-b222-4d35-a8d8-dca301c92a95
   Mesh: !<reference> a46c7bf7-85ad-42c1-a389-bcdbe17a135f
   Skin: !<reference> 3fef4d17-2585-48af-b0f5-872a46a17c8e
   BlendShapesEnabled: true
@@ -8782,7 +8721,7 @@
       boundsCheckObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       boundsCheckBoundaryMeshVisual: !<reference.RenderMeshVisual> 00000000-0000-0000-0000-000000000000
       boundsCheckTriggerOptions: On Enter
-      distanceCheckObjectA: !<reference.SceneObject> 6cfc43b2-989e-438c-8bfe-a185651d8618
+      distanceCheckObjectA: !<reference.SceneObject> 1c5e01d0-a657-40e7-8715-36833d1f1631
       distanceCheckObjectB: !<reference.SceneObject> 1011a6d6-1116-47e0-86dd-f393bdec50c3
       distanceCheckCompareType: -1
       distanceCheckDistance: !<float> 40.000000
@@ -9878,6 +9817,43 @@
     - !<own> 46b968de-7162-4573-9c57-d492a0dbcafb
   Components:
     []
+- !<ScriptComponent/46441419-edf9-4781-9ba9-db5efd462265>
+  PrefabRemaps:
+    []
+  Name: Headlock
+  Enabled: true
+  ScriptAsset: !<reference> 2a92f85a-a814-4f5d-bd73-4a2710147d01
+  ScriptInputsDefault:
+    _xzEnabled: true
+    _yEnabled: true
+    _translationBuffer: true
+    _lockedPitch: true
+    _pitchBufferDegrees: true
+    _lockedYaw: true
+    _yawEasing: true
+    _yawOffsetDegrees: true
+    _yawBufferDegrees: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _distance: !<float> 110.000000
+      _xzEnabled: true
+      _xzEasing: 0.150000
+      _yEnabled: true
+      _yEasing: 0.150000
+      _translationBuffer: !<float> 0.000000
+      _lockedPitch: true
+      _pitchEasing: 0.150000
+      _pitchOffsetDegrees: !<float> 16.000000
+      _pitchBufferDegrees: !<float> 0.000000
+      _lockedYaw: true
+      _yawEasing: !<float> 1.000000
+      _yawOffsetDegrees: !<float> 0.000000
+      _yawBufferDegrees: !<float> 0.000000
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/4652e00f-1183-4d65-9888-3d2cfe48a04f>
   PrefabRemaps:
     []
@@ -12216,6 +12192,7 @@
   Enabled: true
   ScriptAsset: !<reference> 34a3faa9-993f-4c28-aac7-012d229b442f
   ScriptInputsDefault:
+    {}
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -14025,6 +14002,28 @@
     - !<own> 8b2e6951-2af5-4b38-a5fb-3d16f96efed5
   Components:
     []
+- !<ScriptComponent/68eaa52b-730e-4dbc-9916-c2074117f1f6>
+  PrefabRemaps:
+    []
+  Name: Billboard
+  Enabled: true
+  ScriptAsset: !<reference> 74eafc23-e98b-4073-ab18-82ca532994e3
+  ScriptInputsDefault:
+    _yAxisEnabled: true
+    _axisBufferDegrees: true
+    _axisEasing: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _xAxisEnabled: true
+      _yAxisEnabled: true
+      _zAxisEnabled: true
+      _axisBufferDegrees: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      _axisEasing: !<Vec3> {x: 1.000000, y: 1.000000, z: 1.000000}
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/68ed9f88-44ec-44b4-966c-060750ac05c3>
   PrefabRemaps:
     []
@@ -17357,7 +17356,7 @@
       boundsCheckObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       boundsCheckBoundaryMeshVisual: !<reference.RenderMeshVisual> 00000000-0000-0000-0000-000000000000
       boundsCheckTriggerOptions: On Enter
-      distanceCheckObjectA: !<reference.SceneObject> 6fd89111-0527-489d-be0b-2243ba0b0a6a
+      distanceCheckObjectA: !<reference.SceneObject> 7cb8388b-5f82-43b7-8252-18c853e40b9f
       distanceCheckObjectB: !<reference.SceneObject> 1011a6d6-1116-47e0-86dd-f393bdec50c3
       distanceCheckCompareType: -1
       distanceCheckDistance: !<float> 40.000000
@@ -17988,7 +17987,7 @@
     TextureStretch: FitWidth
   BlendMode: PremultipliedAlpha
   Outline: !<OutlineSettings>
-    Enabled: true
+    Enabled: false
     Fill: !<TextFill>
       Mode: Solid
       Color: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
@@ -19526,7 +19525,7 @@
       boundsCheckObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       boundsCheckBoundaryMeshVisual: !<reference.RenderMeshVisual> 00000000-0000-0000-0000-000000000000
       boundsCheckTriggerOptions: On Enter
-      distanceCheckObjectA: !<reference.SceneObject> 6fd89111-0527-489d-be0b-2243ba0b0a6a
+      distanceCheckObjectA: !<reference.SceneObject> 7cb8388b-5f82-43b7-8252-18c853e40b9f
       distanceCheckObjectB: !<reference.SceneObject> 1011a6d6-1116-47e0-86dd-f393bdec50c3
       distanceCheckCompareType: -1
       distanceCheckDistance: !<float> 40.000000
@@ -22534,7 +22533,7 @@
       boundsCheckObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       boundsCheckBoundaryMeshVisual: !<reference.RenderMeshVisual> 00000000-0000-0000-0000-000000000000
       boundsCheckTriggerOptions: On Enter
-      distanceCheckObjectA: !<reference.SceneObject> 6cfc43b2-989e-438c-8bfe-a185651d8618
+      distanceCheckObjectA: !<reference.SceneObject> 1c5e01d0-a657-40e7-8715-36833d1f1631
       distanceCheckObjectB: !<reference.SceneObject> 1011a6d6-1116-47e0-86dd-f393bdec50c3
       distanceCheckCompareType: -1
       distanceCheckDistance: !<float> 40.000000
@@ -22970,7 +22969,7 @@
   PrefabRemaps:
     []
   Name: InteractableOutlineFeedback
-  Enabled: true
+  Enabled: false
   ScriptAsset: !<reference> 657cbbe5-2a9c-4889-93fb-fd72ba8a1d52
   ScriptInputsDefault:
     targetOutlineMaterial: true
@@ -22980,9 +22979,9 @@
   ScriptInputs:
     "":
       targetOutlineMaterial: !<reference.Material> 7ac80b6c-979a-4a00-a694-099f296be161
-      hoveringColor: !<Vec4> {x: 1.000000, y: 0.820000, z: 0.300000, w: 1.000000}
+      hoveringColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
       activatingColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
-      outlineWeight: -0.500000
+      outlineWeight: -0.120000
       meshVisuals: !<reference.RenderMeshVisual[]>
         - !<reference> dd90b9bb-37d5-4b0d-a5e8-8d550b07bad5
         - !<reference> 21317c05-c5a8-4089-845f-77b7f747e86d
@@ -28822,7 +28821,7 @@
   ScriptInputs:
     "":
       distanceText: !<reference.Text> ae48f5d5-e560-45dd-99a1-50862ef1f8e0
-      handObject: !<reference.SceneObject> 6cfc43b2-989e-438c-8bfe-a185651d8618
+      handObject: !<reference.SceneObject> 1c5e01d0-a657-40e7-8715-36833d1f1631
       targetObject: !<reference.SceneObject> 1011a6d6-1116-47e0-86dd-f393bdec50c3
   ScriptTypes:
     "":
@@ -29673,6 +29672,28 @@
     []
   Components:
     - !<own> 7cef710e-ed4b-461c-87fc-f80b105269cd
+- !<ScriptComponent/e0fc9366-8401-4ea4-a154-6cf4d55b6b96>
+  PrefabRemaps:
+    []
+  Name: InteractableColorFeedback
+  Enabled: false
+  ScriptAsset: !<reference> ad94751b-0846-4ee3-af41-7b0eb49b2e2c
+  ScriptInputsDefault:
+    pinchedColor: true
+    disabledColor: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      defaultColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      hoverColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      pinchedColor: !<Vec4> {x: 0.460000, y: 0.460000, z: 0.460000, w: 1.000000}
+      disabledColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.000000}
+      meshVisuals: !<reference.RenderMeshVisual[]>
+        - !<reference> 1d8e00d3-7a3a-4e2c-bc96-a52d81d58d58
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/e152669e-b630-4b67-95d7-0a7a524d2d09>
   PrefabRemaps:
     []
@@ -30093,7 +30114,7 @@
     TextureStretch: FitWidth
   BlendMode: PremultipliedAlpha
   Outline: !<OutlineSettings>
-    Enabled: true
+    Enabled: false
     Fill: !<TextFill>
       Mode: Solid
       Color: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
@@ -30332,7 +30353,6 @@
   Enabled: true
   ScriptAsset: !<reference> f9b29b39-ec8c-41bd-8b53-769ae9b818b8
   ScriptInputsDefault:
-    selectVisual: true
     handMeshPin: true
     autoJointMapping: true
     wrist: true
@@ -30367,8 +30387,8 @@
   ScriptInputs:
     "":
       handType: right
-      _meshType: IndexThumb
-      selectVisual: Default
+      _meshType: Full
+      selectVisual: AlwaysOn
       handInteractor: !<MappingBased.AssignableType> 6a4aedcf-e6e9-4b44-95a7-aab1c3d1cfd7
       root: !<reference.SceneObject> 6fd89111-0527-489d-be0b-2243ba0b0a6a
       handMeshFull: !<reference.RenderMeshVisual> 29e5ae87-175b-489f-bb90-ee4475bbb434
@@ -31579,6 +31599,7 @@
     - !<own> 4eaa6c7e-8a4f-4eb2-8408-331366b6a841
     - !<own> 0442a5b2-4944-4e58-90e2-2a96c24ff73f
     - !<own> 1f9efe00-50b8-402a-984c-dd6495ad4794
+    - !<own> e0fc9366-8401-4ea4-a154-6cf4d55b6b96
 - !<SceneObject/f4b727e2-25c3-4521-9443-e804d881e9a8>
   PrefabRemaps:
     []
@@ -31891,6 +31912,28 @@
     - !<own> dcefbd8c-838d-4fc5-a7ef-0742b0c5e2a4
   Components:
     []
+- !<ScriptComponent/f7e35f21-da10-40af-980e-b334489c203a>
+  PrefabRemaps:
+    []
+  Name: Billboard
+  Enabled: true
+  ScriptAsset: !<reference> 74eafc23-e98b-4073-ab18-82ca532994e3
+  ScriptInputsDefault:
+    _yAxisEnabled: true
+    _axisBufferDegrees: true
+    _axisEasing: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _xAxisEnabled: true
+      _yAxisEnabled: true
+      _zAxisEnabled: true
+      _axisBufferDegrees: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      _axisEasing: !<Vec3> {x: 1.000000, y: 1.000000, z: 1.000000}
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/f8125b7a-a9d0-4b49-9425-7fdf1a4559d0>
   PrefabRemaps:
     []

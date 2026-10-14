@@ -1,0 +1,48 @@
+- !<AssetImportMetadata/5cb95ebb-e431-c92d-35dc-7e736591d30c>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 49a55dc2-b05f-4b31-9745-9c454c5a94b4
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 49a55dc2-b05f-4b31-9745-9c454c5a94b4
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 7b23ce52-cd89-4ec8-a3c0-9bb67828c57e
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/7b23ce52-cd89-4ec8-a3c0-9bb67828c57e>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: b62f059f-9195-488b-9dee-6b49f26c94b4
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _fallbackStrategy: false
+    framedLayoutItems: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - framedLayoutItems: !<MappingBased.AssignableType_1[]>
+        []
+      _fallbackStrategy: ""
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - "// @input AssignableType_1[] framedLayoutItems = {}"
+    - '// @input string _fallbackStrategy {"widget":"combobox", "values":[{"label":"Closest Available", "value":"closestAvailable"}, {"label":"Push", "value":"push"}]}'

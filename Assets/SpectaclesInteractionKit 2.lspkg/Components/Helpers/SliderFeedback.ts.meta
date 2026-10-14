@@ -1,0 +1,47 @@
+- !<AssetImportMetadata/922e1544-1b37-4831-3e00-c36ceb7d5b21>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> dcd9e659-391b-404a-84e2-dd6717826db8
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> dcd9e659-391b-404a-84e2-dd6717826db8
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> b5e40855-a286-41c5-bdc9-d6218dabba90
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/b5e40855-a286-41c5-bdc9-d6218dabba90>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: fb9ba258-d543-4a7b-b4e5-93925daca952
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    knobObject: false
+    renderMeshVisual: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - renderMeshVisual: !<reference.RenderMeshVisual> 00000000-0000-0000-0000-000000000000
+      knobObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - "// @input Component.RenderMeshVisual renderMeshVisual {\"hint\":\"The RenderMeshVisual component of the slider track that visualizes the slider's value. This mesh will have its material's level property updated to reflect the current slider position, and its pinch property modified during interaction events to provide additional visual feedback.\"}"
+    - "// @input SceneObject knobObject {\"hint\":\"Reference to the SceneObject containing the slider's interactive knob. This object must have an Interactable component attached to allow user interaction.\"}"

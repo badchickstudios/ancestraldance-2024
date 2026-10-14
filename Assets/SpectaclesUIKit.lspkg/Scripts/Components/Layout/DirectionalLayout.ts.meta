@@ -1,0 +1,166 @@
+- !<AssetImportMetadata/3afff1e7-f6cc-2441-cb31-3ce836844755>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 84e86e5d-36da-4dd9-9ce5-698f658ce6ac
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 84e86e5d-36da-4dd9-9ce5-698f658ce6ac
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> df86cfe3-868b-46c4-8fc6-a3420fc882f3
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/df86cfe3-868b-46c4-8fc6-a3420fc882f3>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 4966c2a6-9b48-4c34-ac44-73559878f3d8
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _anchorX: false
+    _anchorY: false
+    _anchorZ: false
+    _childAlignmentX: false
+    _childAlignmentY: false
+    _childAlignmentZ: false
+    _childDepth: false
+    _childHeight: false
+    _childWidth: false
+    _normalizedChildSize: false
+    _paddingBack: false
+    _paddingBottom: false
+    _paddingFront: false
+    _paddingLeft: false
+    _paddingRight: false
+    _paddingTop: false
+    _primaryDirection: false
+    _primarySize: false
+    _primarySizeFixed: false
+    _primarySpacing: false
+    _reverse: false
+    _secondaryDirection: false
+    _secondaryFixedSize: false
+    _secondarySize: false
+    _secondarySpacing: false
+    _spacingDistributionX: false
+    _spacingDistributionY: false
+    _spacingDistributionZ: false
+    _stretchModeX: false
+    _stretchModeY: false
+    _stretchModeZ: false
+    _tertiaryDirection: false
+    _tertiaryFixedSize: false
+    _tertiarySize: false
+    _tertiarySpacing: false
+    _wrapToSecondaryAxis: false
+    _wrapToTertiaryAxis: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - _primaryDirection: x
+      _primarySizeFixed: false
+      _primarySize: !<float> 8.000000
+      _primarySpacing: !<float> 0.000000
+      _wrapToSecondaryAxis: false
+      _secondaryDirection: "-y"
+      _secondaryFixedSize: false
+      _secondarySize: !<float> 8.000000
+      _secondarySpacing: !<float> 1.000000
+      _wrapToTertiaryAxis: false
+      _tertiaryDirection: "-z"
+      _tertiaryFixedSize: false
+      _tertiarySize: !<float> 8.000000
+      _tertiarySpacing: !<float> 1.000000
+      _paddingLeft: !<float> 0.000000
+      _paddingRight: !<float> 0.000000
+      _paddingBottom: !<float> 0.000000
+      _paddingTop: !<float> 0.000000
+      _paddingBack: !<float> 0.000000
+      _paddingFront: !<float> 0.000000
+      _anchorX: center
+      _anchorY: center
+      _anchorZ: center
+      _childAlignmentX: ""
+      _childAlignmentY: ""
+      _childAlignmentZ: ""
+      _stretchModeX: content
+      _stretchModeY: content
+      _stretchModeZ: content
+      _spacingDistributionX: spaceBetween
+      _spacingDistributionY: spaceBetween
+      _spacingDistributionZ: spaceBetween
+      _reverse: false
+      _normalizedChildSize: false
+      _childWidth: !<float> 3.000000
+      _childHeight: !<float> 3.000000
+      _childDepth: !<float> 3.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"group_start", "label":"Primary Axis"}'
+    - '// @input string _primaryDirection {"label":"Direction", "widget":"combobox", "values":[{"label":"Horizontal", "value":"x"}, {"label":"Vertical", "value":"y"}, {"label":"Depth", "value":"z"}]}'
+    - '// @input bool _primarySizeFixed {"label":"Fixed Size"}'
+    - '// @input float _primarySize = 3 {"label":"Size", "showIf":"_primarySizeFixed", "showIfValue":true}'
+    - '// @input float _primarySpacing {"label":"Spacing"}'
+    - '// @input bool _wrapToSecondaryAxis {"showIf":"_primarySizeFixed", "showIfValue":true}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Secondary Axis"}'
+    - '// @input string _secondaryDirection {"label":"Secondary Direction (Must be perpendicular to the primary direction)", "widget":"combobox", "values":[{"label":"Left", "value":"-x"}, {"label":"Right", "value":"+x"}, {"label":"Down", "value":"-y"}, {"label":"Up", "value":"+y"}, {"label":"Back", "value":"-z"}, {"label":"Front", "value":"+z"}], "showIf":"_wrapToSecondaryAxis"}'
+    - '// @input bool _secondaryFixedSize {"showIf":"_wrapToSecondaryAxis", "showIfValue":true}'
+    - '// @input float _secondarySize = 3 {"showIf":"_secondaryFixedSize", "showIfValue":true}'
+    - '// @input float _secondarySpacing = 1 {"showIf":"_wrapToSecondaryAxis"}'
+    - '// @input bool _wrapToTertiaryAxis {"showIf":"_secondaryFixedSize", "showIfValue":true}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Tertiary Axis"}'
+    - '// @input string _tertiaryDirection {"label":"Tertiary Direction (Must be perpendicular to both the primary and secondary directions)", "widget":"combobox", "values":[{"label":"Left", "value":"-x"}, {"label":"Right", "value":"+x"}, {"label":"Down", "value":"-y"}, {"label":"Up", "value":"+y"}, {"label":"Back", "value":"-z"}, {"label":"Front", "value":"+z"}], "showIf":"_wrapToTertiaryAxis"}'
+    - '// @input bool _tertiaryFixedSize {"showIf":"_wrapToTertiaryAxis", "showIfValue":true}'
+    - '// @input float _tertiarySize = 3 {"showIf":"_tertiaryFixedSize", "showIfValue":true}'
+    - '// @input float _tertiarySpacing = 1 {"showIf":"_wrapToTertiaryAxis"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Padding"}'
+    - '// @input float _paddingLeft {"label":"Left", "showIf":"_primaryDirection", "showIfValue":"x"}'
+    - '// @input float _paddingRight {"label":"Right", "showIf":"_primaryDirection", "showIfValue":"x"}'
+    - '// @input float _paddingBottom {"label":"Bottom", "showIf":"_primaryDirection", "showIfValue":"y"}'
+    - '// @input float _paddingTop {"label":"Top", "showIf":"_primaryDirection", "showIfValue":"y"}'
+    - '// @input float _paddingBack {"label":"Back", "showIf":"_primaryDirection", "showIfValue":"z"}'
+    - '// @input float _paddingFront {"label":"Front", "showIf":"_primaryDirection", "showIfValue":"z"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"hint":"Anchor only applicable when primary size is fixed", "widget":"group_start", "label":"Anchor"}'
+    - '// @input string _anchorX {"widget":"combobox", "values":[{"label":"Left", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"Right", "value":"end"}], "showIf":"_primaryDirection", "showIfValue":"x"}'
+    - '// @input string _anchorY {"widget":"combobox", "values":[{"label":"Bottom", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"Top", "value":"end"}], "showIf":"_primaryDirection", "showIfValue":"y"}'
+    - '// @input string _anchorZ {"widget":"combobox", "values":[{"label":"Back", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"Front", "value":"end"}], "showIf":"_primaryDirection", "showIfValue":"z"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Child Alignment"}'
+    - '// @input string _childAlignmentX {"hint":"Horizontal alignment of children (X-axis).", "widget":"combobox", "values":[{"label":"Left", "value":"-"}, {"label":"Center", "value":""}, {"label":"Right", "value":"+"}, {"label":"Stretch", "value":"*"}], "showIf":"_primaryDirection", "showIfValue":"x"}'
+    - '// @input string _childAlignmentY {"hint":"Vertical alignment of children (Y-axis).", "widget":"combobox", "values":[{"label":"Bottom", "value":"-"}, {"label":"Center", "value":""}, {"label":"Top", "value":"+"}, {"label":"Stretch", "value":"*"}], "showIf":"_primaryDirection", "showIfValue":"y"}'
+    - '// @input string _childAlignmentZ {"hint":"Depth alignment of children (Z-axis).", "widget":"combobox", "values":[{"label":"Back", "value":"-"}, {"label":"Center", "value":""}, {"label":"Front", "value":"+"}, {"label":"Stretch", "value":"*"}], "showIf":"_primaryDirection", "showIfValue":"z"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @input string _stretchModeX {"hint":"Stretch mode: Content stretches children to fill, Spacing distributes extra space between children.", "widget":"combobox", "values":[{"label":"Content", "value":"content"}, {"label":"Spacing", "value":"spacing"}], "showIf":"_childAlignmentX", "showIfValue":"*"}'
+    - '// @input string _stretchModeY {"hint":"Stretch mode: Content stretches children to fill, Spacing distributes extra space between children.", "widget":"combobox", "values":[{"label":"Content", "value":"content"}, {"label":"Spacing", "value":"spacing"}], "showIf":"_childAlignmentY", "showIfValue":"*"}'
+    - '// @input string _stretchModeZ {"hint":"Stretch mode: Content stretches children to fill, Spacing distributes extra space between children.", "widget":"combobox", "values":[{"label":"Content", "value":"content"}, {"label":"Spacing", "value":"spacing"}], "showIf":"_childAlignmentZ", "showIfValue":"*"}'
+    - '// @input string _spacingDistributionX {"hint":"How to distribute extra space when using Stretch Spacing mode (X-axis).", "widget":"combobox", "values":[{"label":"Space Between", "value":"spaceBetween"}, {"label":"Space Evenly", "value":"spaceEvenly"}, {"label":"Space Around", "value":"spaceAround"}], "showIf":"_stretchModeX", "showIfValue":"spacing"}'
+    - '// @input string _spacingDistributionY {"hint":"How to distribute extra space when using Stretch Spacing mode (Y-axis).", "widget":"combobox", "values":[{"label":"Space Between", "value":"spaceBetween"}, {"label":"Space Evenly", "value":"spaceEvenly"}, {"label":"Space Around", "value":"spaceAround"}], "showIf":"_stretchModeY", "showIfValue":"spacing"}'
+    - '// @input string _spacingDistributionZ {"hint":"How to distribute extra space when using Stretch Spacing mode (Z-axis).", "widget":"combobox", "values":[{"label":"Space Between", "value":"spaceBetween"}, {"label":"Space Evenly", "value":"spaceEvenly"}, {"label":"Space Around", "value":"spaceAround"}], "showIf":"_stretchModeZ", "showIfValue":"spacing"}'
+    - '// @input bool _reverse {"label":"Reverse Children Items Order"}'
+    - '// @ui {"widget":"group_start", "label":"Child Size"}'
+    - '// @input bool _normalizedChildSize {"hint":"When enabled, child sizes are interpreted as fractions (0-1) of the layout size. Requires Fixed Width, Fixed Height, and Fixed Depth to all be enabled."}'
+    - '// @input float _childWidth = 1 {"label":"Width"}'
+    - '// @input float _childHeight = 1 {"label":"Height"}'
+    - '// @input float _childDepth = 1 {"label":"Depth"}'
+    - '// @ui {"widget":"group_end"}'

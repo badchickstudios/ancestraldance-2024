@@ -1,0 +1,171 @@
+- !<AssetImportMetadata/6c809efb-7f83-ab0d-4d85-3fab54f8642e>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> d8dd1433-5f11-4f5c-9588-618a668518b7
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> d8dd1433-5f11-4f5c-9588-618a668518b7
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    ObjectPrefab: !<own> 7433f9b9-2125-4f5d-a986-ef2efcb55389
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<SceneObject/13ef266c-3f37-4234-5ac9-39c18a89d3ce>
+  PrefabRemaps:
+    []
+  Name: LayoutExample
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 66c3a348-cfa6-4fcb-b56f-41afc9995af4
+    - !<own> f02da9bd-5037-480d-ae28-4661646dc211
+  Components:
+    []
+- !<ScriptComponent/261eb416-16ce-4302-bb89-44e077b8461e>
+  PrefabRemaps:
+    []
+  Name: GridLayout
+  Enabled: true
+  ScriptAsset: !<reference> e0925479-bf87-4d01-bec9-174dff93aae6
+  ScriptInputsDefault:
+    _fixedLayers: true
+    _anchorX: true
+    _anchorY: true
+    _anchorZ: true
+    _cellWidth: true
+    _cellHeight: true
+    _cellDepth: true
+    _spacingX: true
+    _spacingY: true
+    _spacingZ: true
+    _paddingLeft: true
+    _paddingRight: true
+    _paddingBottom: true
+    _paddingTop: true
+    _paddingBack: true
+    _paddingFront: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _fixedColumns: false
+      _maxColumns: 20
+      _fixedRows: false
+      _maxRows: 20
+      _fixedLayers: true
+      _maxLayers: 2
+      _anchorX: center
+      _anchorY: center
+      _anchorZ: center
+      _cellWidth: !<float> 1.000000
+      _cellHeight: !<float> 1.000000
+      _cellDepth: !<float> 1.000000
+      _spacingX: !<float> 0.000000
+      _spacingY: !<float> 0.000000
+      _spacingZ: !<float> 0.000000
+      _paddingLeft: !<float> 0.000000
+      _paddingRight: !<float> 0.000000
+      _paddingBottom: !<float> 0.000000
+      _paddingTop: !<float> 0.000000
+      _paddingBack: !<float> 0.000000
+      _paddingFront: !<float> 0.000000
+  ScriptTypes:
+    "":
+      {}
+- !<ScriptComponent/4bd26f75-601f-4f96-9153-55ab452f9b8e>
+  PrefabRemaps:
+    []
+  Name: SimpleGridLayoutTest
+  Enabled: true
+  ScriptAsset: !<reference> 0396dae0-e156-4a7f-9828-0a99bea6233d
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      GridLayout: !<MappingBased.AssignableType_1> 261eb416-16ce-4302-bb89-44e077b8461e
+      layoutItemPrefab: !<reference.ObjectPrefab> d383c86a-e5c2-4652-850f-66d4d45f577f
+      _fallbackStrategy: push
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/53cec73f-b097-4853-9fed-a86587e974bf>
+  PrefabRemaps:
+    []
+  Name: GridLayout
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: -100.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 261eb416-16ce-4302-bb89-44e077b8461e
+- !<ScriptComponent/63dac317-5ee2-4a86-bcb7-c3870418c01f>
+  PrefabRemaps:
+    []
+  Name: SimpleDirectionalLayoutTest
+  Enabled: true
+  ScriptAsset: !<reference> edf410e5-07e4-4945-ab37-06de98080b22
+  ScriptInputsDefault:
+    layout: true
+    spawnInterval: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      layout: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      itemPrefab: !<reference.ObjectPrefab> d383c86a-e5c2-4652-850f-66d4d45f577f
+      numItems: !<float> 42.000000
+      spawnInterval: 0.500000
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/66c3a348-cfa6-4fcb-b56f-41afc9995af4>
+  PrefabRemaps:
+    []
+  Name: FlexLayoutWrapDynamicallySpawnedContent
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: -100.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 63dac317-5ee2-4a86-bcb7-c3870418c01f
+- !<ObjectPrefabAssetData/7433f9b9-2125-4f5d-a986-ef2efcb55389>
+  Prototype: !<ObjectOwner/64ff625d-3286-464e-ad11-08a64ef5b00d>
+    PackagePath: ""
+    objects:
+      - !<own> 13ef266c-3f37-4234-5ac9-39c18a89d3ce
+- !<SceneObject/f02da9bd-5037-480d-ae28-4661646dc211>
+  PrefabRemaps:
+    []
+  Name: SimpleGridLayoutTest
+  Enabled: false
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 53cec73f-b097-4853-9fed-a86587e974bf
+  Components:
+    - !<own> 4bd26f75-601f-4f96-9153-55ab452f9b8e

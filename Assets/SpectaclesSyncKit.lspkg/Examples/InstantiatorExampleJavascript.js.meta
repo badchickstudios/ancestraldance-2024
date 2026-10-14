@@ -1,0 +1,43 @@
+- !<AssetImportMetadata/909a57a7-3aa7-7cbc-fd47-3e0959fa2401>
+  ImportedAssetIds:
+    JavaScriptAsset: !<reference> 1b4271ab-6c16-4e5c-9b84-c17d905258d4
+  ImporterName: JavaScriptAssetImporter
+  PrimaryAsset: !<reference> 1b4271ab-6c16-4e5c-9b84-c17d905258d4
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    JavaScriptAsset: !<own> 27d7a0df-4e91-40f8-ba00-32b5e41f6ebe
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ScriptAssetData/27d7a0df-4e91-40f8-ba00-32b5e41f6ebe>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 0dfd3ada-0ac3-4793-954e-d9c5d74db4fc
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    instantiator: false
+    prefab: false
+  ScriptTypesHidden:
+    Instantiator: false
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - instantiator: !<Typename.Instantiator> 00000000-0000-0000-0000-000000000000
+      prefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    - Instantiator: !<reference.ScriptAsset> 00000000-0000-0000-0000-000000000000

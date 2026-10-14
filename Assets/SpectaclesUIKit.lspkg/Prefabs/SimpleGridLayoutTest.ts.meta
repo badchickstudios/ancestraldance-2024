@@ -1,0 +1,50 @@
+- !<AssetImportMetadata/de891c2a-4fb0-8b0b-2fd4-2847546e9dc1>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 0396dae0-e156-4a7f-9828-0a99bea6233d
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 0396dae0-e156-4a7f-9828-0a99bea6233d
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 5579f877-b6b0-4caa-9439-c137a17ac990
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/5579f877-b6b0-4caa-9439-c137a17ac990>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 10597d3e-c4f4-44e3-9eea-10de767e2513
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    GridLayout: false
+    _fallbackStrategy: false
+    layoutItemPrefab: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - GridLayout: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      layoutItemPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      _fallbackStrategy: closestAvailable
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input AssignableType_1 GridLayout
+    - // @input Asset.ObjectPrefab layoutItemPrefab
+    - '// @input string _fallbackStrategy {"widget":"combobox", "values":[{"label":"Closest Available", "value":"closestAvailable"}, {"label":"Push", "value":"push"}]}'

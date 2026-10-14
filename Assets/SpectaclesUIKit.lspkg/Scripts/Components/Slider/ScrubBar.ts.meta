@@ -1,0 +1,89 @@
+- !<AssetImportMetadata/016fa7bb-c16a-6e45-2ea7-f572fb96e3fe>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> d4b1c0d9-0605-4452-9763-5a86fdd1d1df
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> d4b1c0d9-0605-4452-9763-5a86fdd1d1df
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 5ee0eeda-702d-4cf1-a1fd-815bc20def47
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/5ee0eeda-702d-4cf1-a1fd-815bc20def47>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 92f3239d-a061-4bef-9bd5-9e760e3bfbd1
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _defaultValue: false
+    _hasShadow: false
+    _inactive: false
+    _knobSize: false
+    _numberOfSegments: false
+    _playAudio: false
+    _renderOrder: false
+    _segmented: false
+    _shadowPositionOffset: false
+    _size: false
+    _themeOverride: false
+    addCallbacks: false
+    customKnobSize: false
+    onValueChangeCallbacks: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - _renderOrder: 0
+      _size: !<Vec3> {x: 6.000000, y: 3.000000, z: 3.000000}
+      _inactive: false
+      _playAudio: false
+      _hasShadow: false
+      _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      _themeOverride: Inherited
+      _defaultValue: !<float> 0.000000
+      _segmented: false
+      _numberOfSegments: !<float> 5.000000
+      customKnobSize: false
+      _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
+      addCallbacks: false
+      onValueChangeCallbacks:
+        []
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input int _renderOrder
+    - '// @input vec3 _size = {6,3,3} {"hint":"Size of the element in centimeters"}'
+    - '// @input bool _inactive {"hint":"Inactive Mode: set the element to ignore inputs"}'
+    - '// @input bool _playAudio {"label":"Play Audio", "hint":"Play audio on interaction"}'
+    - // @input bool _hasShadow
+    - '// @input vec3 _shadowPositionOffset = "{0.05,-0.05,-0.01}" {"showIf":"_hasShadow"}'
+    - '// @input string _themeOverride = "Inherited" {"label":"Theme", "widget":"combobox", "values":[{"label":"Inherited", "value":"Inherited"}, {"label":"SnapOS2", "value":"SnapOS2"}, {"label":"SnapOS3", "value":"SnapOS3"}]}'
+    - '// @input float _defaultValue {"hint":"The default value of the slider, should be between 0 and 1", "widget":"slider", "min":0, "max":1, "step":0.01}'
+    - '// @input bool _segmented {"hint":"Enable this to make the slider segmented, with a fixed number of segments"}'
+    - '// @input float _numberOfSegments = 5 {"hint":"The number of segments for the segmented slider, must be at least 2", "showIf":"_segmented"}'
+    - '// @input bool customKnobSize {"hint":"Enable this to customize the knob size"}'
+    - '// @input vec2 _knobSize = {3,3} {"showIf":"customKnobSize"}'
+    - "// @input bool addCallbacks {\"hint\":\"Enable this to add functions from another script to this component's callbacks\"}"
+    - /*
+    - "@typedef Callback"
+    - "@property {Component.ScriptComponent} scriptComponent"
+    - "@property {string} functionName"
+    - "*/"
+    - '// @input Callback[] onValueChangeCallbacks = {} {"label":"On Value Changed Callbacks", "showIf":"addCallbacks"}'

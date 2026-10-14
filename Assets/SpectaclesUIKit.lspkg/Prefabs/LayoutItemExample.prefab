@@ -1,0 +1,76 @@
+- !<ObjectPrefab/d383c86a-e5c2-4652-850f-66d4d45f577f>
+  PackagePath: ""
+  objects:
+    - !<own> 2b32c4dc-f0ee-4a67-a0e0-a647618c415d
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/2b32c4dc-f0ee-4a67-a0e0-a647618c415d>
+  PrefabRemaps:
+    - 2b32c4dc-f0ee-4a67-a0e0-a647618c415d: 2b32c4dc-f0ee-4a67-5f1f-59b89e73bea2
+    - 961ababc-c8a6-470a-bb8f-e44ac15ac5f1: 961ababc-c8a6-470a-4470-1bb53ea53a0e
+    - f513aabd-7901-4502-a9b9-748094085a86: f513aabd-7901-4502-5646-8b7f6bf7a579
+  Name: LayoutItemExample
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> f513aabd-7901-4502-a9b9-748094085a86
+    - !<own> 961ababc-c8a6-470a-bb8f-e44ac15ac5f1
+- !<RenderMeshVisual/961ababc-c8a6-470a-bb8f-e44ac15ac5f1>
+  PrefabRemaps:
+    []
+  Name: Render Mesh Visual
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 39262017-06a1-45ee-9bb2-80f463734688
+  Mesh: !<reference> e542623c-1432-4bfa-881d-a28905bd9e57
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<ScriptComponent/f513aabd-7901-4502-a9b9-748094085a86>
+  PrefabRemaps:
+    []
+  Name: LayoutItem
+  Enabled: true
+  ScriptAsset: !<reference> bea83993-3e75-4af5-ba83-88d1bc5eb366
+  ScriptInputsDefault:
+    widthInput: true
+    heightInput: true
+    depthInput: true
+    _alignmentX: true
+    _alignmentY: true
+    _alignmentZ: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      widthInput:
+        sizeDriver: layoutAndLayoutItem
+        size: !<float> 2.000000
+      heightInput:
+        sizeDriver: layoutAndLayoutItem
+        size: !<float> 2.000000
+      depthInput:
+        sizeDriver: layoutAndLayoutItem
+        size: !<float> 2.000000
+      _alignmentX: ""
+      _alignmentY: ""
+      _alignmentZ: ""
+  ScriptTypes:
+    "":
+      {}

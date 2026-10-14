@@ -1,0 +1,53 @@
+- !<AssetImportMetadata/603aec33-f142-c5b5-02e0-3be8a467d622>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> edf410e5-07e4-4945-ab37-06de98080b22
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> edf410e5-07e4-4945-ab37-06de98080b22
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> dbc2c721-37fb-42eb-aa82-449d75729115
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/dbc2c721-37fb-42eb-aa82-449d75729115>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 41e72c21-fd85-433b-b02d-56b1674d52eb
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    itemPrefab: false
+    layout: false
+    numItems: false
+    spawnInterval: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - layout: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      itemPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      numItems: !<float> 3.000000
+      spawnInterval: 0.500000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input AssignableType_1 layout
+    - // @input Asset.ObjectPrefab itemPrefab
+    - // @input float numItems = 3
+    - // @input float spawnInterval = 0.5

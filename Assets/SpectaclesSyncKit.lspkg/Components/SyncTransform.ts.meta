@@ -1,0 +1,71 @@
+- !<AssetImportMetadata/c9738ede-602c-3c26-965c-1034949df42b>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> e00807ca-e390-403b-88e4-4a7e3ec6e3b0
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> e00807ca-e390-403b-88e4-4a7e3ec6e3b0
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 1f47ff9f-607a-4ff8-9213-2dcae20a6b1f
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/1f47ff9f-607a-4ff8-9213-2dcae20a6b1f>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: a0fb5d40-a41b-47ec-925d-46a7ad7e0b19
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    customNetworkId: false
+    interpolationTarget: false
+    networkIdTypeString: false
+    persistenceString: false
+    positionSyncString: false
+    rotationSyncString: false
+    scaleSyncString: false
+    sendsPerSecondLimit: false
+    useSmoothing: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - networkIdTypeString: objectId
+      customNetworkId: enter_unique_id
+      positionSyncString: Local
+      rotationSyncString: Local
+      scaleSyncString: Local
+      persistenceString: Session
+      sendsPerSecondLimit: 10
+      useSmoothing: true
+      interpolationTarget: -0.250000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input string networkIdTypeString = "objectId" {"label":"Network Id Type", "widget":"combobox", "values":[{"label":"Object Id", "value":"objectId"}, {"label":"Custom", "value":"custom"}]}'
+    - '// @input string customNetworkId = "enter_unique_id" {"showIf":"networkIdTypeString", "showIfValue":"custom"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"Sync Settings"}'
+    - '// @input string positionSyncString = "Location" {"label":"Position Sync", "widget":"combobox", "values":[{"label":"None", "value":"None"}, {"label":"Location", "value":"Location"}, {"label":"Local", "value":"Local"}, {"label":"World", "value":"World"}]}'
+    - '// @input string rotationSyncString = "Location" {"label":"Rotation Sync", "widget":"combobox", "values":[{"label":"None", "value":"None"}, {"label":"Location", "value":"Location"}, {"label":"Local", "value":"Local"}, {"label":"World", "value":"World"}]}'
+    - '// @input string scaleSyncString = "Location" {"label":"Scale Sync", "widget":"combobox", "values":[{"label":"None", "value":"None"}, {"label":"Location", "value":"Location"}, {"label":"Local", "value":"Local"}, {"label":"World", "value":"World"}]}'
+    - '// @ui {"widget":"separator"}'
+    - '// @input string persistenceString = "Session" {"label":"Persistence", "widget":"combobox", "values":[{"label":"Ephemeral", "value":"Ephemeral"}, {"label":"Owner", "value":"Owner"}, {"label":"Session", "value":"Session"}, {"label":"Persist", "value":"Persist"}]}'
+    - '// @input int sendsPerSecondLimit = "10"'
+    - '// @input boolean useSmoothing = "false"'
+    - '// @input float interpolationTarget = "-0.25" {"showIf":"useSmoothing", "showIfValue":true}'

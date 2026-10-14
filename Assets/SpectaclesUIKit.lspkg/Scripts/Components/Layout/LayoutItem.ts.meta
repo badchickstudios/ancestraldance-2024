@@ -1,0 +1,72 @@
+- !<AssetImportMetadata/d5a7e0c5-29c2-cd2d-309f-1b79975eeab8>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> bea83993-3e75-4af5-ba83-88d1bc5eb366
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> bea83993-3e75-4af5-ba83-88d1bc5eb366
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> e1f61df8-2b80-4f0a-9712-80ab3c448477
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/e1f61df8-2b80-4f0a-9712-80ab3c448477>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 235895b1-6be0-4041-b678-06ea93d39f5c
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _alignmentX: false
+    _alignmentY: false
+    _alignmentZ: false
+    depthInput: false
+    heightInput: false
+    widthInput: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - widthInput:
+        sizeDriver: layoutAndLayoutItem
+        size: !<float> 2.000000
+      heightInput:
+        sizeDriver: layoutAndLayoutItem
+        size: !<float> 2.000000
+      depthInput:
+        sizeDriver: layoutAndLayoutItem
+        size: !<float> 2.000000
+      _alignmentX: ""
+      _alignmentY: ""
+      _alignmentZ: ""
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - /*
+    - "@typedef SizeDriverInput"
+    - '@property {string} sizeDriver {"widget":"combobox", "values":[{"label":"Component", "value":"component"}, {"label":"LayoutItem", "value":"layoutItem"}, {"label":"Layout (Fallback to LayoutItem)", "value":"layoutAndLayoutItem"}]}'
+    - "@property {float} size = 2"
+    - "*/"
+    - '// @input SizeDriverInput widthInput {"label":"Width"}'
+    - '// @input SizeDriverInput heightInput {"label":"Height"}'
+    - '// @input SizeDriverInput depthInput {"label":"Depth"}'
+    - '// @ui {"widget":"group_start", "label":"Alignment (within grid cells)"}'
+    - '// @input string _alignmentX {"hint":"Horizontal alignment of the item within grid cells.", "widget":"combobox", "values":[{"label":"Left", "value":"-"}, {"label":"Center", "value":""}, {"label":"Right", "value":"+"}]}'
+    - '// @input string _alignmentY {"hint":"Vertical alignment of the item within grid cells.", "widget":"combobox", "values":[{"label":"Bottom", "value":"-"}, {"label":"Center", "value":""}, {"label":"Top", "value":"+"}]}'
+    - '// @input string _alignmentZ {"hint":"Depth alignment of the item within grid cells.", "widget":"combobox", "values":[{"label":"Back", "value":"-"}, {"label":"Center", "value":""}, {"label":"Front", "value":"+"}]}'
+    - '// @ui {"widget":"group_end"}'

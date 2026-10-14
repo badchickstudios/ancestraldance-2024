@@ -1,0 +1,114 @@
+- !<AssetImportMetadata/56348b7c-cc55-a87a-1791-59ee7f691f8c>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> e0925479-bf87-4d01-bec9-174dff93aae6
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> e0925479-bf87-4d01-bec9-174dff93aae6
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 60b75ee5-b91b-45bc-8ca7-6f28b1975525
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/60b75ee5-b91b-45bc-8ca7-6f28b1975525>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: f8ca195b-8d90-463f-a616-fc302af364a8
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _anchorX: false
+    _anchorY: false
+    _anchorZ: false
+    _cellDepth: false
+    _cellHeight: false
+    _cellWidth: false
+    _fixedColumns: false
+    _fixedLayers: false
+    _fixedRows: false
+    _maxColumns: false
+    _maxLayers: false
+    _maxRows: false
+    _paddingBack: false
+    _paddingBottom: false
+    _paddingFront: false
+    _paddingLeft: false
+    _paddingRight: false
+    _paddingTop: false
+    _spacingX: false
+    _spacingY: false
+    _spacingZ: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - _fixedColumns: true
+      _maxColumns: 3
+      _fixedRows: true
+      _maxRows: 3
+      _fixedLayers: true
+      _maxLayers: 3
+      _anchorX: center
+      _anchorY: center
+      _anchorZ: center
+      _cellWidth: !<float> 1.000000
+      _cellHeight: !<float> 1.000000
+      _cellDepth: !<float> 1.000000
+      _spacingX: !<float> 0.000000
+      _spacingY: !<float> 0.000000
+      _spacingZ: !<float> 0.000000
+      _paddingLeft: !<float> 0.000000
+      _paddingRight: !<float> 0.000000
+      _paddingBottom: !<float> 0.000000
+      _paddingTop: !<float> 0.000000
+      _paddingBack: !<float> 0.000000
+      _paddingFront: !<float> 0.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"group_start", "label":"Placement Constraints"}'
+    - '// @input bool _fixedColumns = true {"hint":"Whether the number of columns is fixed."}'
+    - '// @input int _maxColumns = 3 {"label":"Max Columns", "hint":"Maximum columns in the grid.", "showIf":"_fixedColumns", "showIfValue":true}'
+    - '// @input bool _fixedRows = true {"hint":"Whether the number of rows is fixed."}'
+    - '// @input int _maxRows = 3 {"label":"Max Rows", "hint":"Maximum rows in the grid.", "showIf":"_fixedRows", "showIfValue":true}'
+    - '// @input bool _fixedLayers = true {"hint":"Whether the number of layers (depth) is fixed."}'
+    - '// @input int _maxLayers = 3 {"label":"Max Layers", "hint":"Maximum layers in the grid.", "showIf":"_fixedLayers", "showIfValue":true}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Anchors"}'
+    - '// @input string _anchorX {"hint":"Anchor position for columns along the X-axis.", "widget":"combobox", "values":[{"label":"Left", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"Right", "value":"end"}], "showIf":"_fixedColumns", "showIfValue":true}'
+    - '// @input string _anchorY {"hint":"Anchor position for rows along the Y-axis.", "widget":"combobox", "values":[{"label":"Bottom", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"Top", "value":"end"}], "showIf":"_fixedRows", "showIfValue":true}'
+    - '// @input string _anchorZ {"hint":"Anchor position for layers along the Z-axis.", "widget":"combobox", "values":[{"label":"Back", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"Front", "value":"end"}], "showIf":"_fixedLayers", "showIfValue":true}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Cell Size"}'
+    - '// @input float _cellWidth = 1 {"label":"Width", "hint":"Width of each cell (X dimension) in centimeters."}'
+    - '// @input float _cellHeight = 1 {"label":"Height", "hint":"Height of each cell (Y dimension) in centimeters."}'
+    - '// @input float _cellDepth = 1 {"label":"Depth", "hint":"Depth of each cell (Z dimension) in centimeters."}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Spacing"}'
+    - '// @input float _spacingX {"label":"X (Columns)", "hint":"Spacing between columns (X-axis)."}'
+    - '// @input float _spacingY {"label":"Y (Rows)", "hint":"Spacing between rows (Y-axis)."}'
+    - '// @input float _spacingZ {"label":"Z (Layers)", "hint":"Spacing between layers (Z-axis)."}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Padding"}'
+    - '// @input float _paddingLeft {"label":"Left", "hint":"Padding on the left side (X-axis start)."}'
+    - '// @input float _paddingRight {"label":"Right", "hint":"Padding on the right side (X-axis end)."}'
+    - '// @input float _paddingBottom {"label":"Bottom", "hint":"Padding on the bottom side (Y-axis start)."}'
+    - '// @input float _paddingTop {"label":"Top", "hint":"Padding on the top side (Y-axis end)."}'
+    - '// @input float _paddingBack {"label":"Back", "hint":"Padding on the back side (Z-axis start)."}'
+    - '// @input float _paddingFront {"label":"Front", "hint":"Padding on the front side (Z-axis end)."}'
+    - '// @ui {"widget":"group_end"}'

@@ -1,0 +1,108 @@
+- !<AssetImportMetadata/26365ea4-d874-074d-c6c9-94c30dd221c8>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> f3851cc3-8347-40ba-90f5-932caa0dd278
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> f3851cc3-8347-40ba-90f5-932caa0dd278
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 3c0c8ed8-0c4c-4006-ad5c-f4a8489577dd
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/3c0c8ed8-0c4c-4006-ad5c-f4a8489577dd>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 9df77c7f-6932-48a8-8c47-475901215ba6
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _alignment: false
+    _anchor: false
+    _autoAlignment: false
+    _axis: false
+    _childSize: false
+    _flexibleSize: false
+    _normalizedChildSize: false
+    _overflow: false
+    _paddingEnd: false
+    _paddingStart: false
+    _reverse: false
+    _secondaryDirection: false
+    _secondarySize: false
+    _secondarySpacing: false
+    _size: false
+    _spacing: false
+    _spacingDistribution: false
+    _tertiaryDirection: false
+    _tertiarySpacing: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - _autoAlignment: true
+      _alignment: start
+      _spacingDistribution: spaceBetween
+      _axis: x
+      _anchor: start
+      _flexibleSize: false
+      _size: !<float> 13.000000
+      _spacing: !<float> 0.000000
+      _overflow: overflow
+      _secondaryDirection: "-y"
+      _secondarySpacing: !<float> 1.000000
+      _secondarySize: !<float> 0.000000
+      _tertiaryDirection: "-z"
+      _tertiarySpacing: !<float> 1.000000
+      _paddingStart: !<float> 0.000000
+      _paddingEnd: !<float> 0.000000
+      _reverse: false
+      _normalizedChildSize: false
+      _childSize: !<float> 3.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input bool _autoAlignment = true
+    - '// @input string _alignment = "start" {"hint":"Alignment of the layout. If size is flexible, alignment must match the anchor (e.g., start anchor requires start alignment).", "widget":"combobox", "values":[{"label":"Start", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"End", "value":"end"}, {"label":"Stretch", "value":"stretch"}, {"label":"Stretch Spacing", "value":"stretchSpacing"}], "showIf":"_autoAlignment"}'
+    - '// @input string _spacingDistribution {"hint":"How to distribute extra space when using Stretch Spacing alignment.", "widget":"combobox", "values":[{"label":"Space Between", "value":"spaceBetween"}, {"label":"Space Evenly", "value":"spaceEvenly"}, {"label":"Space Around", "value":"spaceAround"}], "showIf":"_alignment", "showIfValue":"stretchSpacing"}'
+    - '// @ui {"widget":"group_start", "label":"Primary Axis"}'
+    - '// @input string _axis {"widget":"combobox", "values":[{"label":"x", "value":"x"}, {"label":"y", "value":"y"}, {"label":"z", "value":"z"}]}'
+    - '// @input string _anchor {"hint":"Anchor determines item position relative to origin. Start: item starts at origin, extends positive. End: item ends at origin, extends negative. Center: item centered on origin (alignment ignored).", "widget":"combobox", "values":[{"label":"Start", "value":"start"}, {"label":"Center", "value":"center"}, {"label":"End", "value":"end"}]}'
+    - '// @input bool _flexibleSize {"hint":"Enable flexible size. If enabled, the layout will not have bounds."}'
+    - '// @input float _size = 10 {"hint":"Size of the layout in local space centimeters.", "showIf":"_flexibleSize", "showIfValue":false}'
+    - '// @input float _spacing = 1 {"showIf":"_autoAlignment"}'
+    - '// @input string _overflow {"widget":"combobox", "values":[{"label":"Overflow", "value":"overflow"}, {"label":"Truncate", "value":"truncate"}, {"label":"Wrap", "value":"wrap"}], "showIf":"_flexibleSize", "showIfValue":false}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Secondary Axis"}'
+    - '// @input string _secondaryDirection {"widget":"combobox", "values":[{"label":"Left", "value":"-x"}, {"label":"Right", "value":"+x"}, {"label":"Down", "value":"-y"}, {"label":"Up", "value":"+y"}, {"label":"Back", "value":"-z"}, {"label":"Front", "value":"+z"}], "showIf":"_overflow", "showIfValue":"wrap"}'
+    - '// @input float _secondarySpacing = 1 {"hint":"Spacing between wrapped rows in local space centimeters.", "showIf":"_overflow", "showIfValue":"wrap"}'
+    - '// @input float _secondarySize {"hint":"Limit for the secondary (wrap) axis before wrapping to tertiary (0 = no tertiary wrap).", "showIf":"_overflow", "showIfValue":"wrap"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Tertiary Axis"}'
+    - '// @input string _tertiaryDirection {"widget":"combobox", "values":[{"label":"Left", "value":"-x"}, {"label":"Right", "value":"+x"}, {"label":"Down", "value":"-y"}, {"label":"Up", "value":"+y"}, {"label":"Back", "value":"-z"}, {"label":"Front", "value":"+z"}], "showIf":"_overflow", "showIfValue":"wrap"}'
+    - '// @input float _tertiarySpacing = 1 {"hint":"Spacing between tertiary wrapped layers in local space centimeters.", "showIf":"_overflow", "showIfValue":"wrap"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"group_start", "label":"Padding"}'
+    - '// @input float _paddingStart = 2 {"label":"Start"}'
+    - '// @input float _paddingEnd = 2 {"label":"End"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @input bool _reverse {"label":"Reverse children order", "hint":"Reverse the layout. When enabled, the order of layout items is reversed."}'
+    - '// @ui {"widget":"group_start", "label":"Child Size"}'
+    - '// @input bool _normalizedChildSize {"showIf":"_flexibleSize", "showIfValue":false}'
+    - '// @input float _childSize = 1 {"hint":"Child size along the layout axis. When normalized, represents a fraction of the total layout size (e.g., 0.5 = half). Otherwise, size in centimeters."}'
+    - '// @ui {"widget":"group_end"}'

@@ -1,0 +1,60 @@
+- !<AssetImportMetadata/df63aa4a-e791-2b6d-7446-05c373ec24c7>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 5a8ca061-6b2c-48f9-8891-88b3ffb2e579
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 5a8ca061-6b2c-48f9-8891-88b3ffb2e579
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 3832cb61-1cf8-4b2c-87cc-40084b28377b
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/3832cb61-1cf8-4b2c-87cc-40084b28377b>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: c34a28e0-bc3c-47b1-a980-e191d11c1f6b
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    disabledMaterial: false
+    meshVisuals: false
+    toggledOffMaterial: false
+    toggledOffSelectMaterial: false
+    toggledOnMaterial: false
+    toggledOnSelectMaterial: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - toggledOffMaterial: !<reference.Material> 41e586fd-0f81-452a-8226-001065b4f33b
+      toggledOffSelectMaterial: !<reference.Material> 76b6df42-633f-4cf6-a7ba-f3dab6b2b5d9
+      toggledOnMaterial: !<reference.Material> c3c2defc-01d5-433b-b00e-87ef788699ea
+      toggledOnSelectMaterial: !<reference.Material> 5b3bf12f-16b8-4568-a3f0-8ea2ef0221b8
+      disabledMaterial: !<reference.Material> 9255383c-62fb-4532-9c8f-56d8eb94d103
+      meshVisuals: !<reference.RenderMeshVisual[]>
+        []
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - "// @input Asset.Material toggledOffMaterial {\"hint\":\"The material applied to the toggle button when it's in the \\\"off\\\" state and not being interacted with. This defines the button's default visual appearance when it's unchecked.\"}"
+    - "// @input Asset.Material toggledOffSelectMaterial {\"hint\":\"The material applied to the toggle button when it's in the \\\"off\\\" state and being actively triggered. This provides visual feedback during active interaction with an unchecked button.\"}"
+    - "// @input Asset.Material toggledOnMaterial {\"hint\":\"The material applied to the toggle button when it's in the \\\"on\\\" state and not being interacted with. This defines the button's visual appearance when it's enabled/checked.\"}"
+    - "// @input Asset.Material toggledOnSelectMaterial {\"hint\":\"The material applied to the toggle button when it's in the \\\"on\\\" state and being actively triggered. This provides visual feedback during active interaction with a checked button.\"}"
+    - "// @input Asset.Material disabledMaterial {\"hint\":\"The material applied to the toggle button when it's disabled and cannot be interacted with. This provides visual feedback that the button is currently inactive.\"}"
+    - "// @input Component.RenderMeshVisual[] meshVisuals = {} {\"hint\":\"An array of RenderMeshVisual components whose materials will be updated to reflect the toggle button's current state.\"}"

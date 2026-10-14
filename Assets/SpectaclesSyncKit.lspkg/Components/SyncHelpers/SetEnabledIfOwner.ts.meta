@@ -1,0 +1,57 @@
+- !<AssetImportMetadata/ade51ade-2cec-e1a8-8ec1-9e8d8e1da529>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 97c212bc-8bec-4417-9aaf-16348b4fef7b
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 97c212bc-8bec-4417-9aaf-16348b4fef7b
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 77f67762-5289-4a65-b102-160d6d2a5478
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/77f67762-5289-4a65-b102-160d6d2a5478>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: e6c865dc-bad7-482f-a530-17aa35b2b19a
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    nonOwnerObjects: false
+    ownerObjects: false
+    syncEntityScript: false
+    targetTypeString: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - targetTypeString: SyncEntity
+      syncEntityScript: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
+      ownerObjects: !<reference.SceneObject[]>
+        []
+      nonOwnerObjects: !<reference.SceneObject[]>
+        []
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"group_start", "label":"Entity Target"}'
+    - '// @input string targetTypeString = "SyncEntity" {"label":"Target Type", "widget":"combobox", "values":[{"label":"Sync Entity", "value":"SyncEntity"}, {"label":"Network Root", "value":"NetworkRoot"}]}'
+    - '// @input Component.ScriptComponent syncEntityScript {"showIf":"targetTypeString", "showIfValue":"SyncEntity"}'
+    - '// @ui {"widget":"group_end"}'
+    - "// @input SceneObject[] ownerObjects"
+    - "// @input SceneObject[] nonOwnerObjects"

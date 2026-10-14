@@ -2,8 +2,6 @@ import {BaseHand} from "../../../Providers/HandInputData/BaseHand"
 import {RaycastInfo} from "../RayProvider"
 import RaycastBase from "./RaycastBase"
 
-const TAG = "RaycastProxy"
-
 /**
  * RaycastProxy forwards the TargetingData received from LensCore's Gesture Module.
  */

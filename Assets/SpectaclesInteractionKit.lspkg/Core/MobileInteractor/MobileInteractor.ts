@@ -1,3 +1,4 @@
+import {Interactable} from "../../Components/Interaction/Interactable/Interactable"
 import {InteractableManipulation} from "../../Components/Interaction/InteractableManipulation/InteractableManipulation"
 import {MobileInputData} from "../../Providers/MobileInputData/MobileInputData"
 import {InteractableHitInfo} from "../../Providers/TargetProvider/TargetProvider"
@@ -25,38 +26,51 @@ const MANIPULATE_SIX_DOF_SWITCH_THRESHOLD = 2 // World units in c
  */
 @component
 export class MobileInteractor extends BaseInteractor {
-  @ui.group_start("Mobile Interactor")
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Mobile Interactor</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Configure mobile controller input filtering and touch sensitivity</span>'
+  )
+
   /**
    * Whether position and rotation filtering should be enabled when this is first initialized.
    */
   @input
-  @hint("Whether position and rotation filtering should be enabled when this is first initialized.")
+  @label("Initialize Position And Rotation Filter")
+  @hint(
+    "When enabled, applies filtering to the mobile controller's position and rotation data when the interactor is first \
+initialized. This helps reduce jitter and provides smoother tracking."
+  )
   initializePositionAndRotationFilter: boolean = true
+
   /**
    * Controls how much touchpad movement is amplified when translating touch input to 3D space.
    * Higher values result in faster/larger movements from small touch gestures, while lower values
    * provide more precise control requiring larger touch gestures to achieve the same movement.
    */
   @input
+  @label("Touchpad Scroll Speed")
   @hint(
-    "Controls how much touchpad movement is amplified when translating touch input to 3D space.  Higher values \
-result in faster/larger movements from small touch gestures, while lower values provide more precise control requiring \
-larger touch gestures to achieve the same movement."
+    "Controls how much touchpad movement is amplified when translating touch input to 3D space. Higher values result \
+in faster/larger movements from small touch gestures, while lower values provide more precise control requiring larger \
+touch gestures to achieve the same movement."
   )
   private _touchpadScrollSpeed: number = 250
+
   /**
    * Controls the minimum distance a finger must move on the touchpad to be considered a drag.
    * Uses normalized screen coordinates (0-1), where 0.05 represents 5% of the screen width/height.
    * Lower values make dragging more sensitive to small movements.
    */
   @input
+  @label("Touchpad Drag Threshold")
   @hint(
-    "Controls the minimum distance a finger must move on the touchpad to be considered a drag. Uses normalized \
-screen coordinates (0-1), where 0.05 represents 5% of the screen width/height. Lower values make dragging more \
-sensitive to small movements."
+    "Controls the minimum distance a finger must move on the touchpad to be considered a drag. Uses normalized screen \
+coordinates (0-1), where 0.05 represents 5% of the screen width/height. Lower values make dragging more sensitive to \
+small movements."
   )
   private touchpadDragThreshold: number = 0.05
-  @ui.group_end
+
   private indirectTargetProvider: IndirectTargetProvider | undefined
   private rayProvider: MobileRayProvider | undefined
   private _dragType: DragType | null = null
@@ -143,8 +157,12 @@ sensitive to small movements."
    * Set if the Interactor is should draw a debug gizmo of collider/raycasts in the scene.
    */
   set drawDebug(debug: boolean) {
-    validate(this.indirectTargetProvider)
     this._drawDebug = debug
+
+    // If the target provider has not been created yet, no need to manually set the drawDebug.
+    if (!this.indirectTargetProvider) {
+      return
+    }
 
     this.indirectTargetProvider.drawDebug = debug
   }
@@ -154,6 +172,37 @@ sensitive to small movements."
    */
   get drawDebug(): boolean {
     return this._drawDebug
+  }
+
+  get isHoveringCurrentInteractable(): boolean | null {
+    if (!this.currentInteractable) {
+      return null
+    }
+
+    return this.indirectTargetProvider!.isHoveringInteractable(this.currentInteractable)
+  }
+
+  get hoveredInteractables(): Interactable[] {
+    const hoveredInteractables = Array.from(this.indirectTargetProvider!.currentInteractableSet)
+
+    return hoveredInteractables
+  }
+
+  isHoveringInteractable(interactable: Interactable): boolean {
+    return this.indirectTargetProvider!.isHoveringInteractable(interactable)
+  }
+
+  isHoveringInteractableHierarchy(interactable: Interactable): boolean {
+    if (this.indirectTargetProvider!.isHoveringInteractable(interactable)) {
+      return true
+    }
+
+    for (const hoveredInteractable of this.indirectTargetProvider!.currentInteractableSet) {
+      if (hoveredInteractable.isDescendantOf(interactable)) {
+        return true
+      }
+    }
+    return false
   }
 
   /**
@@ -208,7 +257,7 @@ sensitive to small movements."
 
   /** @inheritdoc */
   isActive(): boolean {
-    return this.mobileInputData.isAvailable()
+    return this.mobileInputData.isAvailable() && this.sceneObject.isEnabledInHierarchy
   }
 
   protected clearCurrentHitInfo(): void {
@@ -221,7 +270,7 @@ sensitive to small movements."
 
     this.createEvent("TouchMoveEvent").bind((...args) => this.onTouchMoveEvent(...args))
 
-    this.createEvent("TouchEndEvent").bind((...args) => this.onTouchEndEvent())
+    this.createEvent("TouchEndEvent").bind((..._args) => this.onTouchEndEvent())
   }
 
   private onTouchStartEvent(ev: TouchStartEvent): void {
@@ -292,11 +341,12 @@ sensitive to small movements."
 
   protected override updateDragVector(): void {
     if ((this.currentTrigger & InteractorTriggerType.Select) !== 0) {
-      const touchpadDragVector = this.touchpadDragProvider.getDragVector(
+      // Update both drag providers in case drag type will switch.
+      this.touchpadDragProvider.getDragVector(
         this.getTouchpadDragPoint(),
         this.currentInteractable?.enableInstantDrag ?? null
       )
-      const sixDofDragVector = this.sixDofDragProvider.getDragVector(
+      this.sixDofDragProvider.getDragVector(
         this.getSixDofDragPoint(),
         this.currentInteractable?.enableInstantDrag ?? null
       )

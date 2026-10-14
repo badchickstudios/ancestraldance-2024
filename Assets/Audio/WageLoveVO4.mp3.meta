@@ -4,7 +4,7 @@
   ImporterName: FileAudioTrackImporter
   PrimaryAsset: !<reference> 8c74313e-c0da-427c-88b3-e5530256af7d
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:

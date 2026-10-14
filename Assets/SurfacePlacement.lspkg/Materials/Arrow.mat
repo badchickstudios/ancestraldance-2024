@@ -1,4 +1,4 @@
-- !<Material/069f1c8d-fa1d-4878-8c0e-062a9f39a4d3>
+- !<Material/a82e0755-9c88-4323-8800-f9a182292a57>
   PackagePath: ""
   PassesInfo:
     - !<own> 872ce5a1-c0a3-4d51-b955-333a18406095
@@ -315,7 +315,7 @@
     Tweak_N10:
       typeIdx: 9
       value:
-        id: 2a0bde72-2e52-4f11-8684-e65478c06c51
+        id: 84aee3af-6fce-4123-b628-7bc69c0e18a4
         sampler:
           filteringMode: Trilinear
           wrapModeU: ClampToBorderColor
@@ -333,7 +333,7 @@
     Tweak_N31:
       typeIdx: 9
       value:
-        id: 72e07f1c-492b-47dd-87e1-81c7d2896105
+        id: 43ee99e3-6c5b-4994-b876-7f6f19d60dc3
         sampler:
           filteringMode: Trilinear
           wrapModeU: Repeat
@@ -354,4 +354,4 @@
     YellowColor:
       typeIdx: 5
       value: {x: 0.999420, y: 0.985550, z: 0.000000, w: 1.000000}
-  Pass: !<reference> ac9d1b70-3f27-4f03-86d1-7f2cf569b2d6
+  Pass: !<reference> 522c7fc6-2934-4e3f-a9fb-58759af79c6e

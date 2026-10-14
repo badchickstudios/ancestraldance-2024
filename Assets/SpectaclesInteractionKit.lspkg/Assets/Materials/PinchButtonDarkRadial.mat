@@ -1,8 +1,8 @@
 - !<Material/5e6e1132-90fd-4c58-86f9-eb992e6747f5>
   PackagePath: ""
   PassesInfo:
-    - !<own> 784cb195-af73-4281-95f4-5325aa62248d
-- !<PassInfo/784cb195-af73-4281-95f4-5325aa62248d>
+    - !<own> 01427493-424d-40a7-856d-cb1483ac1995
+- !<PassInfo/01427493-424d-40a7-856d-cb1483ac1995>
   CachedProperties:
     - overrideTimeDelta:
         typeIdx: 1

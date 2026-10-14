@@ -203,7 +203,7 @@
     []
   Name: PositionInitializer
   Enabled: true
-  ScriptAsset: !<reference> cec56c47-c6e4-40eb-926e-aa33adbc0881
+  ScriptAsset: !<reference> 225d583c-8e02-48b8-ac6d-86363fd87979
   ScriptInputsDefault:
     {}
   ScriptTypesDefault:
@@ -287,9 +287,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
-    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
+    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -297,6 +297,9 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
+    _styleSnapOS2: true
+    _styleSnapOS3: true
+    _opacity: true
     _size: true
   ScriptTypesDefault:
     {}
@@ -305,9 +308,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
-      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -319,6 +322,9 @@
         []
       onFinishedCallbacks:
         []
+      _styleSnapOS2: PrimaryNeutral
+      _styleSnapOS3: Neutral
+      _opacity: !<float> 1.000000
       _size: !<Vec3> {x: 12.000000, y: 3.000000, z: 1.000000}
   ScriptTypes:
     "":
@@ -595,7 +601,7 @@
     []
   Name: PositionInitializer
   Enabled: true
-  ScriptAsset: !<reference> cec56c47-c6e4-40eb-926e-aa33adbc0881
+  ScriptAsset: !<reference> 225d583c-8e02-48b8-ac6d-86363fd87979
   ScriptInputsDefault:
     triggerOnlyForFirstPlayer: true
   ScriptTypesDefault:
@@ -613,7 +619,7 @@
     []
   Name: SyncTransform
   Enabled: true
-  ScriptAsset: !<reference> e00807ca-e390-403b-88e4-4a7e3ec6e3b0
+  ScriptAsset: !<reference> f3c20594-375f-43d8-a93f-a8e75bd6a61d
   ScriptInputsDefault:
     networkIdTypeString: true
     customNetworkId: true

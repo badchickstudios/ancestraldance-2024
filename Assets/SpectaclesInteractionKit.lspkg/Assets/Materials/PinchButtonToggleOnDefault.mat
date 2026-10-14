@@ -1,8 +1,8 @@
 - !<Material/ba34ce5b-0385-4307-a803-f77fb63d057b>
   PackagePath: ""
   PassesInfo:
-    - !<own> cb7901c9-a7a2-4ae7-b1e4-b0e19ccde94f
-- !<PassInfo/cb7901c9-a7a2-4ae7-b1e4-b0e19ccde94f>
+    - !<own> 375597ad-d75b-4cbd-b23a-bda64ae005cf
+- !<PassInfo/375597ad-d75b-4cbd-b23a-bda64ae005cf>
   CachedProperties:
     - baseTexBorderColor:
         typeIdx: 5

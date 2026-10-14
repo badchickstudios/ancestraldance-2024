@@ -1,3 +1,4 @@
+import {Interactor} from "../../../Core/Interactor/Interactor"
 import BillboardController, {BillboardConfig, RotationAxis} from "./BillboardController"
 
 /**
@@ -7,16 +8,21 @@ import BillboardController, {BillboardConfig, RotationAxis} from "./BillboardCon
 export class Billboard extends BaseScriptComponent {
   private controller!: BillboardController
 
-  @ui.group_start("Billboard")
-  @hint("Settings to configure how this object rotates to face the camera.")
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Axis Configuration</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Select which axes the object rotates around to face the camera</span>'
+  )
+
   /**
    * Enables pitch rotation of the object to face the camera. When enabled, the object rotates around its X-axis to
    * maintain camera orientation.
    */
   @input
+  @label("X Axis Enabled")
   @hint(
-    "Enables pitch rotation of the object to face the camera. When enabled, the object rotates around its X-axis to \
-maintain camera orientation."
+    "Enables pitch rotation of the object to face the camera. When enabled, the object rotates around its X-axis \
+to maintain camera orientation."
   )
   private _xAxisEnabled: boolean = false
 
@@ -25,9 +31,10 @@ maintain camera orientation."
    * track camera position.
    */
   @input
+  @label("Y Axis Enabled")
   @hint(
-    "Enables yaw rotation of the object to face the camera. When enabled, the object rotates around its Y-axis to \
-track camera position."
+    "Enables yaw rotation of the object to face the camera. When enabled, the object rotates around its Y-axis \
+to track camera position."
   )
   private _yAxisEnabled: boolean = true
 
@@ -36,11 +43,18 @@ track camera position."
    * its Z-axis to match camera's up direction.
    */
   @input
+  @label("Z Axis Enabled")
   @hint(
     "Enables roll rotation of the object to align with camera orientation. When enabled, the object rotates around \
 its Z-axis to match camera's up direction."
   )
   private _zAxisEnabled: boolean = false
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Rotation Behavior</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Fine-tune the smoothness and responsiveness of the billboard rotation</span>'
+  )
 
   /**
    * Defines a threshold in degrees before rotation is applied for each axis. The object only rotates when the angle
@@ -48,10 +62,11 @@ its Z-axis to match camera's up direction."
    * create more stable objects that rotate less frequently.
    */
   @input
+  @label("Axis Buffer Degrees")
   @hint(
-    "Defines a threshold in degrees before rotation is applied for each axis. The object only rotates when the angle \
-between its orientation and the camera exceeds this buffer, preventing small unwanted movements. Larger values create \
-more stable objects that rotate less frequently."
+    "Defines a threshold in degrees before rotation is applied for each axis. The object only rotates when the \
+angle between its orientation and the camera exceeds this buffer, preventing small unwanted movements. Larger \
+values create more stable objects that rotate less frequently."
   )
   private _axisBufferDegrees: vec3 = new vec3(0, 0, 0)
 
@@ -61,20 +76,13 @@ more stable objects that rotate less frequently."
    * effect.
    */
   @input
+  @label("Axis Easing")
   @hint(
     "Controls how fast the object rotates around each axis to follow camera movement. Configurable per axis (X,Y,Z) \
 where higher values (1.0) create instant following, while lower values (0.1) create a delayed, smoother follow effect."
   )
   private _axisEasing: vec3 = new vec3(1, 1, 1)
 
-  /**
-   * @deprecated This property no longer changes the speed of the follow rotation. Use _axisEasing instead.
-   */
-  @input
-  @hint("Deprecated. Please use the property Axis Easing to adjust the rotation speed")
-  duration: number = 0.033
-
-  @ui.group_end
   onAwake(): void {
     const billboardConfig: BillboardConfig = {
       script: this,
@@ -93,6 +101,24 @@ where higher values (1.0) create instant following, while lower values (0.1) cre
    */
   snapToOffsetRotation(): void {
     this.controller.resetRotation()
+  }
+
+  /**
+   * Immediately resets rotation to directly look at the camera, ignoring current axis enabled/disabled states, buffer degrees, and easing.
+   */
+  resetToLookAtCamera(): void {
+    this.controller.resetRotationToLookAtCamera()
+  }
+
+  /**
+   * Animates rotation to directly look at the camera, ignoring current axis enabled/disabled states, buffer degrees, and easing.
+   */
+  animateToLookAtCamera(onComplete?: () => void): void {
+    this.controller.animateToLookAtCamera(onComplete)
+  }
+
+  get targetTransform(): Transform {
+    return this.controller.targetTransform
   }
 
   /**
@@ -184,5 +210,23 @@ where higher values (1.0) create instant following, while lower values (0.1) cre
    */
   get axisBufferDegrees(): vec3 {
     return this._axisBufferDegrees
+  }
+
+  /**
+   * Set the pivot point and pivoting Interactor to control the Billboard's pivot axis.
+   * To turn off pivoting about a point, reset the pivot point to vec3.zero()
+   * @param pivotPoint - the pivot point to billboard the target about in local space.
+   * @param interactor - the pivoting Interactor.
+   */
+  public setPivot(pivotPoint: vec3, interactor: Interactor) {
+    this.controller.setPivot(pivotPoint, interactor)
+  }
+
+  /**
+   * Resets the pivot point to billboard the target about its own origin. Recommended to use after finishing
+   * some spatial interaction that sets the pivotPoint of this component manually.
+   */
+  public resetPivotPoint() {
+    this.controller.resetPivotPoint()
   }
 }

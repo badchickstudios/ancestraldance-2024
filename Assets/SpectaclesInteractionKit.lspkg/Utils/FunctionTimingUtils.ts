@@ -41,22 +41,33 @@ export type CancelToken = {
   cancelled: boolean
 }
 export function setTimeout(callback: () => void, time: number): CancelToken {
-  let cancelToken: CancelToken = {cancelled: false}
+  const cancelToken: CancelToken = {cancelled: false}
 
-  let updateDispatcher = LensConfig.getInstance().updateDispatcher
+  const updateDispatcher = LensConfig.getInstance().updateDispatcher
 
-  let delayedEvent = updateDispatcher.createDelayedEvent()
-  delayedEvent.reset(time / 1000)
-  delayedEvent.bind((eventData: any) => {
-    if (!cancelToken.cancelled) {
-      callback()
-    }
-    updateDispatcher.removeDelayedEvent(delayedEvent)
-  })
+  updateDispatcher.createDelayedEvent(
+    "setTimeout",
+    () => {
+      if (!cancelToken.cancelled) {
+        callback()
+      }
+    },
+    time / 1000
+  )
+
   return cancelToken
 }
 export function clearTimeout(timeoutId: CancelToken): void {
   if (timeoutId !== undefined && timeoutId.cancelled !== undefined) {
     timeoutId.cancelled = true
   }
+}
+
+/**
+ * Suspends code execution for a specified number of milliseconds
+ * @param ms the time to wait in milliseconds
+ * @returns promise that resolves after the delay
+ */
+export async function sleep(ms: number): Promise<void> {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms))
 }

@@ -1,3 +1,4 @@
+import {InteractorEvent} from "../../Core/Interactor/InteractorEvent"
 import {validate} from "../../Utils/validate"
 import {Interactable} from "../Interaction/Interactable/Interactable"
 /**
@@ -162,7 +163,7 @@ export class InteractableAudioFeedback extends BaseScriptComponent {
       if (this.triggerStartAudioTrack === undefined) {
         this.triggerStartAudioTrack = requireAsset("../../Assets/Audio/TriggerStartAudioTrack.wav") as AudioTrackAsset
       }
-      this.triggerStartAudioComponent.audioTrack = this.triggerStartAudioTrack
+      this._triggerStartAudioComponent.audioTrack = this.triggerStartAudioTrack
     }
   }
 
@@ -224,7 +225,25 @@ export class InteractableAudioFeedback extends BaseScriptComponent {
   private setupInteractableCallbacks() {
     validate(this.interactable)
 
-    this.interactable.onHoverEnter.add(() => {
+    this.interactable.onHoverEnter.add((event: InteractorEvent) => {
+      if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+        return
+      }
+
+      try {
+        if (this.playAudioOnHover && this._hoverAudioComponent) {
+          this._hoverAudioComponent.play(1)
+        }
+      } catch (e) {
+        print("Error playing hover audio: " + e)
+      }
+    })
+
+    this.interactable.onSyncHoverEnter.add((event: InteractorEvent) => {
+      if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+        return
+      }
+
       try {
         if (this.playAudioOnHover && this._hoverAudioComponent) {
           this._hoverAudioComponent.play(1)
@@ -244,7 +263,27 @@ export class InteractableAudioFeedback extends BaseScriptComponent {
       }
     })
 
+    this.interactable.onSyncTriggerStart.add(() => {
+      try {
+        if (this.playAudioOnTriggerStart && this._triggerStartAudioComponent) {
+          this._triggerStartAudioComponent.play(1)
+        }
+      } catch (e) {
+        print("Error playing trigger start audio: " + e)
+      }
+    })
+
     this.interactable.onTriggerEnd.add(() => {
+      try {
+        if (this.playAudioOnTriggerEnd && this._triggerEndAudioComponent) {
+          this._triggerEndAudioComponent.play(1)
+        }
+      } catch (e) {
+        print("Error playing trigger end audio: " + e)
+      }
+    })
+
+    this.interactable.onSyncTriggerEnd.add(() => {
       try {
         if (this.playAudioOnTriggerEnd && this._triggerEndAudioComponent) {
           this._triggerEndAudioComponent.play(1)

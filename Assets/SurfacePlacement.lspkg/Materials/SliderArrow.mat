@@ -1,4 +1,4 @@
-- !<Material/b70c7c7a-f779-4ea4-b076-2b80e74211c2>
+- !<Material/b18d8663-b519-4a5a-b5dd-c489325da6af>
   PackagePath: ""
   PassesInfo:
     - !<own> b9ceb0ad-8838-431d-998e-43c785fdf058
@@ -100,7 +100,7 @@
     baseTex:
       typeIdx: 9
       value:
-        id: e218cd6c-1ec3-4a9a-a33f-5648fa04ae6d
+        id: ed0cb3fc-16e6-4c70-aa6c-c59c471119b8
         sampler:
           filteringMode: Trilinear
           wrapModeU: Repeat
@@ -109,4 +109,4 @@
           borderColor: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
           mipmaps: false
         type: Texture2D
-  Pass: !<reference> 6d280027-76f3-4b3c-8c1f-5b5e9b0275a9
+  Pass: !<reference> 3da0795a-26e7-4c1d-8152-09ae7a939d3d

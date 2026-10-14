@@ -4,12 +4,15 @@
   ImporterName: JavaScriptAssetImporter
   PrimaryAsset: !<reference> 1f8437d5-dea1-4d91-9d73-80f76783225d
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
-  ExtraData: {}
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
   AssetDataMap:
     JavaScriptAsset: !<own> d87fff1b-7bf0-4a34-9832-ff9fb6028dba
-  DependentFiles: []
-  ImporterSettings: !<AssetImporterSettings> {}
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
 - !<ScriptAssetData/d87fff1b-7bf0-4a34-9832-ff9fb6028dba>
   SvgIcon: ""
@@ -21,14 +24,21 @@
   VersionPatch: 0
   ComponentUid: 419812b6-7da1-483b-b36c-e2b1f5f748e1
   ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     buttonObj: false
     statemessagename: false
-  ScriptTypesHidden: {}
+  ScriptTypesHidden:
+    {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
   DefaultScriptInputs:
     - buttonObj: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       statemessagename: ""
   ScriptTypes:
-    - {}
+    -
+      {}

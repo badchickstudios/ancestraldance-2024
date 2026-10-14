@@ -5,7 +5,8 @@
   LazyLoading: false
   RetainAssets: true
 - !<VFXComponent/3a657a3f-9a69-4ed5-9759-293a509edd4b>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: VFX Component
   Enabled: true
   RenderOrder: 0
@@ -17,7 +18,9 @@
   ShadowDensity: 1.000000
   VFXAsset: !<reference> 5fa09bae-ae3c-47ae-a849-4a583cb768ce
 - !<SceneObject/a55885e9-ad87-40ac-a71f-e47a50bb7247>
-  PrefabRemaps: []
+  PrefabRemaps:
+    - 3a657a3f-9a69-4ed5-9759-293a509edd4b: 3a657a3f-9a69-4ed5-68a6-d6c5af6122b4
+    - a55885e9-ad87-40ac-a71f-e47a50bb7247: a55885e9-ad87-40ac-58e0-1b85af448db8
   Name: Star Particles
   Enabled: true
   Layers: 1
@@ -26,6 +29,7 @@
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> 3a657a3f-9a69-4ed5-9759-293a509edd4b

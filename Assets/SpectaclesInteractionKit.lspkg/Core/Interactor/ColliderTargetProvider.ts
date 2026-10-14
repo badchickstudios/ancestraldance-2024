@@ -1,6 +1,7 @@
 import {InteractionPlane} from "../../Components/Interaction/InteractionPlane/InteractionPlane"
 import TargetProvider from "../../Providers/TargetProvider/TargetProvider"
 import {notEmpty} from "../../Utils/notEmpty"
+import {findComponentInSelfOrParents} from "../../Utils/SceneObjectUtils"
 import BaseInteractor from "./BaseInteractor"
 
 /**
@@ -132,7 +133,7 @@ export abstract class ColliderTargetProvider extends TargetProvider {
             position: this.endPoint,
             skipRemaining: false,
             t: 0,
-            triangle: null,
+            triangle: null as unknown as TriangleHit,
             getTypeName: overlap.collider.getTypeName,
             isTypeOf: overlap.collider.isOfType,
             isSame: overlap.collider.isSame,
@@ -165,7 +166,8 @@ export abstract class ColliderTargetProvider extends TargetProvider {
 
   protected updateInteractionPlanesFromOverlap(overlaps: Overlap[]): void {
     for (const overlap of overlaps) {
-      const plane = overlap.collider.getSceneObject().getComponent(InteractionPlane.getTypeName())
+      const planeSceneObject = overlap.collider.getSceneObject()
+      const plane = findComponentInSelfOrParents<InteractionPlane>(planeSceneObject, InteractionPlane.getTypeName(), 1)
       if (plane !== null && !this._currentInteractionPlanes.includes(plane)) {
         this._currentInteractionPlanes.push(plane)
       }
@@ -173,8 +175,9 @@ export abstract class ColliderTargetProvider extends TargetProvider {
   }
 
   protected removeInteractionPlaneFromOverlap(overlap: Overlap): void {
-    const plane = overlap.collider.getSceneObject().getComponent(InteractionPlane.getTypeName())
-    if (plane !== null) {
+    const planeSceneObject = overlap.collider.getSceneObject()
+    const plane = findComponentInSelfOrParents<InteractionPlane>(planeSceneObject, InteractionPlane.getTypeName(), 1)
+    if (plane !== null && plane.collider === overlap.collider) {
       const index = this.currentInteractionPlanes.indexOf(plane)
 
       if (index !== -1) {

@@ -1,4 +1,4 @@
-- !<Material/8f316b40-161f-4329-a2af-caf867916fe6>
+- !<Material/9bece96e-c070-4a0d-80ba-68af90e499e1>
   PackagePath: ""
   PassesInfo:
     - !<own> 1e1e78bd-2bb4-43ee-b55d-c45136938d58
@@ -105,7 +105,7 @@
     baseTex:
       typeIdx: 9
       value:
-        id: 54ab2fb3-068d-4104-83ae-e8f046afad16
+        id: f3e35579-c75c-4ce9-b489-e2d231da158a
         sampler:
           filteringMode: Trilinear
           wrapModeU: Repeat
@@ -123,7 +123,7 @@
     materialParamsTex:
       typeIdx: 9
       value:
-        id: c520e07e-8a01-4e45-a5df-df5ae28a6f20
+        id: e7d4732a-ec1e-4295-8b15-4d7d640624d9
         sampler:
           filteringMode: Trilinear
           wrapModeU: Repeat
@@ -144,7 +144,7 @@
     normalTex:
       typeIdx: 9
       value:
-        id: f6c8e59a-d833-4fcb-a247-0670f5a41b91
+        id: abe5bf1e-85ae-4d80-8738-62aa0e307fcd
         sampler:
           filteringMode: Trilinear
           wrapModeU: Repeat
@@ -162,4 +162,4 @@
     roughness:
       typeIdx: 1
       value: 1.000000
-  Pass: !<reference> a831f294-c1e2-410e-b18a-670e75041a39
+  Pass: !<reference> 6e7d468e-9827-407b-9361-46646aff1233

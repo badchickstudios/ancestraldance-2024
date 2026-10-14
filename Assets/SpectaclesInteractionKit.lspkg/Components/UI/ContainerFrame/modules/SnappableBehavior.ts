@@ -133,6 +133,7 @@ export class SnappableBehavior {
 
     this.unSubscribeList.push(this.interactable.onTriggerStart.add(this.onTriggerStart))
     this.unSubscribeList.push(this.interactable.onTriggerEnd.add(this.onTriggerRelease))
+    this.unSubscribeList.push(this.interactable.onTriggerEndOutside.add(this.onTriggerRelease))
     this.unSubscribeList.push(this.interactable.onTriggerCanceled.add(this.onTriggerRelease))
 
     const contentLocalScale = new vec3(
@@ -157,10 +158,10 @@ export class SnappableBehavior {
     this.boundingBox.setParent(this.content)
     this.boundingBox.layer = LayerSet.fromNumber(4)
 
-    let boundingBoxFilter: Filter = Physics.Filter.create() as Filter
+    const boundingBoxFilter: Filter = Physics.Filter.create() as Filter
     boundingBoxFilter.onlyLayers = this.boundingBox.layer
 
-    let boundingBoxCollider: ColliderComponent = this.boundingBox.createComponent("ColliderComponent")
+    const boundingBoxCollider: ColliderComponent = this.boundingBox.createComponent("ColliderComponent")
     const boxShape: BoxShape = Shape.createBoxShape()
     if (!this.useConstantBoundingBoxPadding) {
       // maximumDepthForBoundingBox
@@ -217,6 +218,7 @@ export class SnappableBehavior {
   enableWorldSnapping = (enable: boolean) => {
     if (enable) {
       if (this.worldQueryAsset === null) {
+        // eslint-disable-next-line
         this.worldQueryAsset = require("LensStudio:WorldQueryModule") as WorldQueryModule
 
         const sessionOptions = HitTestSessionOptions.create()
@@ -271,10 +273,10 @@ export class SnappableBehavior {
 
   private deParent = () => {
     if (this.parent?.getParent() !== this.parentParent) {
-      this.parent?.setParentPreserveWorldTransform(this.parentParent)
+      this.parent?.setParentPreserveWorldTransform(this.parentParent!)
     }
 
-    if (!isNull(this.ghost) && this.ghost.getParent() !== this.parent) {
+    if (!isNull(this.ghost) && this.ghost.getParent() !== this.parent && this.parent !== null) {
       this.ghost.setParentPreserveWorldTransform(this.parent)
       this.ghostParentaName = this.parent.name
     }
@@ -371,9 +373,9 @@ export class SnappableBehavior {
         this.setTweening(true)
         this.itemSnappingRange = false
 
-        this.parent?.setParentPreserveWorldTransform(this.snapTo)
+        this.parent?.setParentPreserveWorldTransform(this.snapTo!)
 
-        let startPosition = this.parentTransform?.getLocalPosition() || vec3.zero()
+        const startPosition = this.parentTransform?.getLocalPosition() || vec3.zero()
         animate({
           cancelSet: this.animationCancelSet,
           duration: 0.15,
@@ -384,8 +386,8 @@ export class SnappableBehavior {
             this.parentTransform?.setLocalPosition(mix(startPosition, this.snapPosition, t))
           }
         })
-        let startRot: quat = this.parentTransform?.getWorldRotation() || quat.quatIdentity()
-        let endRot: quat = this.snapTo!.getTransform().getWorldRotation()
+        const startRot: quat = this.parentTransform?.getWorldRotation() || quat.quatIdentity()
+        const endRot: quat = this.snapTo!.getTransform().getWorldRotation()
         animate({
           cancelSet: this.animationCancelSet,
           duration: 0.14,
@@ -399,7 +401,7 @@ export class SnappableBehavior {
         this.setTweening(true)
         this.worldSnappingRange = false
 
-        let startPosition = this.parentTransform?.getWorldPosition()
+        const startPosition = this.parentTransform?.getWorldPosition()
 
         if (startPosition === undefined) {
           return
@@ -460,7 +462,7 @@ export class SnappableBehavior {
     const endPos = indexTipPos.add(indexForward.uniformScale(rayLength))
 
     if (this.hitTestSessionStarted) {
-      const hitTest = this.hitTestSession.hitTest(indexTipPos, endPos, (hitResult) => {
+      this.hitTestSession.hitTest(indexTipPos, endPos, (hitResult) => {
         if (hitResult === null) {
           // log.d("No Point of Collision")
           this.missedCount += 1
@@ -494,11 +496,9 @@ export class SnappableBehavior {
           })
 
           if (this.queryBuffer.length === this.queryBufferMaxLength) {
-            let sumDist = 0
             let sumPosition = vec3.zero()
             let sumNormal = vec3.zero()
-            this.queryBuffer.forEach((queryObj, i) => {
-              sumDist += queryObj.distance
+            this.queryBuffer.forEach((queryObj, _i) => {
               sumPosition = sumPosition.add(queryObj.hitPosition)
               sumNormal = sumNormal.add(queryObj.hitNormal)
             })
@@ -550,7 +550,7 @@ export class SnappableBehavior {
     validate(this.contentTransform)
     validate(this.colliderScale)
 
-    if (!isNull(this.ghost) && this.ghost.getParent() !== this.snapTo) {
+    if (!isNull(this.ghost) && this.ghost.getParent() !== this.snapTo && this.snapTo !== null) {
       this.ghost.setParentPreserveWorldTransform(this.snapTo)
       this.ghostParentaName = this.snapTo.name
     }
@@ -564,12 +564,12 @@ export class SnappableBehavior {
     const snapToScalar = this.snapTo!.getTransform().getWorldScale()
 
     // assuming height of 1
-    let halfThisImageScale = {
+    const halfThisImageScale = {
       x: (this.frame.innerSize.x * 0.5 + this.frame.constantPadding.x * 0.5 + this.frame.border) / snapToScalar.x,
       y: (this.frame.innerSize.y * 0.5 + this.frame.constantPadding.y * 0.5 + this.frame.border) / snapToScalar.y
     }
 
-    let halfColliderImageScale = {
+    const halfColliderImageScale = {
       x: (this.colliderScale.x * 0.5) / snapToScalar.x,
       y: (this.colliderScale.y * 0.5) / snapToScalar.y
     }
@@ -701,7 +701,7 @@ export class SnappableBehavior {
     ) {
       let lastDistance = Infinity
       for (let i = 0; i < e.currentOverlaps.length; i++) {
-        let overlap = e.currentOverlaps[i]
+        const overlap = e.currentOverlaps[i]
         const colliderObject: SceneObject = overlap.collider.getSceneObject().getParent().getParent()
         // getParent of boundingBox
 

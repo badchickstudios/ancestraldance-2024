@@ -5,10 +5,9 @@ import {InteractorEvent} from "../../../Core/Interactor/InteractorEvent"
 import Event from "../../../Utils/Event"
 import {averageVec2, smoothDamp, smoothSlide} from "../../../Utils/mathUtils"
 import {MovingAverageFilter} from "../../../Utils/MovingAverageFilter"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 import {BufferedBoundariesProvider} from "./boundariesProvider/BufferedBoundariesProvider"
 import {SceneObjectBoundariesProvider} from "./boundariesProvider/SceneObjectBoundariesProvider"
-
-const TAG = "ScrollProvider"
 
 export type ScrollProviderConfig = {
   scrollArea: SceneObjectBoundariesProvider
@@ -31,6 +30,10 @@ const DECELERATE_MIN_SPEED = 1
 const ELASTIC_TIME = 0.4
 // The minimum distance from content edge to keep moving the content during update frames.
 const ELASTIC_MIN_DISTANCE = 0.05
+
+const SCROLL_VIEW_VALUE_KEY = "ScrollViewValue"
+const SCROLL_VIEW_INERTIA_KEY = "ScrollViewInertia"
+const SCROLL_VIEW_CONNECTION_KEY = "ScrollViewConnection"
 
 /**
  * Describes the scrolling logic between the content and the container
@@ -74,6 +77,13 @@ export class ScrollProvider {
   private contentOrigin = vec2.zero()
 
   private isGrabbed: boolean = false
+  private _isManual: boolean = false
+
+  // Only defined if SyncKit is present within the lens project.
+  private syncKitBridge = SyncKitBridge.getInstance()
+  private readonly syncEntity = this.config.scrollView ? this.syncKitBridge.createSyncEntity(this.scrollView) : null
+
+  private connectionId: string | null = null
 
   constructor(private config: ScrollProviderConfig) {
     this._enableScrollInertia = config.enableScrollInertia
@@ -83,9 +93,13 @@ export class ScrollProvider {
 
     this.onReady.add(() => {
       // Don't start updating until the content is ready, as the content is required for the update logic.
-      this.config.updateEvent.bind((event) => {
+      this.config.updateEvent.bind((_event) => {
         this.update()
       })
+
+      if (this.syncEntity !== null) {
+        this.syncEntity.notifyOnReady(this.setupConnectionCallbacks.bind(this))
+      }
     })
   }
 
@@ -95,6 +109,24 @@ export class ScrollProvider {
    */
   get isReady(): boolean {
     return this.content !== undefined
+  }
+
+  /**
+   * @returns if the ScrollView is being manually controlled by some component beyond ScrollView (e.g. ScrollBar)
+   */
+  get isManual(): boolean {
+    return this._isManual
+  }
+
+  /**
+   * Sets if the ScrollView is being manually controlled by some component beyond ScrollView (e.g. ScrollBar)
+   * @param isManual - true if the ScrollView is being manually controlled
+   */
+  set isManual(isManual: boolean) {
+    this._isManual = isManual
+    if (isManual) {
+      this.inertiaVelocity = vec2.zero()
+    }
   }
 
   /**
@@ -137,6 +169,12 @@ export class ScrollProvider {
    */
   set contentPosition(position: vec3) {
     this.content.position = position
+
+    this.updateSyncStore()
+
+    this.onScrollUpdateEvent.invoke({
+      contentPosition: new vec2(this.content.position.x, this.content.position.y)
+    })
   }
 
   /**
@@ -183,13 +221,15 @@ export class ScrollProvider {
     return scrollPercentage
   }
 
-  onGrabStart(event: InteractorEvent) {
+  onGrabStart(_event: InteractorEvent) {
     this.dragVelocityFilter.clear()
     this.isGrabbed = true
     this.dragVelocity = vec2.zero()
+
+    this.updateSyncStore()
   }
 
-  onGrabEnd(event: InteractorEvent) {
+  onGrabEnd(_event: InteractorEvent) {
     this.isGrabbed = false
     this.updateInertiaVelocity()
     this.dragVelocity = vec2.zero()
@@ -246,27 +286,31 @@ export class ScrollProvider {
       return
     }
 
-    let deltaX = this.scrollView.enableHorizontalScroll && this.isXOverflow ? dragVector.x : 0
-    let deltaY = this.scrollView.enableVerticalScroll && this.isYOverflow ? dragVector.y : 0
+    const deltaX = this.scrollView.enableHorizontalScroll && this.isXOverflow ? dragVector.x : 0
+    const deltaY = this.scrollView.enableVerticalScroll && this.isYOverflow ? dragVector.y : 0
 
     this.content.position = this.content.position.add(new vec3(deltaX, deltaY, 0))
 
-    if (this.enableScrollLimit && this.isEdgeInsideScrollArea("ScrollLimit")) {
-      this.limitToEdgeInstantly("ScrollLimit")
-      this.dragVelocity = vec2.zero()
-    } else if (this.isGrabbed) {
-      const rawVelocity = new vec2(deltaX, deltaY).uniformScale(1 / getDeltaTime())
+    if (!this.isManual) {
+      if (this.enableScrollLimit && this.isEdgeInsideScrollArea("ScrollLimit")) {
+        this.limitToEdgeInstantly("ScrollLimit")
+        this.dragVelocity = vec2.zero()
+      } else if (this.isGrabbed) {
+        const rawVelocity = new vec2(deltaX, deltaY).uniformScale(1 / getDeltaTime())
 
-      this.dragVelocity = this.dragVelocityFilter.filter(rawVelocity, getTime())
+        this.dragVelocity = this.dragVelocityFilter.filter(rawVelocity, getTime())
 
-      // If the filtered drag velocity is not the same direction as the current frame's delta, negate the delta to avoid hooking.
-      if (Math.sign(this.dragVelocity.x) !== Math.sign(deltaX)) {
-        this.content.position = this.content.position.add(new vec3(-deltaX, 0, 0))
-      }
-      if (Math.sign(this.dragVelocity.y) !== Math.sign(deltaY)) {
-        this.content.position = this.content.position.add(new vec3(0, -deltaY, 0))
+        // If the filtered drag velocity is not the same direction as the current frame's delta, negate the delta to avoid hooking.
+        if (Math.sign(this.dragVelocity.x) !== Math.sign(deltaX)) {
+          this.content.position = this.content.position.add(new vec3(-deltaX, 0, 0))
+        }
+        if (Math.sign(this.dragVelocity.y) !== Math.sign(deltaY)) {
+          this.content.position = this.content.position.add(new vec3(0, -deltaY, 0))
+        }
       }
     }
+
+    this.updateSyncStore()
 
     this.onScrollUpdateEvent.invoke({
       contentPosition: new vec2(this.content.position.x, this.content.position.y)
@@ -324,8 +368,17 @@ export class ScrollProvider {
 
   // Simulates physics (velocity upon release, friction, elasticity when past edge) when the user is not grabbing the ScrollView.
   private update() {
-    if (this.isGrabbed || getDeltaTime() === 0) {
+    if (this.isManual || this.isGrabbed || getDeltaTime() === 0) {
       return
+    }
+
+    if (this.syncEntity !== null) {
+      const isRecentConnection = this.connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+      // If the local user is not the last user to interact with the ScrollView, do not simulate physics.
+      if (!isRecentConnection) {
+        return
+      }
     }
 
     const initialEdgeSelector = this.selectEdgesInsideScrollArea("Content")
@@ -362,7 +415,7 @@ export class ScrollProvider {
     this.content.position = currentPosition
 
     // If the content is within the ScrollArea boundaries and has a low enough velocity, stop moving the contents to reduce update cost.
-    let currentEdgeSelector = this.selectEdgesInsideScrollArea("Content")
+    const currentEdgeSelector = this.selectEdgesInsideScrollArea("Content")
     if (currentEdgeSelector.x === 0 && Math.abs(this.inertiaVelocity.x) < this.decelerateMinSpeed) {
       currentVelocity.x = 0
     }
@@ -371,6 +424,8 @@ export class ScrollProvider {
     }
 
     this.inertiaVelocity = currentVelocity
+
+    this.updateSyncStore()
 
     this.onScrollUpdateEvent.invoke({
       contentPosition: new vec2(this.content.position.x, this.content.position.y)
@@ -464,7 +519,7 @@ export class ScrollProvider {
   }
 
   private updateInertiaVelocity() {
-    let newInertiaVelocity = vec2.zero()
+    const newInertiaVelocity = vec2.zero()
 
     if (Math.sign(this.dragVelocity.x) === Math.sign(this.inertiaVelocity.x)) {
       newInertiaVelocity.x = this.dragVelocity.x + this.inertiaVelocity.x
@@ -479,6 +534,8 @@ export class ScrollProvider {
     }
 
     this.inertiaVelocity = newInertiaVelocity
+
+    this.updateSyncStore()
   }
 
   private applyFriction(position: vec3, velocity: vec2, decelerateTime: number, deltaTime: number): [vec3, vec2] {
@@ -574,5 +631,75 @@ export class ScrollProvider {
     const worldScale = this.config.screenTransform.getTransform().getWorldScale()
 
     return new vec2(worldUnits.x / worldScale.x, worldUnits.y / worldScale.y)
+  }
+
+  /**
+   * Resync the ScrollView to the state contained in the datastore.
+   */
+  public resyncToStore(): void {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      this.content.position = this.syncEntity.currentStore.getVec3(SCROLL_VIEW_VALUE_KEY)
+      this.onScrollUpdateEvent.invoke({
+        contentPosition: new vec2(this.content.position.x, this.content.position.y)
+      })
+      this.inertiaVelocity = this.syncEntity.currentStore.getVec2(SCROLL_VIEW_INERTIA_KEY)
+      this.connectionId = this.syncEntity.currentStore.getString(SCROLL_VIEW_CONNECTION_KEY)
+    }
+  }
+
+  private setupConnectionCallbacks(): void {
+    if (
+      this.syncEntity.currentStore.getAllKeys().find((key: string) => {
+        return key === SCROLL_VIEW_VALUE_KEY
+      })
+    ) {
+      // Wait until the onStart event to position the content according to the stored position.
+      this.config.scrollView.createEvent("OnStartEvent").bind(() => {
+        this.content.position = this.syncEntity.currentStore.getVec3(SCROLL_VIEW_VALUE_KEY)
+      })
+
+      this.onScrollUpdateEvent.invoke({
+        contentPosition: new vec2(this.content.position.x, this.content.position.y)
+      })
+    } else {
+      this.syncEntity.currentStore.putVec3(SCROLL_VIEW_VALUE_KEY, this.contentPosition)
+    }
+
+    this.syncEntity.storeCallbacks.onStoreUpdated.add(this.processStoreUpdate.bind(this))
+  }
+
+  private processStoreUpdate(
+    _session: MultiplayerSession,
+    store: GeneralDataStore,
+    key: string,
+    info: ConnectedLensModule.RealtimeStoreUpdateInfo
+  ) {
+    const connectionId = info.updaterInfo.connectionId
+    const updatedByLocal = connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+    if (updatedByLocal) {
+      return
+    }
+
+    if (key === SCROLL_VIEW_VALUE_KEY) {
+      this.content.position = store.getVec3(SCROLL_VIEW_VALUE_KEY)
+      this.onScrollUpdateEvent.invoke({
+        contentPosition: new vec2(this.content.position.x, this.content.position.y)
+      })
+    } else if (key === SCROLL_VIEW_INERTIA_KEY) {
+      this.inertiaVelocity = store.getVec2(SCROLL_VIEW_INERTIA_KEY)
+    } else if (key === SCROLL_VIEW_CONNECTION_KEY) {
+      this.connectionId = store.getString(SCROLL_VIEW_CONNECTION_KEY)
+    }
+  }
+
+  private updateSyncStore() {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      this.syncEntity.currentStore.putVec3(SCROLL_VIEW_VALUE_KEY, this.contentPosition)
+      this.syncEntity.currentStore.putVec2(SCROLL_VIEW_INERTIA_KEY, this.inertiaVelocity)
+
+      this.connectionId = this.syncKitBridge.sessionController.getLocalConnectionId()
+      this.syncEntity.currentStore.putString(SCROLL_VIEW_CONNECTION_KEY, this.connectionId)
+    }
   }
 }

@@ -1,8 +1,26 @@
+import {GlowEffectView} from "../../Components/Interaction/HandVisual/GlowEffectView"
+import {HandMeshType, HandVisualOverride, HandVisualSelection} from "../../Components/Interaction/HandVisual/HandVisual"
+
 /**
  * Provides the SceneObject to be attached to the {@link BaseHand}
  */
 export interface HandVisuals {
   readonly handMesh: RenderMeshVisual | undefined
+
+  /**
+   * Reference to the RenderMeshVisual of the full hand mesh.
+   */
+  readonly handMeshFull: RenderMeshVisual | undefined
+
+  /**
+   * Reference to the RenderMeshVisual of the hand mesh with only an index & thumb for efficiency.
+   */
+  readonly handMeshIndexThumb: RenderMeshVisual | undefined
+
+  /**
+   * Reference to the RenderMeshVisual of the full hand mesh to pin SceneObjects to.
+   */
+  readonly handMeshPin: RenderMeshVisual | undefined
 
   /**
    * The root {@link SceneObject}, parent of the hand rig and hand mesh
@@ -140,6 +158,22 @@ export interface HandVisuals {
   readonly pinkyTip: SceneObject | undefined
 
   /**
+   * Sets the selection of the hand visual to present to user
+   */
+  visualSelection: HandVisualSelection
+
+  /**
+   * Gets or sets the mesh type to display (Full or IndexThumb)
+   */
+  meshType: HandMeshType
+
+  /**
+   * Gets or sets whether the hand visual is visible. When false, all hand visual components (mesh, glow effects, and
+   * wrist) will not be shown regardless of tracking status.
+   */
+  isVisible: boolean
+
+  /**
    * True when this class is ready to use.
    *
    * @remarks
@@ -148,7 +182,25 @@ export interface HandVisuals {
   readonly initialized: boolean
 
   /**
+   * The glow effect view that provides visual feedback for hand interactions.
+   */
+  glowEffectView: GlowEffectView | undefined
+
+  /**
    * Sets up all joint {@link Transform}s and sets {@link initialized} to true.
    */
   initialize(): void
+
+  /**
+   * Adds a hand visual override for a specific interactable.
+   * @param override - The HandVisualOverride to add.
+   */
+  addOverride(override: HandVisualOverride): void
+
+  /**
+   * Removes a hand visual override by its interactable SceneObject.
+   * @param interactableObject - The SceneObject of the override to remove.
+   * @returns True if removed, false if not found.
+   */
+  removeOverride(interactableObject: SceneObject): boolean
 }

@@ -1,9 +1,11 @@
 import Event, {PublicApi} from "../../Utils/Event"
+import {FrameCache} from "../../Utils/FrameCache"
 import {CancelToken, setTimeout} from "../../Utils/FunctionTimingUtils"
 import NativeLogger from "../../Utils/NativeLogger"
 import {PinchDetectionSelection, PinchDetector} from "./GestureProvider/PinchDetection/PinchDetector"
 import {JointNode, JOINT_HIERARCHY} from "./Joints"
 
+import {ProximitySensor} from "../../Components/Helpers/ProximitySensor"
 import {DegToRad} from "../../Utils/mathUtils"
 import {validate} from "../../Utils/validate"
 import WorldCameraFinderProvider from "../CameraProvider/WorldCameraFinderProvider"
@@ -121,6 +123,13 @@ export default class TrackedHand implements BaseHand {
   private onPhoneInHandEndEvent = new Event()
   readonly onPhoneInHandEnd = this.onPhoneInHandEndEvent.publicApi()
 
+  private proximitySensors: Map<LandmarkName, ProximitySensor> = new Map<LandmarkName, ProximitySensor>()
+
+  // Frame cache for expensive computations
+  private frameCache = FrameCache.getInstance()
+  private cachedHandOrientation!: () => OrientationVectors
+  private cachedIsInTargetingPose!: () => boolean
+
   constructor(private config: BaseHandConfig) {
     this.ownerSceneObject = this.sceneObjectManager.createSceneObject(
       this.handType === "left" ? "LeftHandModelOwner" : "RightHandModelOwner"
@@ -174,10 +183,22 @@ export default class TrackedHand implements BaseHand {
 
     this.setKeypointCollections()
 
+    // Initialize the cached hand orientation function
+    this.cachedHandOrientation = this.frameCache.wrapMethod(
+      `TrackedHand_${this.config.handType}_getHandOrientation`,
+      this,
+      this.computeHandOrientation
+    )
+
+    // Initialize the cached targeting pose function
+    this.cachedIsInTargetingPose = this.frameCache.wrapMethod(
+      `TrackedHand_${this.config.handType}_isInTargetingPose`,
+      this,
+      this.computeIsInTargetingPose
+    )
+
     this.pinchDetector = new PinchDetector({
       handType: this.config.handType,
-      thumbTip: this.thumbTip,
-      indexTip: this.indexTip,
       onHandLost: this.onHandLost,
       isTracked: () => {
         return this.isTracked()
@@ -268,14 +289,28 @@ export default class TrackedHand implements BaseHand {
     return Boolean(facingCameraAngle !== null && facingCameraAngle < HAND_FACING_THRESHOLD)
   }
 
+  /**
+   * Check if hand is in targeting pose, cached per frame for performance.
+   * This method is automatically cached by FrameCache utility.
+   */
   isInTargetingPose(): boolean {
+    return this.cachedIsInTargetingPose()
+  }
+
+  /**
+   * Expensive computation for targeting pose detection.
+   * This is wrapped by FrameCache and called only once per frame.
+   */
+  private computeIsInTargetingPose(): boolean {
     if (!this.isTracked()) {
       return false
     }
 
     const pitchAngle = this.getPalmPitchAngle()
+    const isFacingCamera = this.isFacingCamera()
 
-    return !this.isFacingCamera() && pitchAngle !== null && pitchAngle > POINTING_PITCH_THRESHOLD
+    const isPitchAngleValid = pitchAngle !== null && pitchAngle > POINTING_PITCH_THRESHOLD
+    return !isFacingCamera && isPitchAngleValid
   }
 
   getPinchDirection(): quat | null {
@@ -294,7 +329,19 @@ export default class TrackedHand implements BaseHand {
     return quat.lookAt(forward, up)
   }
 
+  /**
+   * Get the hand orientation vectors, cached per frame for performance.
+   * This method is automatically cached by FrameCache utility.
+   */
   private getHandOrientation(): OrientationVectors {
+    return this.cachedHandOrientation()
+  }
+
+  /**
+   * Expensive computation for hand orientation vectors.
+   * This is wrapped by FrameCache and called only once per frame.
+   */
+  private computeHandOrientation(): OrientationVectors {
     /**
      * 1. Create a right vector between the index and middle distals
      * 2. Create a forward vector between the wrist and middle distal
@@ -649,6 +696,23 @@ export default class TrackedHand implements BaseHand {
     }
   }
 
+  /**
+   * Set if the hand's pinch detector should use filtered events or not.
+   */
+  set useFilteredPinch(useFilteredPinch: boolean) {
+    if (useFilteredPinch === this.pinchDetector.useFilteredPinch) {
+      return
+    }
+    this.pinchDetector.useFilteredPinch = useFilteredPinch
+  }
+
+  /**
+   * Returns if the hand's pinch detector should use filtered events or not.
+   */
+  get useFilteredPinch(): boolean {
+    return this.pinchDetector.useFilteredPinch
+  }
+
   getPinchStrength(): number | null {
     if (!this.isTracked()) {
       return null
@@ -663,6 +727,29 @@ export default class TrackedHand implements BaseHand {
    */
   setTrackingMode(trackingMode: ObjectTracking3D.TrackingMode): void {
     this.objectTracking3DComponent.trackingMode = trackingMode
+  }
+
+  /**
+   * Returns the proximity sensor for a given landmark. Creates a new one if it doesn't exist.
+   * @param landmarkName - The landmark to get the proximity sensor for.
+   * @returns The proximity sensor component.
+   */
+  public getProximitySensor(landmarkName: LandmarkName): ProximitySensor {
+    // Ensure that the attachment points have been properly set up.
+    if (this.handVisuals && !this.handVisuals.initialized) {
+      this.handVisuals.initialize()
+    }
+
+    if (this.proximitySensors.has(landmarkName)) {
+      return this.proximitySensors.get(landmarkName)!
+    }
+
+    const proximitySensor = this.getKeypoint(landmarkName)
+      .getAttachmentPoint()
+      .createComponent(ProximitySensor.getTypeName())
+    this.proximitySensors.set(landmarkName, proximitySensor)
+
+    return proximitySensor
   }
 
   public getHandVisuals(): HandVisuals | null {

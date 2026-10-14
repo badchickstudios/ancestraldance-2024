@@ -4,12 +4,15 @@
   ImporterName: JavaScriptAssetImporter
   PrimaryAsset: !<reference> dd1712fe-7fc9-40c6-a3ca-0f68870f5a8d
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
-  ExtraData: {}
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
   AssetDataMap:
     JavaScriptAsset: !<own> 39223452-56a0-4055-8f6a-54bfbd472f7f
-  DependentFiles: []
-  ImporterSettings: !<AssetImporterSettings> {}
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
 - !<ScriptAssetData/39223452-56a0-4055-8f6a-54bfbd472f7f>
   SvgIcon: ""
@@ -21,6 +24,7 @@
   VersionPatch: 0
   ComponentUid: 4bc3f857-9c66-49ef-b3b8-2d00a84991f7
   ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     callbackType: false
     dataType: false
@@ -55,9 +59,14 @@
     vfxAsset: false
     vfxComponent: false
     vfxScriptName: false
-  ScriptTypesHidden: {}
+  ScriptTypesHidden:
+    {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
   DefaultScriptInputs:
     - tweenName: ""
       playAutomatically: true
@@ -93,4 +102,5 @@
       easingFunction: Quadratic
       easingType: Out
   ScriptTypes:
-    - {}
+    -
+      {}

@@ -1,7 +1,5 @@
 import {BoundariesProvider} from "./BoundariesProvider"
 
-const TAG = "SceneObjectBoundariesProvider"
-
 /**
  * Apply a boundary by computing it from a Scene Object
  */

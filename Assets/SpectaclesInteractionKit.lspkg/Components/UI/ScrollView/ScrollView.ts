@@ -69,6 +69,9 @@ const EXPECTED_CHILDREN_COUNT = 2
 /**
  * This class is responsible for creating and positioning grid content items based on a specified prefab and item count.
  * It instantiates the items and arranges them vertically with a specified offset.
+ *
+ * @deprecated in favor of using SpectaclesUIKit's ScrollView component.
+ * See https://developers.snap.com/spectacles/spectacles-frameworks/spectacles-ui-kit/get-started for more details.
  */
 @component
 export class ScrollView extends BaseScriptComponent {
@@ -151,12 +154,26 @@ size."
   )
   scrollAreaBounds: vec2 = new vec2(1, 1)
 
+  /**
+   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
+   * If set to true before runtime, the ScrollView's position will be synced whenever a new user joins the same Connected Lenses session.
+   */
+  @ui.separator
+  @ui.group_start("Sync Kit Support")
+  @input
+  @hint(
+    "Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab. \
+If set to true before runtime, the ScrollView's position will be synced whenever a new user joins the same Connected Lenses session."
+  )
+  public isSynced: boolean = false
+  @ui.group_end
   private onContentLengthChangedEvent = new Event<void>()
   public onContentLengthChanged: PublicApi<void> = this.onContentLengthChangedEvent.publicApi()
 
   onAwake() {
     this.scrollArea = this.createScrollArea()
     this.scrollProvider = this.createScrollProvider(this.scrollArea)
+
     this.mask = this.sceneObject.createComponent("Component.MaskingComponent")
 
     this.defineScriptEvents()
@@ -190,19 +207,27 @@ size."
     })
 
     scrollArea.onDragStart.add((event) => {
-      this.processPlanecastDrag(event)
-      this.processTouchpadDrag(event)
+      if (!this.scrollProvider.isManual) {
+        this.processPlanecastDrag(event)
+        this.processTouchpadDrag(event)
+      }
     })
     scrollArea.onDragUpdate.add((event) => {
-      this.processPlanecastDrag(event)
-      this.processTouchpadDrag(event)
+      if (!this.scrollProvider.isManual) {
+        this.processPlanecastDrag(event)
+        this.processTouchpadDrag(event)
+      }
     })
     scrollArea.onDragEnd.add((event) => {
-      scrollProvider.onGrabEnd(event)
+      if (!this.scrollProvider.isManual) {
+        scrollProvider.onGrabEnd(event)
+      }
     })
 
     scrollArea.onTriggerStart.add((event) => {
-      scrollProvider.onGrabStart(event)
+      if (!this.scrollProvider.isManual) {
+        scrollProvider.onGrabStart(event)
+      }
     })
 
     return scrollProvider
@@ -236,6 +261,8 @@ size."
       this.scrollProvider.resetContentOrigin()
       // We recompute boundaries once more to ensure that the scroll limit anchor is set properly.
       this.scrollProvider.recomputeBoundaries()
+
+      this.scrollProvider.resyncToStore()
     })
   }
 
@@ -259,6 +286,21 @@ size."
   scrollBy = (dragVector: vec2) => {
     this.deferOnReady(() => this.scrollProvider.scrollBy(dragVector))
   }
+
+  /**
+   * @returns if the ScrollView is being manually controlled by some component beyond ScrollView (e.g. ScrollBar)
+   */
+  get isManual(): boolean {
+    return this.scrollProvider.isManual
+  }
+  /**
+   * Sets if the ScrollView is being manually controlled by some component beyond ScrollView (e.g. ScrollBar)
+   * @param isManual - true if the ScrollView is being manually controlled
+   */
+  set isManual(manual: boolean) {
+    this.scrollProvider.isManual = manual
+  }
+
   get onScrollUpdate() {
     return this.scrollProvider.onScrollUpdate
   }

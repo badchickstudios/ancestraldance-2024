@@ -155,8 +155,8 @@ export default abstract class RaycastBase {
    * Can toggle whether or not smoothing should be used for the raycast anchor in the Script UI.
    */
   calculateCastAnchor(thumbKnuckle: vec3, middleKnuckle: vec3): vec3 {
-    let middleFingerThumbOffset: vec3 = middleKnuckle.sub(thumbKnuckle)
-    let rootMiddleFinger: vec3 = this.knuckleOneEuroFilter
+    const middleFingerThumbOffset: vec3 = middleKnuckle.sub(thumbKnuckle)
+    const rootMiddleFinger: vec3 = this.knuckleOneEuroFilter
       ? thumbKnuckle.add(this.knuckleOneEuroFilter.filter(middleFingerThumbOffset, getTime()))
       : thumbKnuckle.add(middleFingerThumbOffset)
     return rootMiddleFinger.uniformScale(SMOOTHED_MID_SCALE).add(thumbKnuckle.uniformScale(SMOOTHED_THUMB_SCALE))

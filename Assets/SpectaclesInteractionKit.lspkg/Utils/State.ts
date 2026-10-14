@@ -1,4 +1,5 @@
 export type Callback = (state: State) => void
+export type SignalCallback = (signal: string, data: any) => void
 
 export type StateConfig = {
   name: string
@@ -7,7 +8,7 @@ export type StateConfig = {
   onExit: Callback
   onUpdate: Callback
   onLateUpdate: Callback
-  onSignal: Callback
+  onSignal: SignalCallback
   transitions: TransitionConfig[]
 }>
 
@@ -22,8 +23,6 @@ export type TransitionConfig = {
   checkOnSignal: CheckSignalCallback
   onExecution: TransitionExecutionCallback
 }>
-
-const TAG = "State"
 
 /**
  * Transition class for a State
@@ -145,9 +144,9 @@ export default class State {
   /**
    * Triggers the onSignal callback
    */
-  onSignal() {
+  onSignal(signal: string, data: any) {
     if (this.config.onSignal !== undefined) {
-      this.config.onSignal(this)
+      this.config.onSignal(signal, data)
     }
   }
 }

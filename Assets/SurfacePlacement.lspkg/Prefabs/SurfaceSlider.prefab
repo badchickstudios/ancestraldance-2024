@@ -1,4 +1,4 @@
-- !<ObjectPrefab/7237dbfa-de7c-4092-9216-01cf73241123>
+- !<ObjectPrefab/ffc14c40-024a-443a-b304-210acb727734>
   PackagePath: ""
   objects:
     - !<own> 9016b41f-cc99-4d35-820a-17584eded8dd
@@ -32,7 +32,7 @@
     []
   Name: SurfaceSlider
   Enabled: true
-  ScriptAsset: !<reference> d60202f4-4bc6-4642-abe7-cbc574f62aea
+  ScriptAsset: !<reference> b2a73112-695b-4d57-a29b-733fa07d198b
   ScriptInputsDefault:
     enableLogging: true
     enableLoggingLifecycle: true
@@ -127,8 +127,8 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 9bda91fc-6b2b-4652-96d9-134a4f8d7646
-  Mesh: !<reference> 19d6b039-6383-425c-88d7-54475b68f57a
+    - !<reference> 32bd8a6b-f0ca-455f-834e-1638c1f78da7
+  Mesh: !<reference> d01e4946-993f-4a69-900c-6c2ecd8fa08d
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
@@ -151,7 +151,6 @@
     onMinValueReachedFunctionNames: true
     customFunctionForOnMaxValueReached: true
     onMaxValueReachedFunctionNames: true
-    isSynced: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -187,7 +186,6 @@
       customFunctionForOnMaxValueReached: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
       onMaxValueReachedFunctionNames: !<string[]>
         []
-      isSynced: false
   ScriptTypes:
     "":
       {}
@@ -285,7 +283,6 @@
     editEventCallbacks: true
     customFunctionForOnStateChanged: true
     onStateChangedFunctionNames: true
-    isSynced: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -293,11 +290,10 @@
       _onIcon: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       _offIcon: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       _isToggledOn: false
-      editEventCallbacks: false
+      editEventCallbacks: true
       customFunctionForOnStateChanged: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
       onStateChangedFunctionNames: !<string[]>
         []
-      isSynced: false
   ScriptTypes:
     "":
       {}
@@ -802,9 +798,6 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
-    targetingVisual: true
-    ignoreInteractionPlane: true
-    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -812,15 +805,13 @@
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
-      targetingVisual: !<float> 1.000000
-      ignoreInteractionPlane: false
-      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -828,7 +819,8 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      useFilteredPinch: false
+      isSynced: true
+      acceptableSyncInteractionTypes: !<float> 7.000000
   ScriptTypes:
     "":
       {}
@@ -1050,8 +1042,8 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> b70c7c7a-f779-4ea4-b076-2b80e74211c2
-  Mesh: !<reference> 48bf52aa-7a6b-4e77-8bc2-246bda8baa70
+    - !<reference> b18d8663-b519-4a5a-b5dd-c489325da6af
+  Mesh: !<reference> a333ed0d-862e-49a6-8050-94f28a6cb7b4
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false

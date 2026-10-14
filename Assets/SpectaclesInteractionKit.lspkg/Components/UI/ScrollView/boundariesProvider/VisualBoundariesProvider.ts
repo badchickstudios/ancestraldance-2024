@@ -1,7 +1,5 @@
 import {SceneObjectBoundariesProvider} from "./SceneObjectBoundariesProvider"
 
-const TAG = "VisualBoundariesProvider"
-
 /**
  * Computes boundaries for elements with BaseMeshVisual
  */
@@ -10,7 +8,6 @@ export class VisualBoundariesProvider extends SceneObjectBoundariesProvider {
     if (!this.sceneObject.enabled) {
       return Rect.create(0, 0, 0, 0)
     }
-
     return this.getNodeBoundaries(this.sceneObject)
   }
 
@@ -21,13 +18,20 @@ export class VisualBoundariesProvider extends SceneObjectBoundariesProvider {
     }
 
     const rect = this.createNodeRectBoundaries(node)
-
     for (const child of node.children) {
       const childRect = this.getNodeBoundaries(child)
-      rect.left = Math.min(rect.left, childRect.left)
-      rect.right = Math.max(rect.right, childRect.right)
-      rect.bottom = Math.min(rect.bottom, childRect.bottom)
-      rect.top = Math.max(rect.top, childRect.top)
+      if (rect.left > childRect.left) {
+        rect.left = childRect.left
+      }
+      if (rect.right < childRect.right) {
+        rect.right = childRect.right
+      }
+      if (rect.bottom > childRect.bottom) {
+        rect.bottom = childRect.bottom
+      }
+      if (rect.top < childRect.top) {
+        rect.top = childRect.top
+      }
     }
 
     return rect

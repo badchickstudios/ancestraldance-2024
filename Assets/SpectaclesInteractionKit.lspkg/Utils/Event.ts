@@ -25,9 +25,11 @@ export default class Event<Arg = void> {
    * Register an event handler
    *
    * @param handler to register
+   * @returns the function to invoke when unsubscribing from the event.
    */
-  public add(handler: callback<Arg>) {
+  public add(handler: callback<Arg>): unsubscribe {
     this.subscribers.push(handler)
+    return () => this.remove(handler)
   }
 
   /**
@@ -58,24 +60,11 @@ export default class Event<Arg = void> {
    * function, and also prevents "invoke" from being called externally
    */
   public publicApi(): PublicApi<Arg> {
-    const event = this
-    /**
-     * @param callback
-     */
-    function add(callback: callback<Arg>) {
-      event.add(callback)
-      return () => event.remove(callback)
-    }
+    const fn = this.add.bind(this) // Can add callbacks directly or invoke add.
+    const addRemoveObject = {add: this.add.bind(this), remove: this.remove.bind(this)}
 
-    /**
-     * @param callback
-     */
-    function remove(callback: callback<Arg>) {
-      event.remove(callback)
-    }
+    const publicApi = Object.assign(fn, addRemoveObject)
 
-    add.remove = remove
-    add.add = add // can be called as a method or directly
-    return add
+    return publicApi
   }
 }

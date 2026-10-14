@@ -4,7 +4,7 @@
   ImporterName: FontImporter
   PrimaryAsset: !<reference> ccc79b64-cad8-4bc4-a70a-f5077a431348
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:

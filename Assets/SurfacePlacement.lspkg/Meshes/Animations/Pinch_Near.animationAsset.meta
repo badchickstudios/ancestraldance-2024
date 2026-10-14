@@ -1,8 +1,8 @@
-- !<AssetImportMetadata/bb541d8d-9412-d4d6-3063-f52ebf29059f>
+- !<AssetImportMetadata/cbf1b082-38fe-d95e-15f1-54ba47792f11>
   ImportedAssetIds:
-    AnimationAsset: !<reference> a29b5ded-6703-4ad9-b7be-ec150d4e886d
+    AnimationAsset: !<reference> fb6654c6-483a-46f1-b1a2-cf3b5749204b
   ImporterName: AnimationAssetImporter
-  PrimaryAsset: !<reference> a29b5ded-6703-4ad9-b7be-ec150d4e886d
+  PrimaryAsset: !<reference> fb6654c6-483a-46f1-b1a2-cf3b5749204b
   PackageType: NotAPackage
   LegacyPackagePolicy: ~
   ExtraData:

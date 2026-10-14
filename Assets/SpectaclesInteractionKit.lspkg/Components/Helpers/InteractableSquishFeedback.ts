@@ -69,8 +69,13 @@ export class InteractableSquishFeedback extends BaseScriptComponent {
     this.setupInteractableCallbacks()
   }
 
-  resetScale(): void {
+  resetScale(event: InteractorEvent): void {
     validate(this.initialScale)
+
+    if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+      return
+    }
+
     this.squishObject.getTransform().setLocalScale(this.initialScale)
     this.initialPinch = null
   }
@@ -100,6 +105,15 @@ export class InteractableSquishFeedback extends BaseScriptComponent {
     })
     this.interactable.onHoverUpdate.add(this.updateSquish.bind(this))
     this.interactable.onHoverExit.add(this.resetScale.bind(this))
+    this.interactable.onTriggerEndOutside.add(this.resetScale.bind(this))
     this.interactable.onTriggerCanceled.add(this.resetScale.bind(this))
+
+    this.interactable.onSyncHoverEnter.add((event) => {
+      this.initialPinch = event.interactor.interactionStrength
+    })
+    this.interactable.onSyncHoverUpdate.add(this.updateSquish.bind(this))
+    this.interactable.onSyncHoverExit.add(this.resetScale.bind(this))
+    this.interactable.onSyncTriggerEndOutside.add(this.resetScale.bind(this))
+    this.interactable.onSyncTriggerCanceled.add(this.resetScale.bind(this))
   }
 }

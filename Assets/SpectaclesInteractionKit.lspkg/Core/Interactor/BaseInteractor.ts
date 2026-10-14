@@ -8,79 +8,54 @@ import {InteractionManager} from "../InteractionManager/InteractionManager"
 import {PokeTargetProvider} from "../Interactor/PokeTargetProvider"
 import {DragProvider} from "./DragProvider"
 
-const TAG = "BaseInteractor"
-
 /**
  * Defines API for {@link Interactor} type
  */
 export default abstract class BaseInteractor extends BaseScriptComponent implements Interactor {
-  @ui.group_start("Interactor")
   /**
-   * Should draw gizmos for visual debugging.
+   * @internal
+   * The maximum distance at which the interactor can target interactables.
    */
-  @input
-  @hint("Should draw gizmos for visual debugging.")
-  _drawDebug: boolean = false
+  _maxRaycastDistance: number = 500
 
-  @ui.group_start("Spherecast Configuration")
   /**
+   * @internal
+   * A multiplier applied to spherecast radii when using indirect targeting. Larger values create wider targeting
+   * areas, making it easier to target objects at the expense of precision. Smaller values provide more precise
+   * targeting.
+   */
+  indirectTargetingVolumeMultiplier: number = 1
+
+  /**
+   * @internal
    * Should use spherecast for targeting when raycast does not register a hit.
    */
-  @input
-  @hint("Should use spherecast for targeting when raycast does not register a hit.")
   sphereCastEnabled: boolean = false
+
   /**
+   * @internal
    * Defines the radii (in cm) used for progressive spherecasting when raycast fails to hit a target. Used in
    * sequence with spherecastDistanceThresholds to perform increasingly larger sphere casts until a target is found.
    * Smaller radii provide more precise targeting while larger radii help target small or distant objects. Must have the
    * same array length as spherecastDistanceThresholds.
    */
-  @input("number[]", "{0.5, 2.0, 4.0}")
-  @showIf("sphereCastEnabled", true)
-  @hint(
-    "Defines the radii (in cm) used for progressive spherecasting when raycast fails to hit a target. Used in \
-sequence with spherecastDistanceThresholds to perform increasingly larger sphere casts until a target is found. \
-Smaller radii provide more precise targeting while larger radii help target small or distant objects. Must have the \
-same array length as spherecastDistanceThresholds."
-  )
   spherecastRadii: number[] = [0.5, 2.0, 4.0]
+
   /**
+   * @internal
    * Defines distance offsets (in cm) from the ray origin for performing sphere casts. Each value creates a sphere
    * cast starting point at [ray origin + (direction * offset)]. Used in sequence with spherecastRadii, with the system
    * trying progressively larger sphere casts until a target is found. Helps improve targeting of small or distant
    * objects. Must have the same array length as spherecastRadii.
    */
-  @input("number[]", "{0, 12, 30}")
-  @showIf("sphereCastEnabled", true)
-  @hint(
-    "Defines distance offsets (in cm) from the ray origin for performing sphere casts. Each value creates a sphere \
-cast starting point at [ray origin + (direction * offset)]. Used in sequence with spherecastRadii, with the system \
-trying progressively larger sphere casts until a target is found. Helps improve targeting of small or distant \
-objects. Must have the same array length as spherecastRadii."
-  )
   spherecastDistanceThresholds: number[] = [0, 12, 30]
-  @ui.group_end
-  @ui.group_start("Targeting Configuration")
-  /**
-   * The maximum distance at which the interactor can target interactables.
-   */
-  @input
-  @hint("The maximum distance at which the interactor can target interactables.")
-  _maxRaycastDistance: number = 500
-  /**
-   * A multiplier applied to spherecast radii when using indirect targeting. Larger values create wider targeting
-   * areas, making it easier to target objects at the expense of precision. Smaller values provide more precise
-   * targeting.
-   */
-  @input
-  @hint(
-    "A multiplier applied to spherecast radii when using indirect targeting. Larger values create wider targeting \
-areas, making it easier to target objects at the expense of precision. Smaller values provide more precise \
-targeting."
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Drag Configuration</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Configure drag sensitivity for indirect (raycast) interactions</span>'
   )
-  indirectTargetingVolumeMultiplier: number = 1
-  @ui.group_end
-  @ui.group_start("Indirect Drag Provider")
+
   /**
    * Controls the minimum distance (in cm) the hand must move during indirect interaction to be considered a drag.
    * When the distance between the interaction origin position and current position exceeds this threshold, dragging
@@ -88,15 +63,31 @@ targeting."
    * values require more deliberate movement before dragging begins.
    */
   @input
+  @label("Indirect Drag Threshold")
   @hint(
     "Controls the minimum distance (in cm) the hand must move during indirect interaction to be considered a drag. \
 When the distance between the interaction origin position and current position exceeds this threshold, dragging \
 behavior is detected and tracked. Lower values make dragging more sensitive and easier to trigger, while higher \
 values require more deliberate movement before dragging begins."
   )
-  protected indirectDragThreshold: number = 3.0
-  @ui.group_end
-  @ui.group_end
+  protected indirectDragThreshold: number = 10.0
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Debug</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Visual debugging options for development</span>'
+  )
+
+  /**
+   * Should draw gizmos for visual debugging.
+   */
+  @input
+  @label("Draw Debug")
+  @hint(
+    "When enabled, draws debug gizmos in the scene to visualize raycasts, colliders, and other interactor geometry. \
+Useful for troubleshooting targeting issues during development."
+  )
+  _drawDebug: boolean = false
 
   // Dependencies injection
   protected interactionManager = InteractionManager.getInstance()
@@ -172,6 +163,20 @@ values require more deliberate movement before dragging begins."
    */
   onTriggerCanceled = this.onTriggerCanceledEvent.publicApi()
 
+  /**
+   * Returns if the Interactor is in some generic triggering state in the current frame.
+   */
+  get isTriggering(): boolean {
+    return this.currentTrigger !== InteractorTriggerType.None
+  }
+
+  /**
+   * Returns if the Interactor was in some generic triggering state in the previous frame.
+   */
+  get wasTriggering(): boolean {
+    return this.previousTrigger !== InteractorTriggerType.None
+  }
+
   protected set previousTrigger(trigger: InteractorTriggerType) {
     this._previousTrigger = trigger
   }
@@ -235,6 +240,11 @@ values require more deliberate movement before dragging begins."
     this.previousDragVector = this.currentDragVector
     this._previousStartPoint = this.startPoint
 
+    // These values need to be cached to differently because the target provider's set is only updated during
+    // the lateUpdate of the frame, but updateState is called during the update of the frame.
+    this._wasHoveringCurrentInteractable = this._isHoveringCurrentInteractable
+    this._isHoveringCurrentInteractable = this.isHoveringCurrentInteractable
+
     this.currentInteractable = null
   }
 
@@ -242,7 +252,7 @@ values require more deliberate movement before dragging begins."
    * Disables or enables the input powering this interactor
    * @param enabled whether the input powering the interactor should be enabled
    */
-  setInputEnabled(enabled: boolean): void {}
+  setInputEnabled(_enabled: boolean): void {}
 
   /**
    * Clears the current Interactable, used when an Interactable is deleted at runtime
@@ -327,6 +337,48 @@ values require more deliberate movement before dragging begins."
 
   private interactionStartedInteractable: Interactable | null = null
 
+  protected _wasHoveringCurrentInteractable: boolean | null = null
+  protected _isHoveringCurrentInteractable: boolean | null = null
+
+  /**
+   * Returns true if the Interactor was hovering the current Interactable in the previous frame.
+   */
+  get wasHoveringCurrentInteractable(): boolean | null {
+    return this._wasHoveringCurrentInteractable
+  }
+
+  /**
+   * Returns true if the Interactor is hovering the current Interactable in the current frame.
+   */
+  abstract get isHoveringCurrentInteractable(): boolean | null
+
+  /**
+   * Returns a list of Interactables that the Interactor is hovering (targeting ray intersects w/ Interactable's collider).
+   */
+  abstract get hoveredInteractables(): Interactable[]
+
+  /**
+   * Returns true if the Interactor is hovering over the given Interactable.
+   * An Interactor can hover over multiple overlapping Interactables at once, but only the most
+   * deeply nested Interactable will receive the official onHover events.
+   *
+   * This is useful for creating custom behaviors when receiving onHoverEnter/Exit events during trigger.
+   *
+   * @param interactable - the Interactable to check for
+   */
+  abstract isHoveringInteractable(interactable: Interactable): boolean
+
+  /**
+   * Returns true if the Interactor is hovering over the given Interactable or any of its Interactable descendants.
+   * An Interactor can hover over multiple overlapping Interactables at once, but only the most
+   * deeply nested Interactable will receive the official onHover events.
+   *
+   * This is useful for creating custom behaviors when receiving onHoverEnter/Exit events during trigger.
+   *
+   * @param interactable - the Interactable to check for
+   */
+  abstract isHoveringInteractableHierarchy(interactable: Interactable): boolean
+
   protected handleSelectionLifecycle(targetProvider: TargetProvider): void {
     // Special case for Poke, always considered inside
     if (targetProvider instanceof PokeTargetProvider) {
@@ -342,7 +394,7 @@ values require more deliberate movement before dragging begins."
     if (wasSelected && !isSelected) {
       if (this.interactionStartedInteractable !== null) {
         this._endedInsideInteractable =
-          targetProvider?.isIntersectingInteractable(this.interactionStartedInteractable) ?? false
+          targetProvider?.isHoveringInteractable(this.interactionStartedInteractable) ?? false
 
         this.interactionStartedInteractable = null
       }
@@ -480,7 +532,17 @@ values require more deliberate movement before dragging begins."
    * @returns the direct collider's position projected onto the plane
    */
   public colliderPlaneIntersection(interactable: Interactable | null): vec3 | null {
-    const origin = this.startPoint
+    return this.positionPlaneIntersection(interactable, this.endPoint)
+  }
+
+  /**
+   * Projects the given position onto the plane defined by the Interactable's forward vector / origin
+   * @param interactable - the Interactable used to define the plane of intersection
+   * @param position - the world position to project onto the plane
+   * @returns the direct collider's position projected onto the plane
+   */
+  public positionPlaneIntersection(interactable: Interactable | null, position: vec3 | null): vec3 | null {
+    const origin = position
 
     if (origin === null || interactable === null) {
       return null
@@ -504,6 +566,7 @@ values require more deliberate movement before dragging begins."
    */
   currentInteractableChanged = (): void => {
     if (this.currentInteractable !== this.previousInteractable) {
+      this._wasHoveringCurrentInteractable = false
       this.onCurrentInteractableChangedEvent.invoke(this.currentInteractable)
     }
   }

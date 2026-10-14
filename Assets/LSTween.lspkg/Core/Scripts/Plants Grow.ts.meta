@@ -4,12 +4,15 @@
   ImporterName: TypeScriptAssetImporter
   PrimaryAsset: !<reference> 3f96019e-2d97-4cee-9011-491c162df251
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
-  ExtraData: {}
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
   AssetDataMap:
     TypeScriptAsset: !<own> 0b637500-1b42-4d99-b4f4-8c974b118b05
-  DependentFiles: []
-  ImporterSettings: !<AssetImporterSettings> {}
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
 - !<TypeScriptAssetData/0b637500-1b42-4d99-b4f4-8c974b118b05>
   SvgIcon: ""
@@ -21,6 +24,7 @@
   VersionPatch: 0
   ComponentUid: a985b45c-ad0d-4c61-87f3-955f7b389065
   ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     flower2Blossom: false
     grass0: false
@@ -44,9 +48,14 @@
     tendril3: false
     tendrilYoung1: false
     tendrilYoung2: false
-  ScriptTypesHidden: {}
+  ScriptTypesHidden:
+    {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
   DefaultScriptInputs:
     - podsSmall1: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       podsSmall2: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
@@ -71,7 +80,8 @@
       tendrilYoung1: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       tendrilYoung2: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
-    - {}
+    -
+      {}
   InputLines:
     - // @input SceneObject podsSmall1
     - // @input SceneObject podsSmall2

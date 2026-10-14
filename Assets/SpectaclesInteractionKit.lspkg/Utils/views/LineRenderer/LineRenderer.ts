@@ -172,9 +172,9 @@ export default class LineRenderer extends View<LineViewConfig> {
     this._points[index] = newPos
 
     // Calculate where to shift mesh vertices at point
-    var tangent: vec3
-    var prevPoint: vec3
-    var uv_v: number
+    let tangent: vec3
+    let prevPoint: vec3
+    let uv_v: number
     if (index === 0) {
       prevPoint = this.points[index]
       tangent = this._points[index + 1].sub(this._points[index]).normalize()
@@ -187,12 +187,12 @@ export default class LineRenderer extends View<LineViewConfig> {
       // Get uv_v coords from mesh vertex data, use it to calculate uv, width, and miter
       prevPoint = this.points[index - 1]
       uv_v = this.meshVertexData[index * VERTICES_PER_POINT * VERTEX_DATA_SIZE + UV_V_POSITION]
-      let prevSegment = utils.getSegmentNormalized(this._points[index - 1], this._points[index])
-      let nextSegment = utils.getSegmentNormalized(this._points[index], this._points[index + 1])
+      const prevSegment = utils.getSegmentNormalized(this._points[index - 1], this._points[index])
+      const nextSegment = utils.getSegmentNormalized(this._points[index], this._points[index + 1])
       tangent = utils.getTangent(prevSegment, nextSegment)
     }
-    let leftVertexData = utils.buildVertex(newPos, prevPoint, tangent, 0, uv_v)
-    let rightVertexData = utils.buildVertex(newPos, prevPoint, tangent, 1, uv_v)
+    const leftVertexData = utils.buildVertex(newPos, prevPoint, tangent, 0, uv_v)
+    const rightVertexData = utils.buildVertex(newPos, prevPoint, tangent, 1, uv_v)
 
     this.meshBuilder.setVertexInterleaved(index * VERTICES_PER_POINT, leftVertexData)
     this.meshBuilder.setVertexInterleaved(index * VERTICES_PER_POINT + 1, rightVertexData)
@@ -205,7 +205,7 @@ export default class LineRenderer extends View<LineViewConfig> {
    * @returns meshBuilder with vertex configuration: position (3), prevSegment (3), direction (3), textureO (2)
    */
   private setupMeshBuilder(): MeshBuilder {
-    var meshBuilder = new MeshBuilder([
+    const meshBuilder = new MeshBuilder([
       {name: "position", components: 3},
       {name: "prevSegment", components: 3},
       {name: "direction", components: 3},
@@ -254,7 +254,7 @@ export default class LineRenderer extends View<LineViewConfig> {
     }
 
     // Used to calculate uvs
-    let totalLineLength = this.getLineLength()
+    const totalLineLength = this.getLineLength()
     let lengthAtVertex = 0
 
     // Used to calculate miter for bends in segments
@@ -262,8 +262,8 @@ export default class LineRenderer extends View<LineViewConfig> {
     let segmentAfter = null
 
     // Append all vertex data in one large array
-    let vertexArraySize = this._points.length * SEGMENT_DATA_SIZE
-    let vertexData: number[] = Array(vertexArraySize)
+    const vertexArraySize = this._points.length * SEGMENT_DATA_SIZE
+    const vertexData: number[] = Array(vertexArraySize)
 
     // Build each line segment
     let dataIndex = 0
@@ -325,7 +325,7 @@ export default class LineRenderer extends View<LineViewConfig> {
    * @returns total length of line with segments indicated
    */
   private getLineLength(numSegments = this._points.length) {
-    var length = 0
+    let length = 0
     for (let i = 0; i < numSegments - 1; i++) {
       length += this._points[i].distance(this._points[i + 1])
     }

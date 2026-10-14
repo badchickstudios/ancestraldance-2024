@@ -4,13 +4,15 @@
   ImporterName: JavaScriptAssetImporter
   PrimaryAsset: !<reference> 91990d48-88e8-46bb-8f3c-5d3d9bd96996
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     AssetLibraryId: 7K9R1jzj0KHUkW4KFJ2ZzW
   AssetDataMap:
     JavaScriptAsset: !<own> 708c2d78-bfaa-4b38-a33a-581bd27dd88c
-  DependentFiles: []
-  ImporterSettings: !<AssetImporterSettings> {}
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
 - !<ScriptAssetData/708c2d78-bfaa-4b38-a33a-581bd27dd88c>
   SvgIcon: ""
@@ -22,16 +24,23 @@
   VersionPatch: 0
   ComponentUid: 4fc1f642-d25d-4739-9b8c-0d130319b94e
   ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     blendShape: false
     wristOccluder: false
     wristOccluderShadow: false
-  ScriptTypesHidden: {}
+  ScriptTypesHidden:
+    {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
   DefaultScriptInputs:
     - wristOccluder: !<reference.RenderMeshVisual> 00000000-0000-0000-0000-000000000000
       wristOccluderShadow: !<reference.RenderMeshVisual> 00000000-0000-0000-0000-000000000000
       blendShape: 0.500000
   ScriptTypes:
-    - {}
+    -
+      {}

@@ -1,4 +1,4 @@
-- !<ObjectPrefab/8233b9b2-8bfa-482f-8965-64bd50dbf4c8>
+- !<ObjectPrefab/6aea2575-cd9c-48f2-932d-071be3e49807>
   PackagePath: ""
   objects:
     - !<own> a111b6d2-2a2a-4039-9c60-16b63cbea7b4
@@ -128,9 +128,9 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 34e5f58e-778c-4caf-a8b8-aa79f5a8c956
-    - !<reference> 8a4db70f-6a34-4a94-ad1c-e23f0652817b
-  Mesh: !<reference> 0d6938cd-727d-48bf-bf3b-20e52dda2b56
+    - !<reference> 8bbe3ebf-e6b3-479f-b73b-51ff3fcd9e92
+    - !<reference> d8496e6d-4478-403e-b185-4cdf5a38d605
+  Mesh: !<reference> 944464c3-4702-4128-ae5d-fa24c6438dfe
   Skin: !<reference> b29871ae-8efb-4619-8903-905b72b5ebfc
   BlendShapesEnabled: true
   BlendNormals: false
@@ -400,7 +400,7 @@
     []
   Name: HandHintsController
   Enabled: true
-  ScriptAsset: !<reference> 1c2b5869-da0d-48f7-bd87-176627ad476c
+  ScriptAsset: !<reference> f0780289-5d54-44da-aeca-861ad992a685
   ScriptInputsDefault:
     enableLogging: true
     enableLoggingLifecycle: true
@@ -637,9 +637,9 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 34e5f58e-778c-4caf-a8b8-aa79f5a8c956
-    - !<reference> 8a4db70f-6a34-4a94-ad1c-e23f0652817b
-  Mesh: !<reference> adcb834c-f576-46f0-ad00-70247168e58d
+    - !<reference> 8bbe3ebf-e6b3-479f-b73b-51ff3fcd9e92
+    - !<reference> d8496e6d-4478-403e-b185-4cdf5a38d605
+  Mesh: !<reference> 6494a091-9d2f-4ae5-b052-43d5e83306d3
   Skin: !<reference> b29871ae-8efb-4619-8903-905b72b5ebfc
   BlendShapesEnabled: true
   BlendNormals: false
@@ -684,7 +684,7 @@
   ClipRangeType: Frames
   AnimationClips:
     - !<AnimationClip>
-      AnimationAsset: !<reference> fc0a5720-1a82-4586-bb8c-71c12bb548f5
+      AnimationAsset: !<reference> e1183cc1-a7b8-42af-bdee-f80a159a5734
       Name: BaseLayer
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -697,7 +697,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> a29b5ded-6703-4ad9-b7be-ec150d4e886d
+      AnimationAsset: !<reference> fb6654c6-483a-46f1-b1a2-cf3b5749204b
       Name: Pinch_Near
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -710,7 +710,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> e05a51ab-56e3-47a6-a39d-dfecb10b587b
+      AnimationAsset: !<reference> ab13d9b4-6d16-43a6-8a76-2a505f061941
       Name: Pinch_Far
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -723,7 +723,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> fe704509-a754-45d9-bada-c422d6964ba0
+      AnimationAsset: !<reference> 06c7be90-9b7b-4e5e-915a-6fe07e104ac3
       Name: Pinch_Move_X
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -736,7 +736,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> b11e10d5-33f6-4d67-82ed-91d992e98f13
+      AnimationAsset: !<reference> ba1ef1a0-9042-4ced-aa6a-f4e51bb8ff43
       Name: Pinch_Move_Y
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -749,7 +749,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> d65a0687-878b-48e5-9ff3-dd2ac87de4ae
+      AnimationAsset: !<reference> a4eae540-439d-465d-99ef-eeb4e659977d
       Name: Pinch_Move_Z
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -762,7 +762,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> eea13656-4246-44db-b0dd-24b5364e2e2d
+      AnimationAsset: !<reference> d9170d7b-8a62-40f3-8950-20861c6576f1
       Name: Pinch_Rotate_X
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -775,7 +775,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> e9c2a5db-ff30-49f0-b4b5-1dd64a7a0d6a
+      AnimationAsset: !<reference> fa84d2b3-87d7-48c8-8a8f-69bf0dda48d1
       Name: Pinch_Rotate_Y
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -788,7 +788,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 928e3de7-4149-4aee-91c5-a44ec0f55b06
+      AnimationAsset: !<reference> 3102a558-cde8-4c20-8e42-c2b4ed2410ba
       Name: Pinch_Rotate_Z
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -801,7 +801,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 974ad0e5-c785-4c3e-a5c6-06e098c9cd4e
+      AnimationAsset: !<reference> a2133330-a194-46f2-b1e1-9d7d71f1db8c
       Name: Pinch_Swipe_X
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -814,7 +814,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 4d4e3530-83dd-40ab-a33a-2e3498dc0b9c
+      AnimationAsset: !<reference> 344644bf-d9e3-4b8b-826c-e0f17bd78c69
       Name: Pinch_Swipe_Y
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -827,7 +827,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 19c1f762-7424-4fee-8e3d-45f70f677f6d
+      AnimationAsset: !<reference> c8656d45-ae27-4b16-a023-764c2d4fecd9
       Name: Finger_Tap_Near
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -840,7 +840,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> b2175be5-edaf-49d4-b59e-b1662ce7791e
+      AnimationAsset: !<reference> 2743ac3f-e2d1-4556-badf-bcdb75f7c198
       Name: Finger_Tap_Surface
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -853,7 +853,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 9c0d6e4e-3408-449b-a4de-4881929b1dfe
+      AnimationAsset: !<reference> 62716fe5-aebb-406c-89d0-95b8c8c0f6b5
       Name: Finger_Swipe_X
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -866,7 +866,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> f1792fd2-492b-4e7e-a992-70505903e66e
+      AnimationAsset: !<reference> 5be9b586-679f-4e24-b296-661a06ce105a
       Name: Finger_Swipe_Y
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -879,7 +879,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> aee1cfdc-e94f-450f-adde-69c918dfe668
+      AnimationAsset: !<reference> 0ffc5549-56fc-46d3-b7f1-473cfa5f51b8
       Name: Finger_Scroll_Micro
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -892,7 +892,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 86cac373-0093-4479-a761-0ad6ac0f7821
+      AnimationAsset: !<reference> 9a674f09-3adc-4362-9137-f80251a0539f
       Name: Palm_Touch_Near
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -905,7 +905,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 2e84bc8b-a982-4cd7-a14b-01b399071112
+      AnimationAsset: !<reference> 2f23b64e-c151-434c-b14d-f30e2207d39c
       Name: Palm_Touch_Surface
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -918,7 +918,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> d26181e9-d25c-4d46-b1fa-8207dabf4958
+      AnimationAsset: !<reference> 47472ef6-dcf4-43c2-8405-1d8a6d7f7183
       Name: Palm_Swipe_X
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -931,7 +931,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 9edaae79-77cd-45d3-9ad5-ce4fbdb8f03a
+      AnimationAsset: !<reference> 241590b2-83c2-4429-b5b5-ecb330b26d87
       Name: Palm_Grab_X
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -944,7 +944,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> b35c5daa-107f-4722-98d8-a0560807b14e
+      AnimationAsset: !<reference> bf464517-9bc9-4159-b4b7-25a17afa6ac1
       Name: Palm_Grab_Y
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -957,7 +957,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 96f0f9a3-2118-49fb-b9d4-6a8f0b51720a
+      AnimationAsset: !<reference> cdfdf8c4-75bf-439c-9612-9ac6fa939450
       Name: System_Tap_Settings
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -970,7 +970,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> fc15e924-16d5-4b39-bef4-ba968451525f
+      AnimationAsset: !<reference> c297f309-01af-47a2-a134-f009459f90b1
       Name: System_Tap_Rotate_Down
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -983,7 +983,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> d2a79f83-6bd7-4bf9-9892-56a8283c2b53
+      AnimationAsset: !<reference> f00c8d2c-4227-46ac-88f7-6111ab9ffa6d
       Name: System_Tap_Rotate_Up
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -996,7 +996,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 426cd463-0e2d-4955-b2ec-044a0d49dab3
+      AnimationAsset: !<reference> 4ca4f1a3-66d7-409a-9977-05b4139fffab
       Name: System_Tap_Watch
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1009,7 +1009,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> ed702bf6-1a8e-48cd-9ff4-23fd8c02b7ab
+      AnimationAsset: !<reference> 1ab8c4de-35ac-48e4-a968-f1b6d6c2187d
       Name: System_Tap_Save
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1022,7 +1022,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> b1de39b4-6c30-4a08-a269-72e9dfcf5b7f
+      AnimationAsset: !<reference> 110cc572-a7ce-4152-9d2f-4a9e95992186
       Name: System_Tap_Exit
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1035,7 +1035,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> fa9e0dfe-5bb0-4afe-8677-0b3a0f6d1f57
+      AnimationAsset: !<reference> 6a534995-5126-4307-908d-a132c3f65c25
       Name: Controller_Tap
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1048,7 +1048,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 57abf8b9-c892-49aa-9dc8-cec0307ecdbe
+      AnimationAsset: !<reference> c96e731f-c3cb-4002-ab2e-392d3a9f7d63
       Name: Two_Hands_Pinch_Scale
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1061,7 +1061,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 2eba9f07-661d-4278-bd1c-23af5c21f19b
+      AnimationAsset: !<reference> 30f42ca6-1f1e-4271-a674-82cc9696350a
       Name: Two_Hands_Pinch_Rotate_Y
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1074,7 +1074,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 48a25ce1-0332-40a5-bcf8-0d388517ef8c
+      AnimationAsset: !<reference> a14a4b5a-045d-44e4-a244-a40748a0f533
       Name: Two_Hands_Pinch_Rotate_Z
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1087,7 +1087,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> 15f93645-5e5a-4dff-856c-1ec3c956bf22
+      AnimationAsset: !<reference> 9c3f2fe8-4c07-4854-a8db-2630ed9c9e17
       Name: Two_Hands_Palm_Grab_X
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1100,7 +1100,7 @@
       ScaleMode: Multiply
       PlaybackMode: Loop
     - !<AnimationClip>
-      AnimationAsset: !<reference> f71491c7-7f2f-4f30-b99d-d7dec943f29b
+      AnimationAsset: !<reference> d9d96800-f917-4b6a-a080-4835c4eb1aca
       Name: Two_Hands_Palm_Grab_Y
       Weight: 1.000000
       PlaybackSpeed: 1.000000
@@ -1129,69 +1129,69 @@
     []
 - !<SceneObject/a111b6d2-2a2a-4039-9c60-16b63cbea7b4>
   PrefabRemaps:
-    - 00f95fc3-4871-4516-a7d2-62037cb3f765: 00f95fc3-4871-4516-582d-9dfc834c089a
-    - 017a6fc7-dd15-4ab7-a4d5-bc804d65baa9: 017a6fc7-dd15-4ab7-5b2a-437fb29a4556
-    - 01a05347-ce53-404e-b774-888723471721: 01a05347-ce53-404e-488b-7778dcb8e8de
-    - 0398d52b-602f-4f65-b31a-b809d42bb1a5: 0398d52b-602f-4f65-4ce5-47f62bd44e5a
-    - 0a9f3b1d-2225-4758-9065-fec2030dcfb9: 0a9f3b1d-2225-4758-6f9a-013dfcf23046
-    - 0b9cbb89-973c-415b-90bf-572faa67e0d1: 0b9cbb89-973c-415b-6f40-a8d055981f2e
-    - 0dcd8a2c-fac5-4993-a5c4-abeacab0f0fd: 0dcd8a2c-fac5-4993-5a3b-5415354f0f02
+    - 00f95fc3-4871-4516-a7d2-62037cb3f765: b02364b0-01ed-46ea-7fcd-3694d5a1e05e
+    - 017a6fc7-dd15-4ab7-a4d5-bc804d65baa9: 4bf83b08-9d9c-49de-73be-aeba243941d2
+    - 01a05347-ce53-404e-b774-888723471721: 31d8674a-08f5-4610-4c72-7c2349920c88
+    - 0398d52b-602f-4f65-b31a-b809d42bb1a5: f7692864-6c8b-417f-7e90-2ea22c09fd7e
+    - 0a9f3b1d-2225-4758-9065-fec2030dcfb9: 6c8ed727-d3fb-449c-5c9f-c3d137f3ac6e
+    - 0b9cbb89-973c-415b-90bf-572faa67e0d1: 54558657-e40f-4efc-483e-0f239d4be572
+    - 0dcd8a2c-fac5-4993-a5c4-abeacab0f0fd: edbfab90-b01c-4b4c-4da1-c8c246cf838a
     - 0fbb52e9-e14f-4cee-bf77-e14cce9e1c8a: 0fbb52e9-e14f-4cee-4088-1eb33161e375
-    - 16b2b82d-3221-4e76-a9aa-f21ab8d75c15: 16b2b82d-3221-4e76-5655-0de54728a3ea
-    - 1a7a67f4-d128-4277-a5cd-aa1cd858de45: 1a7a67f4-d128-4277-5a32-55e327a721ba
-    - 22b8b9ac-2c84-4739-9853-00de7e358c39: 22b8b9ac-2c84-4739-67ac-ff2181ca73c6
-    - 24350f4a-acfd-4494-93a7-09c056bf68cc: 24350f4a-acfd-4494-6c58-f63fa9409733
-    - 2950bd04-6cef-4d17-97fa-73846117efaf: 2950bd04-6cef-4d17-6805-8c7b9ee81050
-    - 2a8fcc92-9e4e-4579-98ee-73d2b5e0d64a: 2a8fcc92-9e4e-4579-6711-8c2d4a1f29b5
-    - 2bf4976b-507c-4c03-a006-8f6f2843f541: 2bf4976b-507c-4c03-5ff9-7090d7bc0abe
-    - 2d211052-fd64-40f4-bd18-ab748fe9edf2: 2d211052-fd64-40f4-42e7-548b7016120d
-    - 2faa4d3e-4782-4f67-a7f2-cb11b0c8a53a: 2faa4d3e-4782-4f67-580d-34ee4f375ac5
-    - 4050d69e-8b40-4d17-8ca9-a892ec5b8b00: 4050d69e-8b40-4d17-7356-576d13a474ff
-    - 417a8cb3-0e0a-4720-aff6-1ce4a2eaaa29: 417a8cb3-0e0a-4720-5009-e31b5d1555d6
-    - 49bbf425-29cb-4760-809b-7d947f1f4849: 49bbf425-29cb-4760-7f64-826b80e0b7b6
-    - 4b9e441c-88bc-4be9-b9f7-547c239d2bf9: 4b9e441c-88bc-4be9-4608-ab83dc62d406
-    - 4d228024-2861-4195-a7d2-ee5f8a1740a0: 4d228024-2861-4195-582d-11a075e8bf5f
-    - 4f5fb0d7-d906-4996-a712-9bc97c62e6cb: 4f5fb0d7-d906-4996-58ed-6436839d1934
-    - 52584657-7005-4e87-8f42-14dae6b843b0: 52584657-7005-4e87-70bd-eb251947bc4f
-    - 665def0c-5751-4597-8363-40669e18c081: 665def0c-5751-4597-7c9c-bf9961e73f7e
+    - 16b2b82d-3221-4e76-a9aa-f21ab8d75c15: ca9ec104-37e8-452a-622a-6cf74f7929d6
+    - 1a7a67f4-d128-4277-a5cd-aa1cd858de45: 0161ae13-b237-4e1c-70a0-b41a96b507d9
+    - 22b8b9ac-2c84-4739-9853-00de7e358c39: 439bacb5-717a-4792-75e9-cddb57e3af1f
+    - 24350f4a-acfd-4494-93a7-09c056bf68cc: e57c4df4-2613-48cb-52e0-70ea25a3dd4f
+    - 2950bd04-6cef-4d17-97fa-73846117efaf: 1b88b65b-6356-45e5-7645-ed9fcadffd77
+    - 2a8fcc92-9e4e-4579-98ee-73d2b5e0d64a: 1cae06be-31d7-4f77-6543-6ee58acf240c
+    - 2bf4976b-507c-4c03-a006-8f6f2843f541: cfbc36e8-459d-494e-6d06-e5c14c936e3a
+    - 2d211052-fd64-40f4-bd18-ab748fe9edf2: 01c9717b-d70c-4d9d-7d29-2c06703c090d
+    - 2faa4d3e-4782-4f67-a7f2-cb11b0c8a53a: 4b75b1b2-30b2-4886-4938-39b3eebd7836
+    - 4050d69e-8b40-4d17-8ca9-a892ec5b8b00: 34573ff8-a4da-4a5d-6b04-7c991f6de79b
+    - 417a8cb3-0e0a-4720-aff6-1ce4a2eaaa29: 1b93fcd4-b75a-443a-5fa3-7b2a5c11a270
+    - 49bbf425-29cb-4760-809b-7d947f1f4849: 10c074d9-34d1-461b-7039-ca905b7207d2
+    - 4b9e441c-88bc-4be9-b9f7-547c239d2bf9: 3958c8b7-cc42-43a4-61c8-430fd297ff1e
+    - 4d228024-2861-4195-a7d2-ee5f8a1740a0: a13735cc-42a6-4b4d-435d-ea91ea9e7a9d
+    - 4f5fb0d7-d906-4996-a712-9bc97c62e6cb: b7d2f2b6-d1b3-4d7b-4f22-667daf94cbdd
+    - 52584657-7005-4e87-8f42-14dae6b843b0: 8b408157-8dd0-4ab9-70f5-47eb540e2e08
+    - 665def0c-5751-4597-8363-40669e18c081: 1d52feb0-1a9f-4162-556a-d66202b8c8af
     - 677d26d4-e1c7-4428-874c-167625e067a0: 677d26d4-e1c7-4428-78b3-e989da1f985f
-    - 6974b030-9704-4047-9432-09eb93a73e58: 6974b030-9704-4047-6bcd-f6146c58c1a7
-    - 69859ad1-a4a8-448d-ab19-ce56ff4411be: 69859ad1-a4a8-448d-54e6-31a900bbee41
-    - 69cf992b-ff02-4628-80ee-7ce44e248e19: 69cf992b-ff02-4628-7f11-831bb1db71e6
-    - 6cfe25c1-5c23-4373-a130-18ab3b5f9e0d: 6cfe25c1-5c23-4373-5ecf-e754c4a061f2
-    - 6fa4889e-7ecd-41ec-8c22-66dd27de1f08: 6fa4889e-7ecd-41ec-73dd-9922d821e0f7
-    - 70c47035-6285-405c-816c-afb750398d6b: 70c47035-6285-405c-7e93-5048afc67294
-    - 70e5ee39-8568-441c-98f6-b7c87e610d0b: 70e5ee39-8568-441c-6709-4837819ef2f4
-    - 783fdd87-781b-4e74-9984-4a716a607718: 783fdd87-781b-4e74-667b-b58e959f88e7
-    - 7c1b36d3-b600-4f84-a6f9-784349e418c6: 7c1b36d3-b600-4f84-5906-87bcb61be739
-    - 7e5703f3-8996-46f6-9665-6767c0fb08f8: 7e5703f3-8996-46f6-699a-98983f04f707
-    - 7fd12b51-ea73-4e9a-8375-3e3d599c0cb7: 7fd12b51-ea73-4e9a-7c8a-c1c2a663f348
-    - 863e50db-bb90-4eff-8228-88725856c279: 863e50db-bb90-4eff-7dd7-778da7a93d86
-    - 8965a2d5-ca2e-43a0-9e6a-c70ea9bbc04c: 8965a2d5-ca2e-43a0-6195-38f156443fb3
-    - 89df165a-749d-4d5a-bacf-bfa72179e26f: 89df165a-749d-4d5a-4530-4058de861d90
+    - 6974b030-9704-4047-9432-09eb93a73e58: cb49b39e-12e4-47a8-64fc-c9e8100be953
+    - 69859ad1-a4a8-448d-ab19-ce56ff4411be: e16e5568-fc98-47a4-7081-86e400082d6f
+    - 69cf992b-ff02-4628-80ee-7ce44e248e19: c84c8f53-ef3f-4cb6-6f75-33931222e695
+    - 6cfe25c1-5c23-4373-a130-18ab3b5f9e0d: cfc03e1b-cf85-4c28-4b58-5c95f6e1904a
+    - 6fa4889e-7ecd-41ec-8c22-66dd27de1f08: b2db6ec3-9522-492d-7390-653df4a53f46
+    - 70c47035-6285-405c-816c-afb750398d6b: 8e2b8a94-f1f7-40d7-469b-1fd00329ba3d
+    - 70e5ee39-8568-441c-98f6-b7c87e610d0b: 02616e69-52db-498d-5d0c-e95a577860a3
+    - 783fdd87-781b-4e74-9984-4a716a607718: 391f4d5c-2d0b-4ed0-583c-f3a7077708d3
+    - 7c1b36d3-b600-4f84-a6f9-784349e418c6: ef811dfd-3009-4c92-6458-94bdc8e16aae
+    - 7e5703f3-8996-46f6-9665-6767c0fb08f8: 42476c1c-4f55-47aa-4e3d-4f574112a1c9
+    - 7fd12b51-ea73-4e9a-8375-3e3d599c0cb7: 41ad9b74-7037-48ea-573e-c29170c75d31
+    - 863e50db-bb90-4eff-8228-88725856c279: 8d738134-3841-496a-6165-fa20c53e73c7
+    - 8965a2d5-ca2e-43a0-9e6a-c70ea9bbc04c: 99239bb1-4dbe-4a38-65c8-8bbf8535c621
+    - 89df165a-749d-4d5a-bacf-bfa72179e26f: 1efcbfb5-6221-404d-482b-08b3c3a976a5
     - 9433a9d0-7c8e-443e-9b3c-19c1540fd5f7: 9433a9d0-7c8e-443e-64c3-e63eabf02a08
-    - 9a50c183-7b3b-440c-9830-53d8797639ec: 9a50c183-7b3b-440c-67cf-ac278689c613
-    - 9bfbba8b-0bbd-40c2-829e-028f92406b85: 9bfbba8b-0bbd-40c2-7d61-fd706dbf947a
+    - 9a50c183-7b3b-440c-9830-53d8797639ec: f97fce47-7053-4e0a-5d24-879f70fe86c2
+    - 9bfbba8b-0bbd-40c2-829e-028f92406b85: 642e04ca-c800-4528-61d9-ad03465564ed
     - 9cb18366-05db-4866-b1a9-31a7a3a11ece: 9cb18366-05db-4866-4e56-ce585c5ee131
-    - 9e7c2dfa-0a31-44da-bdd8-b1910822824b: 9e7c2dfa-0a31-44da-4227-4e6ef7dd7db4
-    - a111b6d2-2a2a-4039-9c60-16b63cbea7b4: a111b6d2-2a2a-4039-639f-e949c341584b
-    - a50103bd-4c58-4f0b-8524-47a3600c07fe: a50103bd-4c58-4f0b-7adb-b85c9ff3f801
-    - a8bcd933-f0a4-4c32-a356-c9ff99623e95: a8bcd933-f0a4-4c32-5ca9-3600669dc16a
+    - 9e7c2dfa-0a31-44da-bdd8-b1910822824b: 1d6be357-c9aa-4f5f-7462-fd8d91caaf19
+    - a111b6d2-2a2a-4039-9c60-16b63cbea7b4: 7f79e1f8-9285-4c57-7a1d-a4891d0c2d26
+    - a50103bd-4c58-4f0b-8524-47a3600c07fe: ca3bf1cd-a084-4581-4812-ff60968a09da
+    - a8bcd933-f0a4-4c32-a356-c9ff99623e95: b931753c-bc77-470c-7da0-9f00c28556b0
     - b29871ae-8efb-4619-8903-905b72b5ebfc: b29871ae-8efb-4619-76fc-6fa48d4a1403
-    - bc301753-a2e0-46f2-8d2e-af93c93aca99: bc301753-a2e0-46f2-72d1-506c36c53566
-    - bd2714ea-bd97-4ecc-8167-c4accb0ed5ff: bd2714ea-bd97-4ecc-7e98-3b5334f12a00
-    - bd9a85b6-5e55-4354-9e2c-f7204d508b97: bd9a85b6-5e55-4354-61d3-08dfb2af7468
-    - c3b235c9-9b6f-47ef-afcc-57cfddb62562: c3b235c9-9b6f-47ef-5033-a8302249da9d
-    - cbbb4b6d-4610-4807-a3a6-d1f11061b58e: cbbb4b6d-4610-4807-5c59-2e0eef9e4a71
-    - cfa40d79-0f2b-45a9-bf08-2228fedd236d: cfa40d79-0f2b-45a9-40f7-ddd70122dc92
-    - d0416f3c-9600-4f95-aac0-b4870ae4b914: d0416f3c-9600-4f95-553f-4b78f51b46eb
-    - d99f116f-d7a7-4d5b-9290-0c99c9420cd2: d99f116f-d7a7-4d5b-6d6f-f36636bdf32d
+    - bc301753-a2e0-46f2-8d2e-af93c93aca99: 829da6f0-040a-499b-5837-d868a95b6159
+    - bd2714ea-bd97-4ecc-8167-c4accb0ed5ff: 8c5d2dda-fdd0-4684-4eb0-f9a929919a04
+    - bd9a85b6-5e55-4354-9e2c-f7204d508b97: 5252952f-5e0c-4fd7-5275-30e18f51dc3c
+    - c3b235c9-9b6f-47ef-afcc-57cfddb62562: aa79d909-368f-4a5f-42c7-c8a687097a4a
+    - cbbb4b6d-4610-4807-a3a6-d1f11061b58e: e4944c1c-9001-42f4-5078-58eca165eff0
+    - cfa40d79-0f2b-45a9-bf08-2228fedd236d: a3e10e7e-dae7-4a78-72b0-fc4af87450c1
+    - d0416f3c-9600-4f95-aac0-b4870ae4b914: 0b0d0881-07b6-4627-7db8-ada16b06bf86
+    - d99f116f-d7a7-4d5b-9290-0c99c9420cd2: 353558ad-ca28-4ace-6534-c83e42e2540c
     - daf67e22-ffcb-4420-9d92-a739f362e257: daf67e22-ffcb-4420-626d-58c60c9d1da8
-    - e0285a7e-d4a1-4d6c-8880-6c37106b23fa: e0285a7e-d4a1-4d6c-777f-93c8ef94dc05
-    - e154f3db-e8ab-470d-b3e4-8c70bfc3cc36: e154f3db-e8ab-470d-4c1b-738f403c33c9
-    - e9e1f144-c938-4d65-bc88-0a6d1b56c3fb: e9e1f144-c938-4d65-4377-f592e4a93c04
-    - f3a6529f-e170-4d2b-a445-e5baa93be828: f3a6529f-e170-4d2b-5bba-1a4556c417d7
-    - f7c4c880-f5ba-4e0b-ac13-4f108c7cda7d: f7c4c880-f5ba-4e0b-53ec-b0ef73832582
+    - e0285a7e-d4a1-4d6c-8880-6c37106b23fa: e5533459-709a-4842-5d93-18af7da1be40
+    - e154f3db-e8ab-470d-b3e4-8c70bfc3cc36: 8b9043b8-021d-43b9-427b-379e545f6fba
+    - e9e1f144-c938-4d65-bc88-0a6d1b56c3fb: 9fa15d83-af01-4de8-7d95-bfe7bb5ed56d
+    - f3a6529f-e170-4d2b-a445-e5baa93be828: 7295ed58-f6bb-4d09-7a4a-692e276ccebe
+    - f7c4c880-f5ba-4e0b-ac13-4f108c7cda7d: 390d35a8-493f-4711-437e-ab58a6524de7
   Name: HandHints
   Enabled: true
   Layers: 1
@@ -1434,9 +1434,9 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 2736afd9-d839-4808-b150-6a8c16eb6fb8
-    - !<reference> 8a4db70f-6a34-4a94-ad1c-e23f0652817b
-  Mesh: !<reference> 339f9940-5356-41bd-9d1d-55c4db5ab89a
+    - !<reference> 2be5a2dc-a203-4cc1-b259-56602b9982b8
+    - !<reference> d8496e6d-4478-403e-b185-4cdf5a38d605
+  Mesh: !<reference> 437e6db0-1e39-4c0e-8824-4d6d01fe4240
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false

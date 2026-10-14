@@ -70,6 +70,10 @@ export interface Interactor {
 
   onCurrentInteractableChanged: PublicApi<Interactable | null>
 
+  isTriggering: boolean
+
+  wasTriggering: boolean
+
   currentTrigger: InteractorTriggerType
 
   previousTrigger: InteractorTriggerType
@@ -111,6 +115,11 @@ export interface Interactor {
 
   drawDebug: boolean
 
+  wasHoveringCurrentInteractable: boolean | null
+  isHoveringCurrentInteractable: boolean | null
+
+  hoveredInteractables: Interactable[]
+
   onTriggerStart: PublicApi<Interactable | null>
   onTriggerUpdate: PublicApi<Interactable | null>
   onTriggerEnd: PublicApi<Interactable | null>
@@ -128,7 +137,13 @@ export interface Interactor {
 
   colliderPlaneIntersection(interactable: Interactable | null): vec3 | null
 
+  positionPlaneIntersection(interactable: Interactable | null, position: vec3 | null): vec3 | null
+
   clearCurrentInteractable(): void
 
   currentInteractableChanged(): void
+
+  isHoveringInteractable(interactable: Interactable): boolean
+
+  isHoveringInteractableHierarchy(interactable: Interactable): boolean
 }

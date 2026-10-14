@@ -1,14 +1,10 @@
 import {PublicApi} from "../../../../Utils/Event"
+import NativeLogger from "../../../../Utils/NativeLogger"
+import {PinchEventType} from "../PinchEventType"
 import HciPinchDetectionStrategy, {
   HciPinchDetectionStrategyConfig
 } from "./DetectionStrategies/HciPinchDetectionStrategy"
-import HeuristicPinchDetectionStrategy, {
-  HeuristicPinchDetectionStrategyConfig
-} from "./DetectionStrategies/HeuristicPinchDetectionStrategy"
-import {PinchDetectionStrategy} from "./DetectionStrategies/PinchDetectionStrategy"
 import PinchDetectorStateMachine from "./PinchDetectorStateMachine"
-
-const TAG = "PinchDetector"
 
 export enum PinchDetectionSelection {
   Heuristic = "Heuristic",
@@ -16,19 +12,28 @@ export enum PinchDetectionSelection {
   Mock = "Mock"
 }
 
-export type PinchDetectorConfig = HciPinchDetectionStrategyConfig &
-  HeuristicPinchDetectionStrategyConfig & {
-    onHandLost: PublicApi<void>
-    isTracked: () => boolean
-    pinchDownThreshold?: number
-    pinchDetectionSelection?: PinchDetectionSelection
-  }
+export type PinchDetectorConfig = HciPinchDetectionStrategyConfig & {
+  onHandLost: PublicApi<void>
+  isTracked: () => boolean
+  pinchDownThreshold?: number
+  pinchDetectionSelection?: PinchDetectionSelection
+}
+
+export type PinchEvent = {
+  eventType: PinchEventType
+  isFiltered: boolean
+}
 
 /**
  * Wraps PinchDetectionStrategy inside PinchDetectorStateMachine for pinch events
  */
 export class PinchDetector {
-  private pinchDetectionStrategy
+  /**
+   * Determines if the pinch detector should listen to filtered or unfiltered pinch events.
+   */
+  useFilteredPinch = false
+
+  private pinchDetectionStrategy = new HciPinchDetectionStrategy(this.config)
   private pinchDetectorStateMachine = new PinchDetectorStateMachine()
 
   private pinchStrength = 0
@@ -36,8 +41,6 @@ export class PinchDetector {
   constructor(private config: PinchDetectorConfig) {
     config.pinchDownThreshold ??= 1.75
     config.pinchDetectionSelection ??= PinchDetectionSelection.LensCoreML
-
-    this.pinchDetectionStrategy = this.createPinchDetectionStrategy()
 
     this.setupPinchEventCallback()
   }
@@ -85,30 +88,17 @@ export class PinchDetector {
     return 0
   }
 
-  private createPinchDetectionStrategy(): PinchDetectionStrategy {
-    const pinchDetection = this.config.pinchDetectionSelection
-    if (pinchDetection === undefined) {
-      throw new Error("A PinchDetectionStrategy needs to be specified.")
-    }
-    switch (pinchDetection) {
-      case PinchDetectionSelection.Heuristic: {
-        return new HeuristicPinchDetectionStrategy({
-          ...this.config,
-          pinchDownThreshold: this.config.pinchDownThreshold
-        })
-      }
-      case PinchDetectionSelection.LensCoreML: {
-        return new HciPinchDetectionStrategy(this.config)
-      }
-      default: {
-        throw new Error(`${TAG}: No matching PinchDetectionSelection found, could not create strategy`)
-      }
-    }
-  }
+  private log = new NativeLogger("PinchDetector")
 
   private setupPinchEventCallback() {
+    /**
+     * If the pinch detector is not set to the same filtering as the detected event when filtered events are available,
+     * ignore the event entirely. If filtered events are not available, process every regular pinch event.
+     */
     this.pinchDetectionStrategy.onPinchDetected.add((pinchEvent) => {
-      this.pinchDetectorStateMachine.notifyPinchEvent(pinchEvent)
+      if (!this.pinchDetectionStrategy.isFilteredPinchAvailable || pinchEvent.isFiltered === this.useFilteredPinch) {
+        this.pinchDetectorStateMachine.notifyPinchEvent(pinchEvent.eventType)
+      }
     })
 
     this.pinchDetectionStrategy.onPinchProximity.add((proximity: number) => {

@@ -3,6 +3,7 @@ import {Interactor, InteractorInputType} from "../../../Core/Interactor/Interact
 import {InteractionManager} from "../../../Core/InteractionManager/InteractionManager"
 import BaseInteractor from "../../../Core/Interactor/BaseInteractor"
 import {CursorControllerProvider} from "../../../Providers/CursorControllerProvider/CursorControllerProvider"
+import {InteractorRayVisual} from "../InteractorRayVisual/InteractorRayVisual"
 import {InteractorCursor} from "./InteractorCursor"
 
 /**
@@ -12,12 +13,53 @@ import {InteractorCursor} from "./InteractorCursor"
 export class CursorController extends BaseScriptComponent {
   private cursorControllerProvider = CursorControllerProvider.getInstance()
 
-  onAwake(): void {
-    const interactors = InteractionManager.getInstance().getInteractorsByType(InteractorInputType.All)
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Cursor Implementation</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Select which cursor implementation to use for all interactors</span>'
+  )
 
+  /**
+   * Switches to the V2 cursor implementation, designed to make targeting free-floating and distant objects easier,
+   * at a higher performance cost.
+   */
+  @input
+  @label("Use V2 Cursor")
+  @hint(
+    "Switches to the V2 cursor implementation, designed to make targeting free-floating and distant objects easier, \
+at a higher performance cost.\n\n\
+- Targeting: Blends its position based on multiple nearby interactables, making it easier to aim between targets.\n\
+- Visuals: Fades out when not aimed near any interactable objects. Also enables a 'Ray' visual that can be set \
+per-Interactable/InteractionPlane.\n\
+- Performance: This version is more computationally expensive due to its multi-target analysis."
+  )
+  private useV2: boolean = true
+
+  /**
+   * Enable debug rendering for cursors (cone collider, center ray, and closest-point helpers).
+   * @internal Not exposed in Inspector - debug visualization only
+   */
+  drawDebug: boolean = false
+
+  onAwake(): void {
+    this.createEvent("OnStartEvent").bind(() => {
+      this.onStart()
+    })
+  }
+
+  onStart(): void {
+    const interactors = InteractionManager.getInstance().getInteractorsByType(InteractorInputType.All)
+    this.cursorControllerProvider.setDefaultUseV2(this.useV2)
     interactors.forEach((interactor: Interactor) => {
-      const cursor = this.getSceneObject().createComponent(InteractorCursor.getTypeName())
+      const cursor = this.getSceneObject().createComponent(InteractorCursor.getTypeName()) as InteractorCursor
       cursor.interactor = interactor as BaseInteractor
+      cursor.init(this, this.useV2)
+      cursor.drawDebug = this.drawDebug
+      this.cursorControllerProvider.registerCursor(cursor, interactor)
+
+      const rayVisual = this.getSceneObject().createComponent(InteractorRayVisual.getTypeName()) as InteractorRayVisual
+      rayVisual._interactor = interactor as BaseInteractor
+      rayVisual.cursor = cursor
     })
   }
 

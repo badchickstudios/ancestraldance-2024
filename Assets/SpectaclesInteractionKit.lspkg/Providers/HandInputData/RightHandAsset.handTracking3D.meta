@@ -4,7 +4,7 @@
   ImporterName: HandTracking3DAssetImporter
   PrimaryAsset: !<reference> 554c9bb5-d715-4f23-ab9c-718541f17b33
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:

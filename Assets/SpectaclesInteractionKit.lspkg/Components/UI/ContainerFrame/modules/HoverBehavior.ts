@@ -68,6 +68,16 @@ export class HoverBehavior {
     this.unsubscribeList.push(this.interactable.onHoverEnter(this.onHoverEnter))
     this.unsubscribeList.push(this.interactable.onHoverExit(this.onHoverExit))
     this.unsubscribeList.push(this.interactable.onHoverUpdate(this.onHoverUpdated))
+
+    // Need to add a trigger event bc we can officially finish a 'hover' (in the context of this class) without a hover exit.
+    this.unsubscribeList.push(this.interactable.onTriggerEndOutside(this.onTriggerEndOutside))
+
+    this.unsubscribeList.push(this.interactable.onSyncHoverEnter(this.onHoverEnter))
+    this.unsubscribeList.push(this.interactable.onSyncHoverExit(this.onHoverExit))
+    this.unsubscribeList.push(this.interactable.onSyncHoverUpdate(this.onHoverUpdated))
+
+    // Need to add a trigger event bc we can officially finish a 'hover' (in the context of this class) without a hover exit.
+    this.unsubscribeList.push(this.interactable.onSyncTriggerEndOutside(this.onTriggerEndOutside))
   }
 
   private unBindHoverEvents(): void {
@@ -83,12 +93,22 @@ export class HoverBehavior {
   }
 
   private onHoverExit = (eventData: InteractorEvent): void => {
+    if (eventData.interactor.isHoveringInteractableHierarchy(this.interactable)) {
+      return
+    }
     this.requestActive = false
     this.eventData = eventData
   }
 
   private onHoverUpdated = (eventData: InteractorEvent): void => {
     this.eventData = eventData
+  }
+
+  private onTriggerEndOutside = (eventData: InteractorEvent): void => {
+    if (!eventData.interactor.isHoveringInteractableHierarchy(this.interactable)) {
+      this.requestActive = false
+      this.eventData = eventData
+    }
   }
 
   lateUpdate = (): void => {
@@ -107,13 +127,13 @@ export class HoverBehavior {
     // Inactive State
     this.stateMachine.addState({
       name: State.Inactive,
-      onEnter: (state) => {
+      onEnter: (_state) => {
         this.hoverEnd.invoke(this.eventData)
       },
       transitions: [
         {
           nextStateName: State.InactiveToActive,
-          checkOnSignal: (signal, data) => {
+          checkOnSignal: (signal, _data) => {
             return signal === Signal.RequestActive
           }
         }
@@ -126,7 +146,7 @@ export class HoverBehavior {
       transitions: [
         {
           nextStateName: State.Inactive,
-          checkOnSignal: (signal, data) => {
+          checkOnSignal: (signal, _data) => {
             return signal === Signal.RequestInActive
           }
         },
@@ -142,10 +162,10 @@ export class HoverBehavior {
     // Active State
     this.stateMachine.addState({
       name: State.Active,
-      onEnter: (state) => {
+      onEnter: (_state) => {
         this.hoverStart.invoke(this.eventData)
       },
-      onUpdate: (state) => {
+      onUpdate: (_state) => {
         if (this.isDestroyed) {
           this.log.d("Already destroyed!")
           return
@@ -156,13 +176,13 @@ export class HoverBehavior {
         } catch (e) {
           // If we arrive here, the script is dead and will be cleaned up eventually
           // Any calls that cross the native boundry could throw an exception
-          this.log.e("Error invoking hoverUpdate!")
+          this.log.e(`Error invoking hoverUpdate: ${e}`)
         }
       },
       transitions: [
         {
           nextStateName: State.ActiveToInactive,
-          checkOnSignal: (signal, data) => {
+          checkOnSignal: (signal, _data) => {
             return signal === Signal.RequestInActive
           }
         }
@@ -181,7 +201,7 @@ export class HoverBehavior {
         },
         {
           nextStateName: State.Active,
-          checkOnSignal: (signal, data) => {
+          checkOnSignal: (signal, _data) => {
             return signal === Signal.RequestActive
           }
         }

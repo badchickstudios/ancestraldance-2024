@@ -4,6 +4,7 @@ import Event from "./Event"
 export type AnimateConfig = {
   update: (t: number) => void
   cancelSet?: CancelSet
+  group?: string
   delayFrames?: number
 } & (
   | {
@@ -25,6 +26,11 @@ export type AnimateConfig = {
     }
 )
 
+export interface RequestAnimationFrameType {
+  (callback: () => void): void
+  trackCounts?: (callback: (count: number) => void) => void
+}
+
 const onAnimationStartEvent = new Event<Readonly<AnimateConfig>>()
 export const onAnimationStart = onAnimationStartEvent.publicApi()
 
@@ -32,7 +38,6 @@ const onAnimationStopEvent = new Event<Readonly<AnimateConfig>>()
 export const onAnimationStop = onAnimationStopEvent.publicApi()
 
 export type CancelFunction = () => void
-type EasingFunction = (t: number) => number
 
 export const easingFunctions = {
   linear: (t: number) => t,
@@ -185,13 +190,17 @@ export const easingFunctions = {
 // A simple animation function. It's probably better to use the other animation
 // utilities, but I need a quick way to animate that wasn't tied to Scene objects
 export default function animate(config: AnimateConfig): CancelFunction {
+  if (config.group) {
+    config.cancelSet = (animationGroups as any)[GROUP_ACCESS](config.group)
+  }
+
   let running = true
   let elapsedTime = 0
-  let easingFunction = easingFunctions[config.easing ?? "linear"]
+  const easingFunction = easingFunctions[config.easing ?? "linear"]
 
-  let start = config.start ?? 0
-  let end = config.end ?? 1
-  let range = end - start
+  const start = config.start ?? 0
+  const end = config.end ?? 1
+  const range = end - start
 
   onAnimationStartEvent.invoke(config)
 
@@ -233,8 +242,8 @@ export default function animate(config: AnimateConfig): CancelFunction {
       // continuous animations run until canceled
       t = elapsedTime
     } else {
-      let rawT = Math.min(1.0, elapsedTime / config.duration)
-      let easedT = easingFunction(rawT)
+      const rawT = Math.min(1.0, elapsedTime / config.duration)
+      const easedT = easingFunction(rawT)
       t = start + easedT * range
       ended = elapsedTime >= config.duration
     }
@@ -282,7 +291,7 @@ export const CancelSet: CancelSetClass = class {
   constructor(config?: CancelSetConfig) {
     let calls: (() => void)[] = []
     function cancelSet() {
-      for (let call of calls) {
+      for (const call of calls) {
         call()
       }
       calls = []
@@ -298,6 +307,98 @@ export const CancelSet: CancelSetClass = class {
     return cancelSet
   }
 } as unknown as CancelSetClass
+
+const GROUP_ACCESS = Symbol('groupAccess')
+
+/**
+ * Manages named animation groups, allowing multiple animations to be organized and controlled together.
+ * 
+ * To add animations to a group, specify the `group` property in the animate config:
+ * `animate({ duration: 1000, update: (t) => {}, group: "MyGroup" })`
+ * 
+ * Use the singleton instance `animationGroups` to manage groups:
+ * - Group related animations by name
+ * - Cancel all animations in a group at once
+ * - Check which groups are currently active
+ * - Clean up animations across component boundaries
+ */
+class AnimationGroupsManager {
+  private groups: Map<string, CancelSet> = new Map()
+
+  private getGroup(name: string): CancelSet {
+    if (!this.groups.has(name)) {
+      this.groups.set(name, new CancelSet({
+        onCancel: () => {
+          this.groups.delete(name)
+        }
+      }))
+    }
+    return this.groups.get(name)!
+  }
+
+  /**
+   * Cancels all animations in the specified group.
+   * 
+   * @param name - The name of the group to cancel
+   */
+  public cancel(name: string): void {
+    const group = this.groups.get(name)
+    if (group) {
+      group.cancel()
+    }
+  }
+
+  /**
+   * Cancels all animations in all groups.
+   * 
+   * This is useful for cleanup when destroying a component or transitioning between scenes.
+   */
+  public cancelAll(): void {
+    for (const group of this.groups.values()) {
+      group.cancel()
+    }
+    this.groups.clear()
+  }
+
+  /**
+   * Checks if a group with the specified name currently exists and has active animations.
+   * 
+   * @param name - The name of the group to check
+   * @returns True if the group exists, false otherwise
+   */
+  public has(name: string): boolean {
+    return this.groups.has(name)
+  }
+
+  /**
+   * Returns an array of all currently active group names.
+   * 
+   * @returns Array of active group names
+   */
+  public getNames(): string[] {
+    return Array.from(this.groups.keys())
+  }
+
+  /**
+   * Returns the number of currently active animation groups.
+   * 
+   * @returns The count of active groups
+   */
+  public count(): number {
+    return this.groups.size
+  }
+
+  [GROUP_ACCESS](name: string): CancelSet {
+    return this.getGroup(name)
+  }
+}
+
+/**
+ * Global singleton instance for managing animation groups.
+ * 
+ * Use this to organize and control multiple animations together by assigning them to named groups.
+ */
+export const animationGroups = new AnimationGroupsManager()
 
 // mix matches theGLSL mix function , it is overloaded
 // for numbers and vec{2,3,4}
@@ -324,7 +425,7 @@ export function mix(a: any, b: any, t: number) {
 }
 
 function mixNumbers(a: number, b: number, t: number): number {
-  let range = b - a
+  const range = b - a
   return a + range * t
 }
 
@@ -373,28 +474,22 @@ export class AnimationManager {
     }
 
     this.script.createEvent("UpdateEvent").bind(() => {
-      let callbacks = this.animationCallbacks
+      const callbacks = this.animationCallbacks
 
       // report the number of callbacks to the countCallbacks
       if (callbacks.length) {
-        for (let callback of this.countCallbacks) {
+        for (const callback of this.countCallbacks) {
           callback(callbacks.length)
         }
       }
 
       // Animation Frames often reques the next frame
       this.animationCallbacks = []
-      for (let callback of callbacks) {
+      for (const callback of callbacks) {
         callback()
       }
     })
   }
 
-  requestAnimationFrame: AnimationManager.RequestAnimationFrameType
-}
-export namespace AnimationManager {
-  export interface RequestAnimationFrameType {
-    (callback: () => void): void
-    trackCounts?: (callback: (count: number) => void) => void
-  }
+  requestAnimationFrame: RequestAnimationFrameType
 }

@@ -1,8 +1,8 @@
-- !<AssetImportMetadata/05ce418f-10a0-72a0-f962-c3538b94567a>
+- !<AssetImportMetadata/9860bfbd-30cf-f7e0-6ab8-e55ff3c9a583>
   ImportedAssetIds:
-    TypeScriptAsset: !<reference> 9419074c-dd03-4438-97ee-cd25ed10b895
+    TypeScriptAsset: !<reference> abf64f74-5e58-41f3-810a-c8048622cdbe
   ImporterName: TypeScriptAssetImporter
-  PrimaryAsset: !<reference> 9419074c-dd03-4438-97ee-cd25ed10b895
+  PrimaryAsset: !<reference> abf64f74-5e58-41f3-810a-c8048622cdbe
   PackageType: NotAPackage
   LegacyPackagePolicy: ~
   ExtraData:

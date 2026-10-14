@@ -1,10 +1,7 @@
 import {CursorMode, InteractorCursor} from "../../../../Components/Interaction/InteractorCursor/InteractorCursor"
-import NativeLogger from "../../../../Utils/NativeLogger"
 import {validate} from "../../../../Utils/validate"
 import {ContainerFrame, InputState} from "../ContainerFrame"
 import {FrameState} from "./FrameInputHandler"
-
-const log = new NativeLogger("CursorManager")
 
 export type CursorManagerOptions = {
   interactorCursor?: InteractorCursor

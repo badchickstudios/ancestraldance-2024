@@ -14,6 +14,8 @@ export type DirectTargetProviderConfig = ColliderTargetProviderConfig & {
 /**
  * Hand based direct target provider. Uses a collider positioned
  * at the center position of the index and thumb
+ * @deprecated This class is no longer used.
+ * Use PhysicalInteractionProvider instead.
  */
 export class DirectTargetProvider extends ColliderTargetProvider {
   readonly targetingMode: TargetingMode = TargetingMode.Direct
@@ -28,9 +30,11 @@ export class DirectTargetProvider extends ColliderTargetProvider {
 
   private _drawDebug = this.config.debugEnabled
 
+  private ownerTransform = this.ownerSceneObject.getTransform()
+
   constructor(
     interactor: BaseInteractor,
-    protected config: DirectTargetProviderConfig
+    protected override config: DirectTargetProviderConfig
   ) {
     super(interactor, config)
 
@@ -91,7 +95,8 @@ export class DirectTargetProvider extends ColliderTargetProvider {
   override update(): void {
     if (this.isAvailable()) {
       const newPosition = this.getNextPosition()
-      this.ownerSceneObject.getTransform().setWorldPosition(newPosition)
+
+      this.ownerTransform.setWorldPosition(newPosition)
       this.ownerSceneObject.enabled = true
 
       if (!this.config.shouldPreventTargetUpdate?.()) {

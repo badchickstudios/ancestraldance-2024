@@ -4,7 +4,7 @@
   ImporterName: FileMeshImporter
   PrimaryAsset: !<reference> b7574cd7-e5aa-48e7-b02a-2e11cec90de3
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     AssetLibraryId: 7K9R1jzj0KHUkW4KFJ2ZzW
   AssetDataMap:

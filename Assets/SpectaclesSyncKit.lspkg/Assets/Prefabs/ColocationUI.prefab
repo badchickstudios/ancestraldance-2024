@@ -890,7 +890,7 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> c1af6422-7a0c-4282-a6f3-63f117a53d0c
+    - !<reference> 01cff0aa-ac10-41c1-aa3f-8825d2c6cfe1
   Mesh: !<reference> 1eea6f16-7594-4948-a925-47b17592a653
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
@@ -913,8 +913,8 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 9dd8d122-7602-498b-871c-94f02c1044e9
-  Mesh: !<reference> 288db00c-9a93-4b29-a700-7f82733bddb5
+    - !<reference> 7e823085-830d-470e-84a6-ac4580370667
+  Mesh: !<reference> 1da65c70-8837-442b-9f09-86dd490c8854
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
@@ -960,9 +960,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
-    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
+    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -970,6 +970,9 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
+    _styleSnapOS2: true
+    _styleSnapOS3: true
+    _opacity: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -978,9 +981,9 @@
       _size: !<Vec3> {x: 24.000000, y: 7.000000, z: 1.000000}
       _inactive: false
       _playAudio: false
-      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -992,6 +995,9 @@
         []
       onFinishedCallbacks:
         []
+      _styleSnapOS2: PrimaryNeutral
+      _styleSnapOS3: Neutral
+      _opacity: !<float> 1.000000
   ScriptTypes:
     "":
       {}

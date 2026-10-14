@@ -10,97 +10,116 @@ import DefaultHeadlockController, {DefaultHeadlockConfig} from "./HeadlockContro
 export class Headlock extends BaseScriptComponent {
   private controller!: DefaultHeadlockController
 
-  @ui.group_start("Headlock")
-  @hint(
-    "Settings for positioning a SceneObject relative to the user's head movements. This contains configuration options \
-for distance, translation, and rotation behaviors to control how the SceneObject follows or stays fixed as the user \
-moves their head. These settings create a balanced experience between head-locked objects (which move with the head) \
-and world-space objects (which stay fixed in the environment)."
-  )
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Distance</span>')
+  @ui.label('<span style="color: #94A3B8; font-size: 11px;">How far the object is positioned from the camera</span>')
+
   /**
    * How far away the SceneObject will be from the camera.
    */
   @input
-  @hint("How far away the SceneObject will be from the camera.")
+  @label("Distance")
+  @hint("How far away the SceneObject will be from the camera (in cm).")
   private _distance: number = 50
-  @ui.group_start("Head Translation")
-  @hint(
-    "Controls how the SceneObject responds to physical head movement in space. These settings determine if and how \
-quickly the object follows when the user physically moves their head in different directions."
-  )
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Head Translation</span>')
+  @ui.label('<span style="color: #94A3B8; font-size: 11px;">Controls how the object responds to physical head movement in space</span>')
+
   /**
    * When enabled, the SceneObject will follow when the user moves their head along XZ-plane.
    */
   @input
-  @hint("When enabled, the SceneObject will follow when the user moves their head along XZ-plane.")
+  @label("XZ Enabled")
+  @hint("When enabled, the SceneObject will follow when the user physically moves their head along the XZ-plane (horizontal movement).")
   private _xzEnabled: boolean = true
+
   /**
    * How fast the SceneObject will follow along the XZ-plane, 0.1 for delayed follow, 1 for instant follow.
    */
   @input
-  @hint("How fast the SceneObject will follow along the XZ-plane, 0.1 for delayed follow, 1 for instant follow.")
+  @label("XZ Easing")
+  @hint("How fast the SceneObject will follow along the XZ-plane. Use 0.1 for a delayed, smooth follow effect, or 1 for instant following.")
   private _xzEasing: number = 1
+
   /**
    * When enabled, the SceneObject will follow when the user moves their head along Y-axis."
    */
   @input
-  @hint("When enabled, the SceneObject will follow when the user moves their head along Y-axis.")
+  @label("Y Enabled")
+  @hint("When enabled, the SceneObject will follow when the user physically moves their head along the Y-axis (vertical movement).")
   private _yEnabled: boolean = true
+
   /**
    * How fast the SceneObject will follow along the Y-axis, 0.1 for delayed follow, 1 for instant follow.
    */
   @input
-  @hint("How fast the SceneObject will follow along the Y-axis, 0.1 for delayed follow, 1 for instant follow.")
+  @label("Y Easing")
+  @hint("How fast the SceneObject will follow along the Y-axis. Use 0.1 for a delayed, smooth follow effect, or 1 for instant following.")
   private _yEasing: number = 1
+
   /**
    * The magnitude of change needed to activate a translation for the SceneObject to follow the camera.
    */
   @input
-  @hint("The magnitude of change needed to activate a translation for the SceneObject to follow the camera.")
-  private _translationBuffer: number = 0
-  @ui.group_end
-  @ui.group_start("Head Rotation")
+  @label("Translation Buffer")
   @hint(
-    "Controls how the SceneObject responds to head rotation. These settings determine if and how quickly the object \
-adjusts its position when the user rotates their head up/down (pitch) and left/right (yaw)."
+    "The magnitude of change (in cm) needed to activate a translation for the object to follow the camera. A small \
+buffer helps prevent 'wobbling' when the user has an unstable head position."
   )
+  private _translationBuffer: number = 0
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Pitch Rotation (Up/Down)</span>')
+  @ui.label('<span style="color: #94A3B8; font-size: 11px;">Controls how the object responds when looking up or down</span>')
+
   /**
    * When enabled, locks the SceneObject's position relative to the pitch-axis, keeping it fixed in place as the
    * user rotates their head up/down.
    */
   @input
+  @label("Locked Pitch")
   @hint(
     "When enabled, locks the SceneObject's position relative to the pitch-axis, keeping it fixed in place as the \
 user rotates their head up/down."
   )
   private _lockedPitch: boolean = true
+
   /**
    * How fast the SceneObject will follow along the pitch-axis, 0.1 for delayed follow, 1 for instant follow.
    */
   @input
-  @hint("How fast the SceneObject will follow along the pitch-axis, 0.1 for delayed follow, 1 for instant follow.")
+  @label("Pitch Easing")
+  @hint("How fast the SceneObject will follow along the pitch-axis. Use 0.1 for a delayed, smooth follow effect, or 1 for instant following.")
   private _pitchEasing: number = 1
+
   /**
    * How many degrees of offset from the center point should the SceneObject sit. Positive values place the element below
    * the center.
    */
   @input
-  @hint(
-    "How many degrees of offset from the center point should the SceneObject sit. Positive values place the element below \
-the center."
-  )
+  @label("Pitch Offset Degrees")
+  @hint("How many degrees of offset from the center point should the SceneObject sit. Positive values place the element below the center.")
   private _pitchOffsetDegrees: number = 0
+
   /**
    * How many degrees of leeway along each direction (up/down) before change starts to occur.
    */
   @input
-  @hint("How many degrees of leeway along each direction (up/down) before change starts to occur.")
+  @label("Pitch Buffer Degrees")
+  @hint("How many degrees of leeway along each direction (up/down) before the object starts to follow.")
   private _pitchBufferDegrees: number = 0
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Yaw Rotation (Left/Right)</span>')
+  @ui.label('<span style="color: #94A3B8; font-size: 11px;">Controls how the object responds when looking left or right</span>')
+
   /**
    * When enabled, locks the SceneObject's position relative to the yaw-axis, keeping it fixed in place as the user
    * rotates their head left/right.
    */
   @input
+  @label("Locked Yaw")
   @hint(
     "When enabled, locks the SceneObject's position relative to the yaw-axis, keeping it fixed in place as the user \
 rotates their head left/right."
@@ -111,26 +130,27 @@ rotates their head left/right."
    * How fast the SceneObject will follow along the yaw-axis, 0.1 for delayed follow, 1 for instant follow.
    */
   @input
-  @hint("How fast the SceneObject will follow along the yaw-axis, 0.1 for delayed follow, 1 for instant follow.")
+  @label("Yaw Easing")
+  @hint("How fast the SceneObject will follow along the yaw-axis. Use 0.1 for a delayed, smooth follow effect, or 1 for instant following.")
   private _yawEasing: number = 1
+
   /**
    * How many degrees of offset from the center point should the SceneObject sit. Positive values place the element to
    * the left.
    */
   @input
-  @hint(
-    "How many degrees of offset from the center point should the SceneObject sit. Positive values place the element to \
-the left."
-  )
+  @label("Yaw Offset Degrees")
+  @hint("How many degrees of offset from the center point should the SceneObject sit. Positive values place the element to the left.")
   private _yawOffsetDegrees: number = 0
+
   /**
    * How many degrees of leeway along each direction (left/right) before change starts to occur.
    */
   @input
-  @hint("How many degrees of leeway along each direction (left/right) before change starts to occur.")
+  @label("Yaw Buffer Degrees")
+  @hint("How many degrees of leeway along each direction (left/right) before the object starts to follow.")
   private _yawBufferDegrees: number = 0
-  @ui.group_end
-  @ui.group_end
+
   onAwake(): void {
     const headlockConfig: DefaultHeadlockConfig = {
       script: this,

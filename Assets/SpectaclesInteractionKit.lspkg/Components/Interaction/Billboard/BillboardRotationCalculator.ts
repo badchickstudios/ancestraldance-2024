@@ -4,13 +4,28 @@ export type RotationCalculatorConfig = {
   axis: RotationAxis
   axisEnabled?: boolean
   axisBufferRadians?: number
+  /**
+   * Easing controls how quickly the billboard rotates to face the camera.
+   * Uses exponential decay for framerate-independent smooth motion.
+   *
+   * Values range from 0 (no rotation) to 1 (instant/no easing):
+   * - 1.0: Instant rotation (no lag)
+   * - 0.2-0.3: Smooth, moderate lag (recommended for most use cases)
+   * - 0.1-0.2: Slower, more laggy rotation
+   * - 0.05-0.1: Very slow, heavy lag
+   *
+   * Note: The value represents how much rotation error is eliminated per DEFAULT_DURATION.
+   * Smaller values = more lag/smoother motion. Larger values = faster/snappier motion.
+   */
   axisEasing?: number
 }
 
-const TAG = "BillboardRotationCalculator"
-
-const DEFAULT_DURATION = 0.033
-export const ALMOST_ONE = 1 - Number.MIN_VALUE
+// Default time duration (in seconds) used for framerate-independent easing calculations.
+// This represents a single frame at 30fps and is used to normalize rotation speeds.
+export const DEFAULT_DURATION = 0.033
+export const EPSILON = 1e-6
+export const ALMOST_ONE = 1 - EPSILON
+const IDENTITY_QUAT = quat.quatIdentity()
 
 /**
  * BillboardRotationCalculator is used to calculate the quaternion to rotate an object by to align with a new vector along an axis.
@@ -48,34 +63,54 @@ export default class BillboardRotationCalculator {
     this._axisBufferRadians = radians
   }
 
+  /**
+   * Gets the axis easing value (0-1).
+   * See RotationCalculatorConfig.axisEasing for detailed documentation.
+   */
   get axisEasing(): number {
     return this._axisEasing
   }
+  /**
+   * Sets the axis easing value (0-1).
+   * Typical values: 0.2-0.3 for smooth lag, 1.0 for instant rotation.
+   * See RotationCalculatorConfig.axisEasing for detailed documentation.
+   */
   set axisEasing(easing: number) {
     this._axisEasing = easing
   }
 
-  // Returns the quaternion representing the rotation necessary for the target to align with the camera.
-  private calculateRotationQuaternion(rotationRadians: number, axisVector: vec3): quat {
-    let rotationQuaternion: quat = quat.angleAxis(rotationRadians, axisVector)
-
-    return rotationQuaternion
-  }
-
-  // Returns the exact angle to rotate the target by along the given axis.
-  // This function will include the logic for interpolation / buffer tolerances later.
-  private calculateAxisRotation(angle: number): number {
+  /**
+   * Returns the exact angle to rotate the target by along the given axis.
+   * Applies buffer tolerance and easing for smooth, framerate-independent rotation.
+   *
+   * @param angle - The full angle needed to align with the target
+   * @param deltaTime - Time elapsed since last rotation update (accumulated across skipped frames)
+   * @returns The angle to rotate this frame, after applying buffer and easing
+   */
+  private calculateAxisRotation(angle: number, deltaTime: number): number {
     if (!this.axisEnabled || Math.abs(angle) < this.axisBufferRadians) {
       return 0
     }
 
     // Calculate the angle to rotate just enough to keep the camera within the buffer cone.
-    let bufferAngle = angle - Math.sign(angle) * this.axisBufferRadians
+    const bufferAngle = angle - Math.sign(angle) * this.axisBufferRadians
 
     if (this.axisEasing !== 1) {
-      // If more time has passed than the expected duration, we should rotate more to prevent FPS issues slowing down animations.
-      let timeRatio = getDeltaTime() / DEFAULT_DURATION
-      return MathUtils.lerp(0, bufferAngle, this.axisEasing * timeRatio)
+      // Use exponential decay for framerate-independent easing.
+      // Formula: easingFactor = 1 - (1 - easing)^(deltaTime / DEFAULT_DURATION)
+      //
+      // This ensures consistent visual behavior regardless of:
+      // - Frame rate (60fps vs 30fps)
+      // - Frame skipping (updating every other frame)
+      // - Variable frame times
+      //
+      // The easing value represents how much error is eliminated per DEFAULT_DURATION (33ms).
+      // Example: easing=0.2 means 20% of the angle is rotated per 33ms.
+      // After 33ms: rotates 20% of bufferAngle
+      // After 66ms: rotates 36% of bufferAngle (not 40%, due to exponential decay)
+      // After 99ms: rotates 49% of bufferAngle
+      const easingFactor = 1.0 - Math.pow(1.0 - this.axisEasing, deltaTime / DEFAULT_DURATION)
+      return bufferAngle * easingFactor
     } else {
       // If we are not easing along this axis, just return the angle to maintain buffer zone.
       return bufferAngle
@@ -89,15 +124,15 @@ export default class BillboardRotationCalculator {
    * Because the user is expected to walk around freely, we use local X and Z axes for calculation, but global Y axis as the user's perception of 'up' is constant.
    */
   private calculateAxisAngle(axisVector: vec3, forwardVector: vec3, cameraVector: vec3, originVector: vec3): number {
-    let forwardVectorOnPlane = forwardVector.projectOnPlane(axisVector)
-    let cameraVectorOnPlane = cameraVector.projectOnPlane(axisVector)
+    const forwardVectorOnPlane = forwardVector.projectOnPlane(axisVector)
+    const cameraVectorOnPlane = cameraVector.projectOnPlane(axisVector)
 
     let angle = forwardVectorOnPlane.angleTo(cameraVectorOnPlane)
 
     // Origin vector describes the position on the unit circle where radian = 0.
     // We use this vector to compare if we should flip the sign of the angle to rotate in the correct direction.
-    let forwardAngleOnPlane = originVector.angleTo(forwardVectorOnPlane)
-    let cameraAngleOnPlane = originVector.angleTo(cameraVectorOnPlane)
+    const forwardAngleOnPlane = originVector.angleTo(forwardVectorOnPlane)
+    const cameraAngleOnPlane = originVector.angleTo(cameraVectorOnPlane)
     if (forwardAngleOnPlane > cameraAngleOnPlane) {
       angle = -angle
     }
@@ -106,20 +141,32 @@ export default class BillboardRotationCalculator {
   }
 
   // Rotates the target about each enabled axis separately.
-  public getRotation(axisVector: vec3, forwardVector: vec3, cameraVector: vec3, originVector: vec3): quat {
-    if (this.skipRotation()) {
-      return quat.quatIdentity()
+  public getRotation(
+    axisVector: vec3,
+    forwardVector: vec3,
+    cameraVector: vec3,
+    originVector: vec3,
+    deltaTime: number
+  ): quat {
+    if (!this._axisEnabled) {
+      return IDENTITY_QUAT
     }
 
-    if (axisVector.dot(forwardVector) > ALMOST_ONE) {
-      return quat.quatIdentity()
+    const forwardDot = Math.abs(axisVector.dot(forwardVector))
+    const cameraDot = Math.abs(axisVector.dot(cameraVector))
+    if (forwardDot >= ALMOST_ONE || cameraDot >= ALMOST_ONE) {
+      return IDENTITY_QUAT
     }
-    let angle = this.calculateAxisAngle(axisVector, forwardVector, cameraVector, originVector)
-    let rotationRadians = this.calculateAxisRotation(angle)
 
-    let rotationQuaternion = this.calculateRotationQuaternion(rotationRadians, axisVector)
+    const angle = this.calculateAxisAngle(axisVector, forwardVector, cameraVector, originVector)
+    const rotationRadians = this.calculateAxisRotation(angle, deltaTime)
 
-    return rotationQuaternion
+    // Early exit if no rotation is needed (within buffer zone or disabled)
+    if (rotationRadians === 0) {
+      return IDENTITY_QUAT
+    }
+
+    return quat.angleAxis(rotationRadians, axisVector)
   }
 
   /**
@@ -131,16 +178,18 @@ export default class BillboardRotationCalculator {
    * @returns the rotation about the given axis to align the target's forward vector with the camera.
    */
   public resetRotation(axisVector: vec3, forwardVector: vec3, cameraVector: vec3, originVector: vec3) {
-    if (axisVector.dot(forwardVector) > ALMOST_ONE) {
-      return quat.quatIdentity()
+    if (!this._axisEnabled) {
+      return IDENTITY_QUAT
     }
-    let angle = this.calculateAxisAngle(axisVector, forwardVector, cameraVector, originVector)
 
-    return this.axisEnabled ? this.calculateRotationQuaternion(angle, axisVector) : quat.quatIdentity()
-  }
+    const forwardDot = Math.abs(axisVector.dot(forwardVector))
+    const cameraDot = Math.abs(axisVector.dot(cameraVector))
+    if (forwardDot >= ALMOST_ONE || cameraDot >= ALMOST_ONE) {
+      return IDENTITY_QUAT
+    }
 
-  // Returns if the controller should skip rotating about the specified axis.
-  private skipRotation(): boolean {
-    return !this.axisEnabled
+    const angle = this.calculateAxisAngle(axisVector, forwardVector, cameraVector, originVector)
+
+    return this.axisEnabled ? quat.angleAxis(angle, axisVector) : IDENTITY_QUAT
   }
 }

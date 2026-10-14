@@ -111,7 +111,7 @@ export class InteractableOutlineFeedback extends BaseScriptComponent {
 
   removeMaterialFromRenderMeshArray(): void {
     for (let i = 0; i < this.meshVisuals.length; i++) {
-      let materials = []
+      const materials = []
 
       const matCount = this.meshVisuals[i].getMaterialsCount()
 
@@ -127,7 +127,7 @@ export class InteractableOutlineFeedback extends BaseScriptComponent {
 
       this.meshVisuals[i].clearMaterials()
 
-      for (var k = 0; k < materials.length; k++) {
+      for (let k = 0; k < materials.length; k++) {
         this.meshVisuals[i].addMaterial(materials[k])
       }
     }
@@ -136,11 +136,23 @@ export class InteractableOutlineFeedback extends BaseScriptComponent {
   setupInteractableCallbacks(): void {
     validate(this.interactable)
 
-    this.interactable.onHoverEnter.add(() => {
+    this.interactable.onHoverEnter.add((event) => {
       this.addMaterialToRenderMeshArray()
+
+      if (event.interactor.isTriggering) {
+        this.setHighlightColor(this.activatingColor)
+      }
     })
 
-    this.interactable.onHoverExit.add(() => {
+    this.interactable.onHoverExit.add((event) => {
+      if (
+        this.interactable?.keepHoverOnTrigger &&
+        event.interactor.isTriggering &&
+        event.interactor.currentInteractable === this.interactable
+      ) {
+        return
+      }
+
       this.removeMaterialFromRenderMeshArray()
     })
 
@@ -152,7 +164,46 @@ export class InteractableOutlineFeedback extends BaseScriptComponent {
       this.setHighlightColor(this.hoveringColor)
     })
 
+    this.interactable.onTriggerEndOutside.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+      this.removeMaterialFromRenderMeshArray()
+    })
+
     this.interactable.onTriggerCanceled.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+      this.removeMaterialFromRenderMeshArray()
+    })
+
+    this.interactable.onSyncHoverEnter.add((event) => {
+      this.addMaterialToRenderMeshArray()
+
+      if (event.interactor.isTriggering) {
+        this.setHighlightColor(this.activatingColor)
+      }
+    })
+
+    this.interactable.onSyncHoverExit.add((event) => {
+      if (this.interactable?.keepHoverOnTrigger && event.interactor.isTriggering) {
+        return
+      }
+
+      this.removeMaterialFromRenderMeshArray()
+    })
+
+    this.interactable.onSyncTriggerStart.add(() => {
+      this.setHighlightColor(this.activatingColor)
+    })
+
+    this.interactable.onSyncTriggerEnd.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+    })
+
+    this.interactable.onSyncTriggerEndOutside.add(() => {
+      this.setHighlightColor(this.hoveringColor)
+      this.removeMaterialFromRenderMeshArray()
+    })
+
+    this.interactable.onSyncTriggerCanceled.add(() => {
       this.setHighlightColor(this.hoveringColor)
       this.removeMaterialFromRenderMeshArray()
     })

@@ -5,7 +5,8 @@
   LazyLoading: false
   RetainAssets: true
 - !<SceneObject/22c45f32-8cc7-4458-9569-de7017ca63f8>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Scenes
   Enabled: true
   Layers: 1
@@ -16,29 +17,40 @@
     HasSegmentScaleCompensation: false
   Children:
     - !<own> e1ba6acd-e61e-4896-96cc-c22b92a4c3d0
-  Components: []
+  Components:
+    []
 - !<AnimationPlayer/31cef106-5284-4414-b00d-3f6efea0c6ff>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: component_1
   Enabled: true
   Autoplay: true
   ClipRangeType: Frames
-  AnimationClips: []
+  AnimationClips:
+    []
 - !<SceneObject/c15b9201-5f14-4fb1-9ff0-ca6cad521886>
-  PrefabRemaps: []
+  PrefabRemaps:
+    - 22c45f32-8cc7-4458-9569-de7017ca63f8: 22c45f32-8cc7-4458-6a96-218fe8359c07
+    - 31cef106-5284-4414-b00d-3f6efea0c6ff: 31cef106-5284-4414-4ff2-c091015f3900
+    - c15b9201-5f14-4fb1-9ff0-ca6cad521886: c15b9201-5f14-4fb1-600f-359352ade779
+    - c60446a0-8719-4515-a14d-8c0e8901fee4: c60446a0-8719-4515-5eb2-73f176fe011b
+    - e1ba6acd-e61e-4896-96cc-c22b92a4c3d0: e1ba6acd-e61e-4896-6933-3dd46d5b3c2f
+    - f2afa969-feaf-4166-b9d4-8ee0e13ccc76: f2afa969-feaf-4166-462b-711f1ec33389
   Name: leaf2
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 100.000000, y: 100.000000, z: 100.000000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 22c45f32-8cc7-4458-9569-de7017ca63f8
-  Components: []
+  Components:
+    []
 - !<SceneObject/c60446a0-8719-4515-a14d-8c0e8901fee4>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Object_3
   Enabled: true
   Layers: 1
@@ -47,11 +59,13 @@
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> f2afa969-feaf-4166-b9d4-8ee0e13ccc76
 - !<SceneObject/e1ba6acd-e61e-4896-96cc-c22b92a4c3d0>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Scene
   Enabled: true
   Layers: 1
@@ -65,7 +79,8 @@
   Components:
     - !<own> 31cef106-5284-4414-b00d-3f6efea0c6ff
 - !<RenderMeshVisual/f2afa969-feaf-4166-b9d4-8ee0e13ccc76>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Object_0
   Enabled: true
   RenderOrder: 0
@@ -81,4 +96,5 @@
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
-  BlendShapes: {}
+  BlendShapes:
+    {}

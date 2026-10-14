@@ -82,7 +82,7 @@ export class MobileInputData {
       return
     }
 
-    let options = MotionController.MotionControllerOptions.create()
+    const options = MotionController.MotionControllerOptions.create()
     options.motionType = MotionController.MotionType.SixDoF
 
     this._motionController = this._motionControllerModule.getController(options) as MotionController

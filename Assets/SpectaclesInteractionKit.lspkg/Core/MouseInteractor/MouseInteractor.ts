@@ -1,3 +1,4 @@
+import {Interactable} from "../../Components/Interaction/Interactable/Interactable"
 import {InteractableHitInfo} from "../../Providers/TargetProvider/TargetProvider"
 import BaseInteractor from "../Interactor/BaseInteractor"
 import {InteractorInputType, InteractorTriggerType, TargetingMode} from "../Interactor/Interactor"
@@ -16,15 +17,22 @@ const TARGETING_VOLUME_MULTIPLIER = 1
  */
 @component
 export class MouseInteractor extends BaseInteractor {
-  @ui.group_start("MouseInteractor")
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Mouse Interactor</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Configuration for testing interactions in Lens Studio preview</span>'
+  )
+
   /**
    * Sets the return value of MouseInteractor.activeTargetingMode for cases where non-indirect targeting needs to be
    * tested specifically. Useful whenever your code has checks for interactor.activeTargetingMode === TargetingMode.X.
    */
   @input
+  @label("Mouse Targeting Mode")
   @hint(
-    "Sets the return value of MouseInteractor.activeTargetingMode for cases where non-indirect targeting needs to be \
-tested specifically. Useful whenever your code has checks for interactor.activeTargetingMode === TargetingMode.X."
+    "Sets the return value of MouseInteractor.activeTargetingMode for testing purposes. Useful when your code has \
+checks for specific targeting modes (e.g., interactor.activeTargetingMode === TargetingMode.Direct). Allows you to \
+simulate different hand targeting modes with the mouse in the Lens Studio preview."
   )
   @widget(
     new ComboBoxWidget([
@@ -35,12 +43,23 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
     ])
   )
   private mouseTargetingMode: number = 2
-  @ui.group_end
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Depth Testing</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Simulate depth movement for testing 3D interactions</span>'
+  )
+
   /**
    * Moves the interactor in depth to help test 3D interactions in z space.
    */
   @input
-  @hint("Moves the interactor in depth to help test 3D interactions in z space.")
+  @label("Move In Depth")
+  @hint(
+    "When enabled, the mouse interactor oscillates back and forth along its ray direction to simulate depth movement. \
+This helps test 3D interactions in z-space that would normally require physical hand movement toward or away from \
+objects."
+  )
   private moveInDepth: boolean = false
 
   /**
@@ -49,11 +68,12 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
    * z-range for testing 3D interactions.
    */
   @input
+  @label("Move In Depth Amount")
   @showIf("moveInDepth", true)
   @hint(
     "Controls the maximum distance (in cm) that the mouse interactor will move back and forth along its ray direction \
-    when moveInDepth is enabled. Higher values create larger depth movements, simulating interaction across a wider \
-    z-range for testing 3D interactions."
+when moveInDepth is enabled. Higher values create larger depth movements, simulating interaction across a wider \
+z-range for testing 3D interactions."
   )
   private moveInDepthAmount: number = 5
 
@@ -73,7 +93,7 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
       maxRayDistance: this.maxRaycastDistance,
       targetingVolumeMultiplier: TARGETING_VOLUME_MULTIPLIER,
       shouldPreventTargetUpdate: () => {
-        return this.currentInteractable !== null && this.isDown
+        return this.currentTrigger !== InteractorTriggerType.None
       },
       spherecastRadii: this.spherecastRadii,
       spherecastDistanceThresholds: this.spherecastDistanceThresholds
@@ -90,8 +110,8 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
   }
 
   get startPoint(): vec3 | null {
-    let p = this.mouseTargetProvider.startPoint
-    if (this.moveInDepth) {
+    let p = this.mouseTargetProvider?.startPoint ?? null
+    if (p && this.moveInDepth) {
       const moveAmount = (Math.sin(getTime()) + 1) * 0.5 * this.moveInDepthAmount
       p = p.add(this.mouseTargetProvider.direction.uniformScale(moveAmount))
     }
@@ -99,11 +119,11 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
   }
 
   get endPoint(): vec3 | null {
-    return this.mouseTargetProvider.endPoint
+    return this.mouseTargetProvider?.endPoint ?? null
   }
 
   get direction(): vec3 | null {
-    return this.mouseTargetProvider.direction
+    return this.mouseTargetProvider?.direction ?? null
   }
 
   get distanceToTarget(): number | null {
@@ -140,6 +160,11 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
   set drawDebug(debug: boolean) {
     this._drawDebug = debug
 
+    // If the target providers have not been created yet, no need to manually set the drawDebug.
+    if (!this.mouseTargetProvider) {
+      return
+    }
+
     this.mouseTargetProvider.drawDebug = debug
   }
 
@@ -150,15 +175,46 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
     return this._drawDebug
   }
 
+  get isHoveringCurrentInteractable(): boolean | null {
+    if (!this.currentInteractable) {
+      return null
+    }
+
+    return this.mouseTargetProvider.isHoveringInteractable(this.currentInteractable)
+  }
+
+  get hoveredInteractables(): Interactable[] {
+    const hoveredInteractables = Array.from(this.mouseTargetProvider.currentInteractableSet)
+
+    return hoveredInteractables
+  }
+
+  isHoveringInteractable(interactable: Interactable): boolean {
+    return this.mouseTargetProvider!.isHoveringInteractable(interactable)
+  }
+
+  isHoveringInteractableHierarchy(interactable: Interactable): boolean {
+    if (this.mouseTargetProvider!.isHoveringInteractable(interactable)) {
+      return true
+    }
+
+    for (const hoveredInteractable of this.mouseTargetProvider!.currentInteractableSet) {
+      if (hoveredInteractable.isDescendantOf(interactable)) {
+        return true
+      }
+    }
+    return false
+  }
+
   isActive(): boolean {
-    return this.enabled
+    return this.enabled && this.sceneObject.isEnabledInHierarchy
   }
 
   isTargeting(): boolean {
     return this.touchRayProvider !== undefined && this.touchRayProvider.isAvailable()
   }
 
-  updateState(): void {
+  override updateState(): void {
     super.updateState()
 
     if (!this.isActive()) {
@@ -197,11 +253,11 @@ tested specifically. Useful whenever your code has checks for interactor.activeT
 
     this.createEvent("TouchEndEvent").bind((...args) => this.onTouchEndEvent(...args))
   }
-  private onTouchStartEvent(ev: TouchStartEvent): void {
+  private onTouchStartEvent(_ev: TouchStartEvent): void {
     this.isDown = true
   }
 
-  private onTouchEndEvent(ev: TouchEndEvent): void {
+  private onTouchEndEvent(_ev: TouchEndEvent): void {
     this.isDown = false
   }
 }

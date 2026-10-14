@@ -32,6 +32,7 @@ export default class MotionControllerProvider {
     }
 
     try {
+      // eslint-disable-next-line
       this.loadedModule = require("LensStudio:MotionControllerModule") as MotionControllerModule
       return this.loadedModule
     } catch (error) {

@@ -9,6 +9,9 @@ const TAG = "PinchButton"
 /**
  * This class provides basic pinch button functionality for the prefab pinch button. It is meant to be added to a Scene
  * Object with an Interactable component, with visual behavior configured in the Lens Studio scene.
+ *
+ * @deprecated in favor of using SpectaclesUIKit's Button components.
+ * See https://developers.snap.com/spectacles/spectacles-frameworks/spectacles-ui-kit/get-started for more details.
  */
 @component
 export class PinchButton extends BaseScriptComponent {
@@ -52,9 +55,9 @@ InteractorEvent parameter (optional)."
   private log = new NativeLogger(TAG)
 
   onAwake(): void {
-    this.interactable = this.getSceneObject().getComponent(Interactable.getTypeName())
-
     this.createEvent("OnStartEvent").bind(() => {
+      this.interactable = this.getSceneObject().getComponent(Interactable.getTypeName())
+
       if (!this.interactable) {
         throw new Error(
           "Pinch Button requires an Interactable Component on the same Scene object in order to work - please ensure one is added."

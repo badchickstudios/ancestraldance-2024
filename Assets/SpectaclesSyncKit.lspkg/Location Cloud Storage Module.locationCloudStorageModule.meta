@@ -1,8 +1,8 @@
-- !<AssetImportMetadata/4093a91b-239d-eca5-a9b8-bd4ba96c443b>
+- !<AssetImportMetadata/052ce36e-66c6-0083-a2ac-c486683235d0>
   ImportedAssetIds:
-    LocationCloudStorageModule: !<reference> 298d43d2-2294-4592-b641-973bdb8ab0f3
+    LocationCloudStorageModule: !<reference> c69f81a0-d63a-4b6c-bed2-7e5a88d1c538
   ImporterName: LocationCloudStorageModuleImporter
-  PrimaryAsset: !<reference> 298d43d2-2294-4592-b641-973bdb8ab0f3
+  PrimaryAsset: !<reference> c69f81a0-d63a-4b6c-bed2-7e5a88d1c538
   PackageType: NotAPackage
   LegacyPackagePolicy: ~
   ExtraData:

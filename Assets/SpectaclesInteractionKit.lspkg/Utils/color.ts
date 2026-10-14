@@ -1,7 +1,5 @@
 import {SeededRandomNumberGenerator} from "./SeededRandomNumberGenerator"
 
-const TAG = "color utils"
-
 /*
  * this file contains some color utilities that make working with lens studio's vec3/vec4 a bit nicer
  */
@@ -213,7 +211,7 @@ const ONE_OVER_360 = 0.00277777777
 export function getMostCommonHue(texture: Texture): number {
   // Divide the possible colors up into buckets, to limit the number of options
   const bucketCount = BUCKET_COUNT
-  let colors = new Array<number>(bucketCount)
+  const colors = new Array<number>(bucketCount)
   for (let i = 0; i < bucketCount; i++) {
     colors[i] = 0
   }
@@ -237,7 +235,7 @@ export function getMostCommonHue(texture: Texture): number {
   )
 
   // Reuse the vector for each loop to reduce allocations
-  var pixelColor = vec3.zero()
+  const pixelColor = vec3.zero()
   // This loop runs many times, so needs to be efficient
   samples.forEach((pixelIndex) => {
     const i = pixelIndex * 4

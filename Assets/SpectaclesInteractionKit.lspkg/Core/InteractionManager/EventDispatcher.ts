@@ -147,6 +147,9 @@ export class EventDispatcher {
       case "TriggerEnd":
         interactable.triggerEnd(event)
         break
+      case "TriggerEndOutside":
+        interactable.triggerEndOutside(event)
+        break
       case "TriggerCanceled":
         interactable.triggerCanceled(event)
         break

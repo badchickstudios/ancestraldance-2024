@@ -5,27 +5,37 @@
   LazyLoading: false
   RetainAssets: true
 - !<AnimationPlayer/4eb11cd1-484b-4173-8950-f94b1120b794>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: component_1
   Enabled: true
   Autoplay: true
   ClipRangeType: Frames
-  AnimationClips: []
+  AnimationClips:
+    []
 - !<SceneObject/7a0eb203-6328-4f15-9284-2ddce7c69571>
-  PrefabRemaps: []
+  PrefabRemaps:
+    - 4eb11cd1-484b-4173-8950-f94b1120b794: 4eb11cd1-484b-4173-76af-06b4eedf486b
+    - 7a0eb203-6328-4f15-9284-2ddce7c69571: 7a0eb203-6328-4f15-6d7b-d22318396a8e
+    - 87bdc9dc-1d57-473a-8e31-aa86cd5caec3: 87bdc9dc-1d57-473a-71ce-557932a3513c
+    - 8f1c85dd-c7e8-467c-ace1-c0b4b6b53aa1: 8f1c85dd-c7e8-467c-531e-3f4b494ac55e
+    - e28f3b92-7fe7-40fd-bc27-7e976364a585: e28f3b92-7fe7-40fd-43d8-81689c9b5a7a
+    - fa96234a-f160-4b16-b588-b0f0bb1fda08: fa96234a-f160-4b16-4a77-4f0f44e025f7
   Name: ring-earth
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 100.000000, y: 100.000000, z: 100.000000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> e28f3b92-7fe7-40fd-bc27-7e976364a585
-  Components: []
+  Components:
+    []
 - !<SceneObject/87bdc9dc-1d57-473a-8e31-aa86cd5caec3>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Scene
   Enabled: true
   Layers: 1
@@ -39,7 +49,8 @@
   Components:
     - !<own> 4eb11cd1-484b-4173-8950-f94b1120b794
 - !<RenderMeshVisual/8f1c85dd-c7e8-467c-ace1-c0b4b6b53aa1>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Circle.004
   Enabled: true
   RenderOrder: 0
@@ -55,9 +66,11 @@
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
-  BlendShapes: {}
+  BlendShapes:
+    {}
 - !<SceneObject/e28f3b92-7fe7-40fd-bc27-7e976364a585>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Scenes
   Enabled: true
   Layers: 1
@@ -68,9 +81,11 @@
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 87bdc9dc-1d57-473a-8e31-aa86cd5caec3
-  Components: []
+  Components:
+    []
 - !<SceneObject/fa96234a-f160-4b16-b588-b0f0bb1fda08>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: ring earth
   Enabled: true
   Layers: 1
@@ -79,6 +94,7 @@
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> 8f1c85dd-c7e8-467c-ace1-c0b4b6b53aa1

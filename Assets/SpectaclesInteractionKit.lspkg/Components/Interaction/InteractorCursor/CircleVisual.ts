@@ -1,7 +1,7 @@
 import {HandType} from "../../../Providers/HandInputData/HandType"
 import animate, {CancelSet} from "../../../Utils/animate"
 import {validate} from "../../../Utils/validate"
-import {Billboard} from "../Billboard/Billboard"
+import {CursorMaterialHandType} from "./CircleVisualV2"
 import {CursorMode} from "./InteractorCursor"
 
 export type CircleVisualTextureConfig = {
@@ -26,13 +26,6 @@ export type CircleVisualMaterialParameters = {
   cursorTexture: Texture
   handType: CursorMaterialHandType
   multipleInteractorsActive: boolean
-}
-
-// To make the math of calculating angles easier to follow, the CursorMat graph uses -1 and 1 to represent the left/right hand.
-const enum CursorMaterialHandType {
-  Left = -1,
-  NonHand = 0,
-  Right = 1
 }
 
 const OUTLINE_ANIMATE_DURATION = 0.1
@@ -60,24 +53,18 @@ export class CircleVisual {
 
   private visual = this.sceneObject.getComponent("Component.RenderMeshVisual")
 
-  private billboardComponent = this.sceneObject.createComponent(Billboard.getTypeName())
+  private _transform = this.sceneObject.getTransform()
 
   constructor(private config: CircleVisualConfig) {
     const cloneMaterial = this.visual.mainMaterial.clone()
     this.visual.mainMaterial = cloneMaterial
     this.renderOrder = DEFAULT_RENDER_ORDER
     this.sceneObject.enabled = false
-    this.visual.getTransform().setWorldScale(DEFAULT_SCALE)
-
-    this.configureBillboardComponent()
+    this.transform.setWorldScale(DEFAULT_SCALE)
   }
 
-  private configureBillboardComponent() {
-    this.billboardComponent.xAxisEnabled = true
-    this.billboardComponent.yAxisEnabled = true
-    this.billboardComponent.zAxisEnabled = false
-    this.billboardComponent.axisEasing = new vec3(1, 1, 1)
-    this.billboardComponent.axisBufferDegrees = new vec3(0, 0, 0)
+  get transform(): Transform {
+    return this._transform
   }
 
   get sceneObject(): SceneObject {
@@ -85,11 +72,19 @@ export class CircleVisual {
   }
 
   set worldPosition(position: vec3) {
-    this.sceneObject.getTransform().setWorldPosition(position)
+    this.transform.setWorldPosition(position)
   }
 
   get worldPosition(): vec3 {
-    return this.sceneObject.getTransform().getWorldPosition()
+    return this.transform.getWorldPosition()
+  }
+
+  set worldRotation(rotation: quat) {
+    this.transform.setWorldRotation(rotation)
+  }
+
+  get worldRotation(): quat {
+    return this.transform.getWorldRotation()
   }
 
   /**
@@ -398,14 +393,14 @@ export class CircleVisual {
    * Set the world scale of the cursor.
    */
   set worldScale(scale: vec3) {
-    this.visual.getTransform().setWorldScale(scale)
+    this.transform.setWorldScale(scale)
   }
 
   /**
    * Returns the world scale of the cursor.
    */
   get worldScale(): vec3 {
-    return this.visual.getTransform().getWorldScale()
+    return this.transform.getWorldScale()
   }
 
   get materialParameters(): CircleVisualMaterialParameters {

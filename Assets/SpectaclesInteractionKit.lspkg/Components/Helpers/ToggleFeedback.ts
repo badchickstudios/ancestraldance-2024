@@ -106,7 +106,7 @@ current state."
 
   private removeMaterials(): void {
     for (let i = 0; i < this.meshVisuals.length; i++) {
-      let materials = []
+      const materials = []
 
       const matCount = this.meshVisuals[i].getMaterialsCount()
 
@@ -122,7 +122,7 @@ current state."
 
       this.meshVisuals[i].clearMaterials()
 
-      for (var k = 0; k < materials.length; k++) {
+      for (let k = 0; k < materials.length; k++) {
         this.meshVisuals[i].addMaterial(materials[k])
       }
     }
@@ -157,7 +157,23 @@ current state."
       this.changeToggleOnMesh(this.toggledOnSelectMaterial, this.toggledOffSelectMaterial)
     })
 
+    interactable.onTriggerEndOutside.add(() => {
+      this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
+    })
+
     interactable.onTriggerCanceled.add(() => {
+      this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
+    })
+
+    interactable.onSyncTriggerStart.add(() => {
+      this.changeToggleOnMesh(this.toggledOnSelectMaterial, this.toggledOffSelectMaterial)
+    })
+
+    interactable.onSyncTriggerEndOutside.add(() => {
+      this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
+    })
+
+    interactable.onSyncTriggerCanceled.add(() => {
       this.changeToggleOnMesh(this.toggledOnMaterial, this.toggledOffMaterial)
     })
 

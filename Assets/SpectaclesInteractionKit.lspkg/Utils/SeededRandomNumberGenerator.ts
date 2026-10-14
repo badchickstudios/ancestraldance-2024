@@ -1,5 +1,3 @@
-const TAG = "SeededRandomNumberGenerator"
-
 /**
  * Optimal constant, per:
  * Steele, GL, Vigna, S. Computationally easy, spectrally good multipliers for congruential pseudorandom number generators. Softw Pract Exper. 2022; 52( 2): 443– 458. doi:10.1002/spe.3030

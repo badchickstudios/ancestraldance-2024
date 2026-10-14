@@ -10,6 +10,9 @@ const TAG = "ScrollBar"
 
 /**
  * This class represents a scrollbar component that can be used with a ScrollView. It manages the scrollbar's position, size, and interaction events. The class calculates the height offset to prevent the scrollbar mesh from extending past the canvas and integrates with the ScrollView to handle scrolling.
+ *
+ * @deprecated in favor of using SpectaclesUIKit's ScrollBar component.
+ * See https://developers.snap.com/spectacles/spectacles-frameworks/spectacles-ui-kit/get-started for more details.
  */
 @component
 export class ScrollBar extends BaseScriptComponent {
@@ -53,6 +56,12 @@ canvas when at the top of the content."
   onAwake() {
     this.transform = this.getSceneObject().getTransform()
 
+    this.createEvent("OnStartEvent").bind(() => {
+      this.onStart()
+    })
+  }
+
+  onStart() {
     this.scrollView = this.findScrollView()
     this.scrollViewSceneObject = this.scrollView.getSceneObject()
     this.scrollViewScreenTransform = this.scrollViewSceneObject.getComponent("Component.ScreenTransform")
@@ -73,6 +82,8 @@ canvas when at the top of the content."
     if (interactable === null) {
       throw new Error("ScrollBar requires an interactable to function.")
     }
+
+    interactable.keepHoverOnTrigger = true
 
     interactable.onDragStart((event) => {
       if (event.interactor.dragType === DragType.Touchpad) {
@@ -109,7 +120,7 @@ canvas when at the top of the content."
     })
   }
 
-  private onScroll(event: ScrollViewEventArgs) {
+  private onScroll(_event: ScrollViewEventArgs) {
     validate(this.transform)
 
     // If there is no overflow, don't move ScrollBar at all.
@@ -232,7 +243,7 @@ canvas when at the top of the content."
       )
     }
 
-    for (let child of children) {
+    for (const child of children) {
       const scrollView = child.getComponent(ScrollView.getTypeName())
 
       if (scrollView !== null) {
@@ -300,7 +311,7 @@ canvas when at the top of the content."
     this.yOrigin = this.scrollViewSceneObject.getTransform().getLocalPosition().y
 
     const position = this.transform.getLocalPosition()
-    position.y = this.yOrigin + this.boundingHeight
+    position.y = this.yOrigin + MathUtils.lerp(this.boundingHeight, -this.boundingHeight, this.scrollPercentage)
 
     this.transform.setLocalPosition(position)
   }

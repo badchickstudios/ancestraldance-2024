@@ -9,10 +9,10 @@ export type lineVertex = [number, number, number, number, number, number, number
  * @returns miterOffset - add or subtract this from a vertex to get offset needed
  */
 export function getMiterOffset(prevSegment: vec3, nextSegment: vec3, widthOffset: number): vec3 {
-  let tangent = prevSegment.add(nextSegment).normalize()
-  let miter = new vec3(-tangent.y, tangent.x, 0)
-  let normalA = new vec3(-prevSegment.y, prevSegment.x, 0)
-  let scaleWidth = widthOffset / miter.dot(normalA)
+  const tangent = prevSegment.add(nextSegment).normalize()
+  const miter = new vec3(-tangent.y, tangent.x, 0)
+  const normalA = new vec3(-prevSegment.y, prevSegment.x, 0)
+  const scaleWidth = widthOffset / miter.dot(normalA)
   return miter.uniformScale(scaleWidth)
 }
 
@@ -25,8 +25,8 @@ export function getTangent(prevSegment: vec3, nextSegment: vec3) {
 }
 
 export function getEndWidth(current: vec3, next: vec3, widthAtVertex: number) {
-  let direction = next.sub(current)
-  let normalizedDir = new vec3(-direction.y, direction.x, 0).normalize()
+  const direction = next.sub(current)
+  const normalizedDir = new vec3(-direction.y, direction.x, 0).normalize()
   return normalizedDir.uniformScale(widthAtVertex)
 }
 

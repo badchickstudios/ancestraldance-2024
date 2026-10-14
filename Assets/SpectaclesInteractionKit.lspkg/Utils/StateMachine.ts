@@ -6,7 +6,7 @@ import NativeLogger from "./NativeLogger"
 import State, {StateConfig, Transition} from "./State"
 
 import {LensConfig} from "./LensConfig"
-import {DispatchedUpdateEvent} from "./UpdateDispatcher"
+import {DispatchedUpdateEvent, IUpdateDispatcher} from "./UpdateDispatcher"
 
 const TAG = "StateMachine"
 
@@ -15,33 +15,33 @@ export default class StateMachine {
   private _currentState: State | null = null
   private states: any = {}
   private stateCount = 0
-  private verboseLogs = false
 
   private log: NativeLogger
-  private lateUpdateEvent: DispatchedUpdateEvent
-  private updateEvent: DispatchedUpdateEvent
+
+  private updateDispatcher: IUpdateDispatcher
+  public lateUpdateEvent: DispatchedUpdateEvent
+  public updateEvent: DispatchedUpdateEvent
 
   constructor(name: string) {
     this.name = name ?? "StateMachine"
     this.log = new NativeLogger(TAG + "#" + this.name)
 
-    let lensConfig = LensConfig.getInstance()
-    let updateDispatcher = lensConfig.updateDispatcher
-    this.updateEvent = updateDispatcher.createUpdateEvent("StateMachineUpdate")
-    this.updateEvent.bind(() => {
-      this.update()
-    })
-    this.lateUpdateEvent = updateDispatcher.createLateUpdateEvent("StateMachineLateUpdate")
-    this.lateUpdateEvent.bind(() => {
+    const lensConfig = LensConfig.getInstance()
+    this.updateDispatcher = lensConfig.updateDispatcher
+
+    this.updateEvent = this.updateDispatcher.createUpdateEvent(`StateMachine${this.name}Update`, () => this.update())
+
+    this.lateUpdateEvent = this.updateDispatcher.createLateUpdateEvent(`StateMachine${this.name}LateUpdate`, () =>
       this.lateUpdate()
-    })
+    )
   }
 
   destroy() {
     this.log.d("destroy")
     this._currentState = null
-    this.lateUpdateEvent.enabled = false
-    this.updateEvent.enabled = false
+
+    this.updateDispatcher.removeEvent(this.updateEvent)
+    this.updateDispatcher.removeEvent(this.lateUpdateEvent)
   }
 
   get currentState(): State | null {
@@ -53,7 +53,7 @@ export default class StateMachine {
    * @param config StateConfig. State names are Unique
    */
   addState(config: StateConfig): State {
-    let newState = new State(config)
+    const newState = new State(config)
     this.states[newState.name] = newState
     this.stateCount++
 
@@ -71,13 +71,13 @@ export default class StateMachine {
       return
     }
 
-    let oldState = this._currentState
+    const oldState = this._currentState
     if (oldState !== null) {
       this.exitState()
     }
 
     // this.log(`Entering State - ${stateName}`)
-    let newState = this.states[stateName] as State
+    const newState = this.states[stateName] as State
     this._currentState = newState
     this._currentState.stateElapsedTime = 0
     this._currentState.stateStartTime = getTime()
@@ -98,9 +98,9 @@ export default class StateMachine {
       return
     }
 
-    this._currentState.onSignal()
+    this._currentState.onSignal(signal, data)
 
-    let transition = this._currentState.checkSignal(signal, data)
+    const transition = this._currentState.checkSignal(signal, data)
     if (transition !== null) {
       this.executeTransition(transition)
     }
@@ -129,7 +129,7 @@ export default class StateMachine {
 
     this._currentState.stateElapsedTime = getTime() - this._currentState.stateStartTime
 
-    let transition = this._currentState.checkUpdate()
+    const transition = this._currentState.checkUpdate()
     if (transition !== null) {
       this.executeTransition(transition)
     }

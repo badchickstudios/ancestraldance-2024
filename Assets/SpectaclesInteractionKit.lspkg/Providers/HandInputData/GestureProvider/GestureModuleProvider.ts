@@ -31,6 +31,7 @@ export default class GestureModuleProvider {
     }
 
     try {
+      // eslint-disable-next-line
       this.loadedModule = require("LensStudio:GestureModule") as GestureModule
       return this.loadedModule
     } catch (error) {

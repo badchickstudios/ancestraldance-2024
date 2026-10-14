@@ -2,7 +2,7 @@ import {DragInteractorEvent, InteractorEvent} from "../../../Core/Interactor/Int
 import NativeLogger from "../../../Utils/NativeLogger"
 
 import {InteractionManager} from "../../../Core/InteractionManager/InteractionManager"
-import {InteractorInputType} from "../../../Core/Interactor/Interactor"
+import {InteractorInputType, InteractorTriggerType} from "../../../Core/Interactor/Interactor"
 import {InteractionConfigurationProvider} from "../../../Providers/InteractionConfigurationProvider/InteractionConfigurationProvider"
 import Event, {PublicApi} from "../../../Utils/Event"
 import {validate} from "../../../Utils/validate"
@@ -169,14 +169,27 @@ export class ScrollArea extends View {
 
     validate(interactable, "Couldn't create an Interactable. Interactable typename is undefined.")
 
+    interactable.useFilteredPinch = true
+    interactable.keepHoverOnTrigger = true
+
     // Hover
-    interactable.onHoverEnter.add((event) => {
+    interactable.onInteractorHoverEnter.add((event) => {
       validate(this.interactable)
 
       const planeIntersection = event.interactor.raycastPlaneIntersection(this.interactable)
 
       const outsideScrollCanvas =
         planeIntersection === null || !this.screenTransform.containsWorldPoint(planeIntersection)
+
+      // If this hover enter comes from an existing interaction, we don't want to clear the Interactable.
+      const wasTriggering =
+        event.interactor.previousTrigger !== InteractorTriggerType.None &&
+        event.interactor.previousInteractable === event.target
+
+      if (outsideScrollCanvas && !wasTriggering) {
+        event.stopPropagation()
+        event.interactor.clearCurrentInteractable()
+      }
 
       if (!this.isFocused && !outsideScrollCanvas) {
         this.isFocused = true
@@ -200,6 +213,10 @@ export class ScrollArea extends View {
 
       const outsideScrollCanvas =
         planeIntersection === null || !this.screenTransform.containsWorldPoint(planeIntersection)
+
+      if (outsideScrollCanvas) {
+        event.stopPropagation()
+      }
 
       if (this.isFocused && outsideScrollCanvas) {
         if (interactable.hoveringInteractor === InteractorInputType.None) {
@@ -234,8 +251,7 @@ export class ScrollArea extends View {
       }
     })
 
-    // Trigger
-    interactable.onTriggerStart.add((event) => {
+    interactable.onInteractorTriggerStart.add((event) => {
       this.stopEventPropagationOutsideScrollArea(event)
     })
     interactable.onTriggerUpdate.add((event) => {

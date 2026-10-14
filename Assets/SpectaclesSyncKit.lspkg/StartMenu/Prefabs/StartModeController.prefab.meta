@@ -99,7 +99,7 @@
     []
   Name: StartMenu
   Enabled: true
-  ScriptAsset: !<reference> 6c734bdf-0a2a-4a2b-9f60-1f89d8f7cc43
+  ScriptAsset: !<reference> 8714428c-8392-4bf9-bb2c-2bc05aea836d
   ScriptInputsDefault:
     startMenuDistanceFromUser: true
   ScriptTypesDefault:
@@ -124,15 +124,18 @@
   ScriptInputsDefault:
     _renderOrder: true
     _inactive: true
-    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
+    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
+    _styleSnapOS2: true
+    _styleSnapOS3: true
+    _opacity: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -141,9 +144,9 @@
       _size: !<Vec3> {x: 15.000000, y: 4.500000, z: 1.000000}
       _inactive: false
       _playAudio: true
-      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: true
@@ -155,6 +158,9 @@
         []
       onFinishedCallbacks:
         []
+      _styleSnapOS2: PrimaryNeutral
+      _styleSnapOS3: Neutral
+      _opacity: !<float> 1.000000
   ScriptTypes:
     "":
       {}
@@ -294,8 +300,6 @@
     useFOVFollow: true
     isFollowing: true
     _enableInteractionPlane: true
-    _targetingVisual: true
-    isSynced: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -325,8 +329,6 @@
       isFollowing: false
       showCloseButton: false
       _enableInteractionPlane: false
-      _targetingVisual: !<float> 1.000000
-      isSynced: false
   ScriptTypes:
     "":
       {}
@@ -454,9 +456,6 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
-    targetingVisual: true
-    ignoreInteractionPlane: true
-    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -464,15 +463,13 @@
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
-      targetingVisual: !<float> 1.000000
-      ignoreInteractionPlane: false
-      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -480,7 +477,8 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      useFilteredPinch: false
+      isSynced: true
+      acceptableSyncInteractionTypes: !<float> 7.000000
   ScriptTypes:
     "":
       {}
@@ -604,15 +602,18 @@
   ScriptInputsDefault:
     _renderOrder: true
     _inactive: true
-    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
+    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
+    _styleSnapOS2: true
+    _styleSnapOS3: true
+    _opacity: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -621,9 +622,9 @@
       _size: !<Vec3> {x: 15.000000, y: 4.500000, z: 1.000000}
       _inactive: false
       _playAudio: true
-      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: true
@@ -635,6 +636,9 @@
         []
       onFinishedCallbacks:
         []
+      _styleSnapOS2: PrimaryNeutral
+      _styleSnapOS3: Neutral
+      _opacity: !<float> 1.000000
   ScriptTypes:
     "":
       {}
@@ -742,9 +746,6 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
-    targetingVisual: true
-    ignoreInteractionPlane: true
-    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -752,15 +753,13 @@
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
-      targetingVisual: !<float> 1.000000
-      ignoreInteractionPlane: false
-      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -768,7 +767,8 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      useFilteredPinch: false
+      isSynced: true
+      acceptableSyncInteractionTypes: !<float> 7.000000
   ScriptTypes:
     "":
       {}

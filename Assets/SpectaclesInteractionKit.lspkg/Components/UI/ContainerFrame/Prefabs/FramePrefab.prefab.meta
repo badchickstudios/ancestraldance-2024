@@ -8,22 +8,38 @@
   ExtraData:
     {}
   AssetDataMap:
-    ObjectPrefab: !<own> 85ce9d99-2b7d-4c45-acf8-0ae9642cfcee
+    ObjectPrefab: !<own> 1a69348a-b832-461e-b47e-a116b54dd51d
   DependentFiles:
     []
   ImporterSettings: !<AssetImporterSettings>
     {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
-- !<ObjectPrefabAssetData/85ce9d99-2b7d-4c45-acf8-0ae9642cfcee>
-  Prototype: !<ObjectOwner/f954fd90-e967-4c87-99e4-50beffd82719>
+- !<ObjectPrefabAssetData/1a69348a-b832-461e-b47e-a116b54dd51d>
+  Prototype: !<ObjectOwner/bde9d86e-fe13-4ce0-9e58-042aa5e499d5>
     PackagePath: ""
     objects:
-      - !<own> ca8385c0-af3d-4c30-62ba-31de9cfbc4fe
-- !<ColliderComponent/c2324897-2d50-4a2e-59c0-72dd1bb0c885>
+      - !<own> 611bf480-3369-43a7-af01-c5c3b64d75d8
+- !<SceneObject/611bf480-3369-43a7-af01-c5c3b64d75d8>
+  PrefabRemaps:
+    []
+  Name: FramePrefab
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 97fecc08-370a-41d9-846a-c6592209cb87
+    - !<own> d5d99726-c27d-4b5c-96d1-e4c366e54c7e
+- !<ColliderComponent/97fecc08-370a-41d9-846a-c6592209cb87>
   PrefabRemaps:
     []
   Name: Physics Collider
-  Enabled: false
+  Enabled: true
   Shape: !<Box>
     FitVisual: false
     Size: {x: 1.000000, y: 1.000000, z: 0.050000}
@@ -37,11 +53,11 @@
   ForceCompound: false
   Intangible: false
   ShowCollider: false
-- !<RenderMeshVisual/c87b1bf2-f05c-467e-409d-6ed72c09a40d>
+- !<RenderMeshVisual/d5d99726-c27d-4b5c-96d1-e4c366e54c7e>
   PrefabRemaps:
     []
   Name: Render Mesh Visual
-  Enabled: false
+  Enabled: true
   RenderOrder: 0
   StretchMode: Stretch
   VerticalAlignment: Center
@@ -57,19 +73,3 @@
   BlendNormals: false
   BlendShapes:
     {}
-- !<SceneObject/ca8385c0-af3d-4c30-62ba-31de9cfbc4fe>
-  PrefabRemaps:
-    []
-  Name: FramePrefab
-  Enabled: true
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    - !<own> c2324897-2d50-4a2e-59c0-72dd1bb0c885
-    - !<own> c87b1bf2-f05c-467e-409d-6ed72c09a40d

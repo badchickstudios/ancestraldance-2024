@@ -2,10 +2,7 @@ import {Interactable} from "../../../../Components/Interaction/Interactable/Inte
 import {TargetingMode} from "../../../../Core/Interactor/Interactor"
 import {InteractorEvent} from "../../../../Core/Interactor/InteractorEvent"
 import Event, {PublicApi} from "../../../../Utils/Event"
-import NativeLogger from "../../../../Utils/NativeLogger"
 import {validate} from "../../../../Utils/validate"
-
-const log = new NativeLogger("LabeledPinchButton")
 
 export type LabeledPinchButtonOptions = {
   parent: SceneObject
@@ -45,7 +42,7 @@ export class LabeledPinchButton {
 
   constructor(private options: LabeledPinchButtonOptions) {
     this.labeledPinchButtonPrefab = options.prefab
-    this.object = this.labeledPinchButtonPrefab.instantiate(null)
+    this.object = this.labeledPinchButtonPrefab.instantiate(null as unknown as SceneObject)
     this.interactable = this.object.getComponent(Interactable.getTypeName())
 
     validate(this.interactable)
@@ -138,6 +135,10 @@ export class LabeledPinchButton {
           if (!this.toggled) this.setColor("hover")
         }
       }
+      isTriggered = false
+    })
+    this.interactable.onTriggerEndOutside.add(() => {
+      this.rmv.setBlendShapeWeight("Pinch", 0)
       isTriggered = false
     })
     this.interactable.onTriggerCanceled.add(() => {

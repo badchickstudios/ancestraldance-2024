@@ -12,9 +12,6 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
-    targetingVisual: true
-    ignoreInteractionPlane: true
-    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -22,15 +19,13 @@
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
-      targetingVisual: !<float> 1.000000
-      ignoreInteractionPlane: false
-      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -38,7 +33,8 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      useFilteredPinch: false
+      isSynced: true
+      acceptableSyncInteractionTypes: !<float> 7.000000
   ScriptTypes:
     "":
       {}
@@ -71,7 +67,7 @@
     []
   Name: SyncTransform
   Enabled: true
-  ScriptAsset: !<reference> e00807ca-e390-403b-88e4-4a7e3ec6e3b0
+  ScriptAsset: !<reference> f3c20594-375f-43d8-a93f-a8e75bd6a61d
   ScriptInputsDefault:
     networkIdTypeString: true
     customNetworkId: true
@@ -142,7 +138,6 @@
     _enableZTranslation: true
     showRotationProperties: true
     _rotationAxis: true
-    isSynced: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -168,7 +163,6 @@
       _enableZTranslation: true
       showRotationProperties: false
       _rotationAxis: All
-      isSynced: false
   ScriptTypes:
     "":
       {}

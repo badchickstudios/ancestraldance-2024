@@ -1,4 +1,4 @@
-- !<Material/8a4db70f-6a34-4a94-ad1c-e23f0652817b>
+- !<Material/d8496e6d-4478-403e-b185-4cdf5a38d605>
   PackagePath: ""
   PassesInfo:
     - !<own> cbede586-93ea-4664-9180-644c27da2fb6
@@ -54,4 +54,4 @@
     PreviewEnabled:
       typeIdx: 0
       value: 0
-  Pass: !<reference> 37527329-87e1-4440-bf57-5262b7ab7702
+  Pass: !<reference> 367bee5a-e28a-4b22-b21f-86c942707a99

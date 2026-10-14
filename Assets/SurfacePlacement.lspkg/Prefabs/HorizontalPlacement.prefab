@@ -1,4 +1,4 @@
-- !<ObjectPrefab/90e448f1-b7c1-4efc-8448-c77682b54b4b>
+- !<ObjectPrefab/bb577c9c-d30b-409c-8ae3-72b4dcec36ed>
   PackagePath: ""
   objects:
     - !<own> 13dcbe0d-fed7-4986-be73-1f12179bf5b1
@@ -189,7 +189,7 @@
     []
   Name: SingleSurface
   Enabled: true
-  ScriptAsset: !<reference> dee19899-eae9-4492-b028-8d21fd708f67
+  ScriptAsset: !<reference> 057ce91d-8c86-427f-8474-b2375ac5cd2e
   ScriptInputsDefault:
     {}
   ScriptTypesDefault:
@@ -228,8 +228,8 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 069f1c8d-fa1d-4878-8c0e-062a9f39a4d3
-  Mesh: !<reference> 48bf52aa-7a6b-4e77-8bc2-246bda8baa70
+    - !<reference> a82e0755-9c88-4323-8800-f9a182292a57
+  Mesh: !<reference> a333ed0d-862e-49a6-8050-94f28a6cb7b4
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
@@ -240,7 +240,7 @@
     []
   Name: Horizontal
   Enabled: true
-  ScriptAsset: !<reference> 724e4a33-75c0-45f8-87d4-254a15006d83
+  ScriptAsset: !<reference> f7a4f278-b479-4059-b3be-95b80d3c4a29
   ScriptInputsDefault:
     enableLogging: true
     enableLoggingLifecycle: true
@@ -270,8 +270,8 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 91560874-e21f-429d-a582-a29edc0af823
-  Mesh: !<reference> 19d6b039-6383-425c-88d7-54475b68f57a
+    - !<reference> 6e5a3cbf-15b5-4c27-a416-2af00c0ee5ad
+  Mesh: !<reference> d01e4946-993f-4a69-900c-6c2ecd8fa08d
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
@@ -316,7 +316,7 @@
     []
   Name: CircleAnimation
   Enabled: true
-  ScriptAsset: !<reference> e7ffe463-b3f6-4bbe-b753-1fccb140892f
+  ScriptAsset: !<reference> 7bfa95bf-f1cc-465a-a2a3-46966e4fcdba
   ScriptInputsDefault:
     {}
   ScriptTypesDefault:
@@ -332,7 +332,7 @@
     []
   Name: DotsLine
   Enabled: true
-  ScriptAsset: !<reference> ff994fe8-e2c8-445e-b2c3-120b5f360be8
+  ScriptAsset: !<reference> 6c5120a7-9365-423c-926f-3c37c0dbe6b1
   ScriptInputsDefault:
     enableLogging: true
     enableLoggingLifecycle: true
@@ -385,24 +385,19 @@
   Enabled: true
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
-    targetingVisual: true
-    ignoreInteractionPlane: true
-    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     enablePokeDirectionality: true
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    useFilteredPinch: true
+    isSynced: true
+    acceptableSyncInteractionTypes: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 2.000000
-      targetingVisual: !<float> 1.000000
-      ignoreInteractionPlane: false
-      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: false
@@ -410,7 +405,8 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      useFilteredPinch: false
+      isSynced: true
+      acceptableSyncInteractionTypes: !<float> 7.000000
   ScriptTypes:
     "":
       {}
@@ -510,8 +506,8 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 870d893a-b3ab-4fd1-b16b-d8ade1c9273a
-  Mesh: !<reference> 19d6b039-6383-425c-88d7-54475b68f57a
+    - !<reference> 95d8a39e-ed8b-4c03-b646-ad6ef2ef9f2c
+  Mesh: !<reference> d01e4946-993f-4a69-900c-6c2ecd8fa08d
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false

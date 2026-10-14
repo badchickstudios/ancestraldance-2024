@@ -10,8 +10,6 @@ export type RotationCalculatorConfig = {
   axisBufferRadians?: number
 }
 
-const TAG = "HeadlockRotationCalculator"
-
 /**
  * HeadlockRotationCalculator is used to calculate the offset to position an object to maintain a certain offset relative to where the user is looking.
  */

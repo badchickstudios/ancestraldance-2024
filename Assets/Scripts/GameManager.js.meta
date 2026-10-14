@@ -4,12 +4,15 @@
   ImporterName: JavaScriptAssetImporter
   PrimaryAsset: !<reference> c5c58f07-1d9b-4371-97e7-9cd1b6b7c63f
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
-  ExtraData: {}
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
   AssetDataMap:
     JavaScriptAsset: !<own> 592342b8-12dd-4390-a028-575c69dcd281
-  DependentFiles: []
-  ImporterSettings: !<AssetImporterSettings> {}
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
 - !<ScriptAssetData/592342b8-12dd-4390-a028-575c69dcd281>
   SvgIcon: ""
@@ -21,6 +24,7 @@
   VersionPatch: 0
   ComponentUid: f19a9769-f8cf-4e92-bd9f-be1839b8db1d
   ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     FFShrink: false
     PlantParticlesLeft: false
@@ -58,14 +62,22 @@
     voTracks: false
     voiceManager: false
     waitingMessageText: false
-  ScriptTypesHidden: {}
+  ScriptTypesHidden:
+    {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
   DefaultScriptInputs:
-    - uiElements: !<reference.SceneObject[]> []
-      voTracks: !<reference.AudioTrackAsset[]> []
+    - uiElements: !<reference.SceneObject[]>
+        []
+      voTracks: !<reference.AudioTrackAsset[]>
+        []
       bkndTrack: !<reference.AudioTrackAsset> 00000000-0000-0000-0000-000000000000
-      musicTracks: !<reference.AudioTrackAsset[]> []
+      musicTracks: !<reference.AudioTrackAsset[]>
+        []
       sfxTrack: !<reference.AudioTrackAsset> 00000000-0000-0000-0000-000000000000
       voComponent: !<reference.AudioComponent> 00000000-0000-0000-0000-000000000000
       bkndComponent: !<reference.AudioComponent> 00000000-0000-0000-0000-000000000000
@@ -78,7 +90,8 @@
       playerCountText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       singlePlayerButton: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       multiplayerButton: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
-      gameObjects: !<reference.SceneObject[]> []
+      gameObjects: !<reference.SceneObject[]>
+        []
       breathingAni: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       voiceManager: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       giftManager: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
@@ -92,11 +105,14 @@
       UIPinchShrink: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       UIEarthShrink: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       captionText: !<reference.Text> 00000000-0000-0000-0000-000000000000
-      captions: !<string[]> []
-      captionTime: !<float[]> []
+      captions: !<string[]>
+        []
+      captionTime: !<float[]>
+        []
       captionColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
       instructColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
       PlantParticlesLeft: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       PlantParticlesRight: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
-    - {}
+    -
+      {}

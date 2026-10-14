@@ -1,5 +1,5 @@
 import {PublicApi} from "../../../../../Utils/Event"
-import {PinchEventType} from "../../PinchEventType"
+import {PinchEvent} from "../PinchDetector"
 
 /**
  * Interface that all methods of detecting pinch should adhere to in order to be usable in PinchDetector
@@ -8,7 +8,7 @@ export interface PinchDetectionStrategy {
   /**
    * Event invokes when a pinch is down or up or cancelled
    */
-  onPinchDetected: PublicApi<PinchEventType>
+  onPinchDetected: PublicApi<PinchEvent>
 
   /**
    * Event invoked when a pinch proximity occurs.

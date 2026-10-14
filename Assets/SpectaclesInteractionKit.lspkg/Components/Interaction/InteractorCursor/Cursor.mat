@@ -1,9 +1,126 @@
 - !<Material/b4b0995b-4610-4ac3-a1e8-7e1ddb6262e7>
   PackagePath: ""
   PassesInfo:
-    - !<own> 21ae815b-9d5e-43bb-bb89-5fda822d5b78
-- !<PassInfo/21ae815b-9d5e-43bb-bb89-5fda822d5b78>
+    - !<own> b3df6fb6-749b-4a42-bac6-41720b702637
+- !<PassInfo/b3df6fb6-749b-4a42-bac6-41720b702637>
   CachedProperties:
+    - Port_Depth_N004:
+        typeIdx: 1
+        value: 1.000000
+    - Port_FinalColor1_N004:
+        typeIdx: 5
+        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+    - Port_FinalColor2_N004:
+        typeIdx: 5
+        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+    - Port_FinalColor3_N004:
+        typeIdx: 5
+        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+    - Port_GSplatPointSize_N004:
+        typeIdx: 1
+        value: 0.000000
+    - Port_GSplatRotation_N004:
+        typeIdx: 5
+        value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 1.000000}
+    - Port_GSplatScale_N004:
+        typeIdx: 4
+        value: {x: 0.000000, y: 0.000000, z: 0.000000}
+    - Port_Input0_N166:
+        typeIdx: 5
+        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+    - Port_Input1_N166:
+        typeIdx: 1
+        value: 1.000000
+    - Port_LODValue_N008:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Output_N170:
+        typeIdx: 5
+        value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
+    - Port_RayDirection_N004:
+        typeIdx: 4
+        value: {x: 0.000000, y: 1.000000, z: 0.000000}
+    - Port_RayOrigin_N004:
+        typeIdx: 4
+        value: {x: 0.000000, y: 0.000000, z: 0.000000}
+    - Port_Value1_N169:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value2_N169:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N014:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N046:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N057:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N061:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N093:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N105:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N106:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N116:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N167:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value3_N169:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N014:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N046:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N057:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N061:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N093:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N105:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N106:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N116:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N167:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value4_N169:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value_N165:
+        typeIdx: 5
+        value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
+    - Port_WorldNormal_N004:
+        typeIdx: 4
+        value: {x: 0.000000, y: 1.000000, z: 0.000000}
+    - Port_WorldPosition_N004:
+        typeIdx: 4
+        value: {x: 0.000000, y: 0.000000, z: 0.000000}
+    - Port_WorldTangent_N004:
+        typeIdx: 4
+        value: {x: 0.000000, y: 0.000000, z: 1.000000}
     - cursorTextureBorderColor:
         typeIdx: 5
         value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
@@ -252,6 +369,9 @@
     isTriggering:
       typeIdx: 2
       value: false
+    masterAlpha:
+      typeIdx: 1
+      value: 1.000000
     maxAlpha:
       typeIdx: 1
       value: 1.000000

@@ -23,12 +23,14 @@ export class TouchRayProvider implements RayProvider {
         this.raycastInfo = null
       } else {
         const locus = this.camera.screenSpaceToWorldSpace(this.cursorPosition.x, this.cursorPosition.y, 0)
+        const direction = this.camera
+          .screenSpaceToWorldSpace(this.cursorPosition.x, this.cursorPosition.y, maxRayDistance)
+          .sub(locus)
+          .normalize()
+
         this.raycastInfo = {
           locus: locus,
-          direction: this.camera
-            .screenSpaceToWorldSpace(this.cursorPosition.x, this.cursorPosition.y, maxRayDistance)
-            .sub(locus)
-            .normalize()
+          direction: direction
         }
       }
     })

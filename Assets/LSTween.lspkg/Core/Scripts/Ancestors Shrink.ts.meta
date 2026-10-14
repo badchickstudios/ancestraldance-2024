@@ -4,12 +4,15 @@
   ImporterName: TypeScriptAssetImporter
   PrimaryAsset: !<reference> 34fd733c-d9f8-490e-9644-e61e66cc5d26
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
-  ExtraData: {}
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
   AssetDataMap:
     TypeScriptAsset: !<own> e5cf2216-9a96-48a4-855e-fd8d26838c0a
-  DependentFiles: []
-  ImporterSettings: !<AssetImporterSettings> {}
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
 - !<TypeScriptAssetData/e5cf2216-9a96-48a4-855e-fd8d26838c0a>
   SvgIcon: ""
@@ -21,19 +24,26 @@
   VersionPatch: 0
   ComponentUid: a985b45c-ad0d-4c61-87f3-955f7b389065
   ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     ancestor1: false
     ancestor2: false
     ancestor3: false
-  ScriptTypesHidden: {}
+  ScriptTypesHidden:
+    {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
   DefaultScriptInputs:
     - ancestor1: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       ancestor2: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       ancestor3: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
-    - {}
+    -
+      {}
   InputLines:
     - // @input SceneObject ancestor1
     - // @input SceneObject ancestor2

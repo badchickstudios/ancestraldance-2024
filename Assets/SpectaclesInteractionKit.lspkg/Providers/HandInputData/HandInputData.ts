@@ -2,8 +2,6 @@ import {Singleton} from "../../Decorators/Singleton"
 import {HandType} from "./HandType"
 import TrackedHand from "./TrackedHand"
 
-const TAG = "HandInputData"
-
 export type HandInputDataConfig = {
   dominantHand: HandType
 }

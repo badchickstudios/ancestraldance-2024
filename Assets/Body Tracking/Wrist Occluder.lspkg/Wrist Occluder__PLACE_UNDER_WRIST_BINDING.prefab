@@ -5,7 +5,13 @@
   LazyLoading: false
   RetainAssets: true
 - !<SceneObject/06c6c847-f381-4831-8240-3d6c087c78ab>
-  PrefabRemaps: []
+  PrefabRemaps:
+    - 06c6c847-f381-4831-8240-3d6c087c78ab: 06c6c847-f381-4831-7dbf-c293f7838754
+    - 45c45bd5-7ae1-47e8-b4d1-6e08b8e614c5: 45c45bd5-7ae1-47e8-4b2e-91f74719eb3a
+    - 4db268c4-b317-4399-9dd3-5b9738e5532e: 4db268c4-b317-4399-622c-a468c71aacd1
+    - c34d0d00-6e50-43bc-8be4-f99cbee6fc3e: c34d0d00-6e50-43bc-741b-0663411903c1
+    - d7ac1a3e-ee37-4c63-b6a9-eaf843615a9d: d7ac1a3e-ee37-4c63-4956-1507bc9ea562
+    - f525b632-6e0a-4381-a5a4-7931dec13eb3: f525b632-6e0a-4381-5a5b-86ce213ec14c
   Name: Wrist Occluder__PLACE_UNDER_WRIST_BINDING
   Enabled: true
   Layers: 1
@@ -20,7 +26,8 @@
   Components:
     - !<own> f525b632-6e0a-4381-a5a4-7931dec13eb3
 - !<RenderMeshVisual/45c45bd5-7ae1-47e8-b4d1-6e08b8e614c5>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: component_0
   Enabled: true
   RenderOrder: 0
@@ -47,7 +54,7 @@
         enabled: true
         roughHarden: 0.500000
         roughCurve: 2.000000
-    AmbientOcclusion:
+    GlobalIllumination:
       caster: false
       receiver: false
       receiverLayers: 1
@@ -57,12 +64,9 @@
       receiverLayers: 1
     Material: !<reference> 00000000-0000-0000-0000-000000000000
     HideFromCamera: false
-    GlobalIllumination:
-      caster: false
-      receiver: false
-      receiverLayers: 1
 - !<SceneObject/4db268c4-b317-4399-9dd3-5b9738e5532e>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Wrist Occluder Shadow
   Enabled: true
   Layers: 1
@@ -71,11 +75,13 @@
     Rotation: {x: -90.000000, y: 0.000000, z: -0.000000}
     Scale: {x: 2.540001, y: 2.540000, z: 2.540001}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> 45c45bd5-7ae1-47e8-b4d1-6e08b8e614c5
 - !<SceneObject/c34d0d00-6e50-43bc-8be4-f99cbee6fc3e>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Wrist Occluder
   Enabled: true
   Layers: 1
@@ -84,11 +90,13 @@
     Rotation: {x: -90.000000, y: 0.000000, z: -0.000000}
     Scale: {x: 2.540000, y: 2.539999, z: 2.540000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> d7ac1a3e-ee37-4c63-b6a9-eaf843615a9d
 - !<RenderMeshVisual/d7ac1a3e-ee37-4c63-b6a9-eaf843615a9d>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: component_0
   Enabled: true
   RenderOrder: 0
@@ -115,7 +123,7 @@
         enabled: true
         roughHarden: 0.500000
         roughCurve: 2.000000
-    AmbientOcclusion:
+    GlobalIllumination:
       caster: false
       receiver: false
       receiverLayers: 1
@@ -125,21 +133,21 @@
       receiverLayers: 1
     Material: !<reference> 00000000-0000-0000-0000-000000000000
     HideFromCamera: false
-    GlobalIllumination:
-      caster: false
-      receiver: false
-      receiverLayers: 1
 - !<ScriptComponent/f525b632-6e0a-4381-a5a4-7931dec13eb3>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: WristOccluderController
   Enabled: true
   ScriptAsset: !<reference> 91990d48-88e8-46bb-8f3c-5d3d9bd96996
-  ScriptInputsDefault: {}
-  ScriptTypesDefault: {}
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
   ScriptInputs:
     "":
       wristOccluder: !<reference.RenderMeshVisual> d7ac1a3e-ee37-4c63-b6a9-eaf843615a9d
       wristOccluderShadow: !<reference.RenderMeshVisual> 45c45bd5-7ae1-47e8-b4d1-6e08b8e614c5
       blendShape: 0.300000
   ScriptTypes:
-    "": {}
+    "":
+      {}

@@ -4,7 +4,7 @@
   ImporterName: VFXAssetImporter
   PrimaryAsset: !<reference> 3e6b9da5-f625-4f54-aa90-1e7525478fd6
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:

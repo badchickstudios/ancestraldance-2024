@@ -12,7 +12,10 @@ import {InteractorEvent} from "../../../Core/Interactor/InteractorEvent"
 import {MobileInteractor} from "../../../Core/MobileInteractor/MobileInteractor"
 import WorldCameraFinderProvider from "../../../Providers/CameraProvider/WorldCameraFinderProvider"
 import NativeLogger from "../../../Utils/NativeLogger"
+import StateMachine from "../../../Utils/StateMachine"
+import {SyncKitBridge} from "../../../Utils/SyncKitBridge"
 import {validate} from "../../../Utils/validate"
+import {ContainerFrame} from "../../UI/ContainerFrame/ContainerFrame"
 import {Interactable} from "../Interactable/Interactable"
 
 export type TranslateEventArg = {
@@ -60,9 +63,12 @@ const TAG = "InteractableManipulation"
 
 const MOBILE_DRAG_MULTIPLIER = 0.5
 const STRETCH_SMOOTH_SPEED = 15
-const YAW_NEGATIVE_90 = quat.fromEulerAngles(0, -90, 0)
+// Lens Studio quat.fromEulerAngles expects radians; convert -90° to radians to avoid the degrees/radians gotcha
+const YAW_NEGATIVE_90 = quat.fromEulerAngles(0, -90 * MathUtils.DegToRad, 0)
 const MAX_USER_ARM_EXTENSION_CM = 100
 const MIN_DRAG_DISTANCE_CM = 0.0001 // Setting this > 0 to avoid division by 0
+
+const MANIPULATION_VALUE_KEY = "ManipulationValue"
 
 const CachedTransform = {
   transform: mat4.identity(),
@@ -71,222 +77,278 @@ const CachedTransform = {
   scale: vec3.one()
 }
 
+interface CapabilitiesState {
+  enabled: boolean
+  canTranslate: boolean
+  canRotate: boolean
+  canScale: boolean
+}
+
+interface ActiveEvents {
+  translation: boolean
+  rotation: boolean
+  scale: boolean
+  manipulation: boolean
+}
+
+interface StateMachineData {
+  stateMachine: StateMachine
+  triggeringInteractors: Interactor[]
+  previousCapabilitiesState: CapabilitiesState
+  activeEvents: ActiveEvents
+  states: {
+    Idle: string
+    Active: string
+  }
+  signals: {
+    StartManipulation: string
+    EndManipulation: string
+    ChangeInteractors: string
+    CapabilitiesChanged: string
+  }
+}
+
 /**
  * This class provides manipulation capabilities for interactable objects, including translation, rotation, and
  * scaling. It allows configuration of the manipulation root, scale limits, and rotation axes.
  */
 @component
 export class InteractableManipulation extends BaseScriptComponent {
-  @ui.group_start("Interactable Manipulation")
-  @hint(
-    "Manipulation capability settings for interactable objects, including translation, rotation, and scaling. \
-Allows configuration of the manipulation root, scale limits, and rotation axes."
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Target Object</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Specify which SceneObject to manipulate (if blank, treats this SceneObject as the root)</span>'
   )
+
   /**
    * Root SceneObject of the set of SceneObjects to manipulate. If left blank, this script's SceneObject will be
    * treated as the root. The root's transform will be modified by this script.
    */
   @input("SceneObject")
+  @label("Manipulate Root")
   @hint(
     "Root SceneObject of the set of SceneObjects to manipulate. If left blank, this script's SceneObject will be \
 treated as the root. The root's transform will be modified by this script."
   )
   @allowUndefined
   private manipulateRootSceneObject: SceneObject | null = null
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Transform Capabilities</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Enable or disable translation, rotation, and scaling</span>'
+  )
+
+  /**
+   * Controls whether the object can be moved (translated) in space.
+   */
+  @input
+  @label("Enable Translation")
+  @hint("Controls whether the object can be moved (translated) in space.")
+  private enableTranslation: boolean = true
+
+  /**
+   * Controls whether the object can be rotated in space.
+   */
+  @input
+  @label("Enable Rotation")
+  @hint("Controls whether the object can be rotated in space.")
+  private enableRotation: boolean = true
+
+  /**
+   * Controls whether the object can be scaled in size.
+   */
+  @input
+  @label("Enable Scale")
+  @hint("Controls whether the object can be scaled in size.")
+  private enableScale: boolean = true
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Scale Limits</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Set minimum and maximum scale factors relative to original size</span>'
+  )
+
   /**
    * The smallest this object can scale down to, relative to its original scale.
    * A value of 0.5 means it cannot scale smaller than 50% of its original size.
    */
   @input
+  @label("Minimum Scale Factor")
   @widget(new SliderWidget(0, 1, 0.05))
   @hint(
-    "The smallest this object can scale down to, relative to its original scale. A value of 0.5 means it cannot scale \
-smaller than 50% of its original size."
+    "The smallest this object can scale down to, relative to its original scale. A value of 0.5 means it cannot \
+scale smaller than 50% of its original size."
   )
   minimumScaleFactor: number = 0.25
+
   /**
    * The largest this object can scale up to, relative to its original scale.
    * A value of 2 means it cannot scale larger than twice its original size.
    */
   @input
+  @label("Maximum Scale Factor")
   @widget(new SliderWidget(1, 20, 0.5))
   @hint(
     "The largest this object can scale up to, relative to its original scale. A value of 2 means it cannot scale \
 larger than twice its original size."
   )
   maximumScaleFactor: number = 20
-  /**
-   * Controls whether the object can be moved (translated) in space.
-   */
-  @input
-  @hint("Controls whether the object can be moved (translated) in space.")
-  private enableTranslation: boolean = true
-  /**
-   * Controls whether the object can be rotated in space.
-   */
-  @input
-  @hint("Controls whether the object can be rotated in space.")
-  private enableRotation: boolean = true
-  /**
-   * Controls whether the object can be scaled in size.
-   */
-  @input
-  @hint("Controls whether the object can be scaled in size.")
-  private enableScale: boolean = true
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Depth Stretch</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Distance-based Z-axis movement multiplier for easier positioning of distant objects</span>'
+  )
+
   /**
    * Enhances depth manipulation by applying a distance-based multiplier to Z-axis movement.
    * When enabled, objects that are farther away will move greater distances with the same hand movement,
    * making it easier to position distant objects without requiring excessive physical reach.
    */
   @input
+  @label("Enable Stretch Z")
   @hint(
-    "Enhances depth manipulation by applying a distance-based multiplier to Z-axis movement. When enabled, \
-objects that are farther away will move greater distances with the same hand movement, making it easier to position \
-distant objects without requiring excessive physical reach."
+    "Enhances depth manipulation by applying a distance-based multiplier to Z-axis movement. When enabled, objects \
+that are farther away will move greater distances with the same hand movement, making it easier to position distant \
+objects without requiring excessive physical reach."
   )
   enableStretchZ: boolean = true
-  /**
-   * Controls the visibility of advanced Z-stretch configuration options in the Inspector. When enabled, shows
-   * additional properties that fine-tune the distance-based Z-axis movement multiplier (Z Stretch Factor Min and
-   * Z Stretch Factor Max).
-   */
-  @input
-  @showIf("enableStretchZ", true)
-  @hint(
-    "Controls the visibility of advanced Z-stretch configuration options in the Inspector. When enabled, shows \
-additional properties that fine-tune the distance-based Z-axis movement multiplier (Z Stretch Factor Min and \
-Z Stretch Factor Max)."
-  )
-  showStretchZProperties: boolean = false
+
   /**
    * The minimum multiplier applied to Z-axis movement when using stretch mode.
    * This value is used when objects are close to the user.
    * Higher values result in more responsive depth movement for nearby objects.
    */
   @input
-  @showIf("showStretchZProperties", true)
+  @label("Z Stretch Factor Min")
+  @showIf("enableStretchZ", true)
   @hint(
     "The minimum multiplier applied to Z-axis movement when using stretch mode. This value is used when objects are \
 close to the user. Higher values result in more responsive depth movement for nearby objects."
   )
   zStretchFactorMin: number = 1.0
+
   /**
    * The maximum multiplier applied to Z-axis movement when using stretch mode.
    * This value is used when objects are far away from the user.
    * Higher values allow faster positioning of distant objects with minimal hand movement.
    */
   @input
-  @showIf("showStretchZProperties", true)
+  @label("Z Stretch Factor Max")
+  @showIf("enableStretchZ", true)
   @hint(
     "The maximum multiplier applied to Z-axis movement when using stretch mode. This value is used when objects are \
 far away from the user. Higher values allow faster positioning of distant objects with minimal hand movement."
   )
   zStretchFactorMax: number = 12.0
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Smoothing Filter</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">One-euro filter to reduce jitter and smooth manipulation movement</span>'
+  )
+
   /**
    * Applies filtering to smooth object manipulation movement. When enabled, a one-euro filter is applied to reduce
    * jitter and make translations, rotations, and scaling appear more stable and natural. Disable for immediate
    * 1:1 response to hand movements.
    */
   @input
+  @label("Use Filter")
   @hint(
-    "Applies filtering to smooth object manipulation movement. When enabled, a one-euro filter is applied to reduce \
-jitter and make translations, rotations, and scaling appear more stable and natural. Disable for immediate \
-1:1 response to hand movements."
+    "When enabled, applies a one-euro filter to reduce jitter and make translations, rotations, and scaling appear \
+more stable and natural. Disable for immediate 1:1 response to hand movements."
   )
-  private useFilter: boolean = true
-  /**
-   * Controls the visibility of advanced filtering options in the Inspector. When enabled, shows additional
-   * properties for fine-tuning the one-euro filter (minCutoff, beta, dcutoff) that smooths object manipulation.
-   */
-  @input
-  @showIf("useFilter", true)
-  @hint(
-    "Controls the visibility of advanced filtering options in the Inspector. When enabled, shows additional \
-properties for fine-tuning the one-euro filter (minCutoff, beta, dcutoff) that smooths object manipulation."
-  )
-  private showFilterProperties: boolean = false
+  public useFilter: boolean = true
+
   /**
    * Minimum cutoff frequency of the one-euro filter.
    * Lower values reduce jitter during slow movements but increase lag.
    * Adjust this parameter first with beta=0 to find a balance that removes jitter
    * while maintaining acceptable responsiveness during slow movements.
+   * @internal Not exposed in Inspector - advanced tuning parameter
    */
-  @input
-  @showIf("showFilterProperties", true)
-  @hint(
-    "Minimum cutoff frequency of the one-euro filter. Lower values reduce jitter during slow movements but increase \
-lag. Adjust this parameter first with beta=0 to find a balance that removes jitter while maintaining acceptable \
-responsiveness during slow movements."
-  )
   minCutoff: number = 2
+
   /**
    * Speed coefficient of the one-euro filter.
    * Higher values reduce lag during fast movements but may increase jitter.
    * Adjust this parameter after setting minCutoff to minimize lag during quick movements.
+   * @internal Not exposed in Inspector - advanced tuning parameter
    */
-  @input
-  @showIf("showFilterProperties", true)
-  @hint(
-    "Speed coefficient of the one-euro filter. Higher values reduce lag during fast movements but may increase \
-jitter. Adjust this parameter after setting minCutoff to minimize lag during quick movements."
-  )
   beta: number = 0.015
+
   /**
    * Derivative cutoff frequency for the one-euro filter.
    * Controls how the filter responds to changes in movement speed.
    * Higher values make the filter more responsive to velocity changes.
+   * @internal Not exposed in Inspector - advanced tuning parameter
    */
-  @input
-  @showIf("showFilterProperties", true)
-  @hint(
-    "Derivative cutoff frequency for the one-euro filter. Controls how the filter responds to changes in movement \
-speed. Higher values make the filter more responsive to velocity changes."
-  )
   dcutoff: number = 1
+
+  /**
+   * @internal Removed from Inspector - was visibility toggle for filter options
+   */
+  private showFilterProperties: boolean = false
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Advanced Options</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Fine-tune per-axis translation and rotation constraints</span>'
+  )
+
   /**
    * Controls the visibility of translation options in the Inspector.
    */
   @input
-  @hint("Controls the visibility of translation options in the Inspector.")
+  @label("Show Translation Properties")
+  @hint("Show per-axis translation options.")
   showTranslationProperties: boolean = false
+
   /**
    * Enables translation along the world's X-axis.
    */
   @input
+  @label("Enable X Translation")
   @showIf("showTranslationProperties", true)
-  @hint("Enables translation along the world's X-axis.")
+  @hint("Allow translation along the world's X-axis.")
   private _enableXTranslation: boolean = true
+
   /**
    * Enables translation along the world's Y-axis.
    */
   @input
+  @label("Enable Y Translation")
   @showIf("showTranslationProperties", true)
-  @hint("Enables translation along the world's Y-axis.")
+  @hint("Allow translation along the world's Y-axis.")
   private _enableYTranslation: boolean = true
+
   /**
    * Enables translation along the world's Z-axis.
    */
   @input
+  @label("Enable Z Translation")
   @showIf("showTranslationProperties", true)
-  @hint("Enables translation along the world's Z-axis.")
+  @hint("Allow translation along the world's Z-axis.")
   private _enableZTranslation: boolean = true
 
   /**
    * Controls the visibility of rotation options in the Inspector.
    */
   @input
-  @hint("Controls the visibility of rotation options in the Inspector.")
+  @label("Show Rotation Properties")
+  @hint("Show rotation axis constraint options.")
   showRotationProperties: boolean = false
+
   /**
    * Controls which axes the object can rotate around. "All" allows free rotation in any direction, while "X",
    * "Y", or "Z" constrains rotation to only that specific world axis.
    */
   @input
+  @label("Rotation Axis")
   @showIf("showRotationProperties", true)
-  @hint(
-    'Controls which axes the object can rotate around. "All" allows free rotation in any direction, while "X", \
-"Y", or "Z" constrains rotation to only that specific world axis.'
-  )
+  @hint("Constrain rotation to a specific axis, or allow free rotation.")
   @widget(
     new ComboBoxWidget([
       new ComboBoxItem("All", "All"),
@@ -296,7 +358,22 @@ speed. Higher values make the filter more responsive to velocity changes."
     ])
   )
   private _rotationAxis: string = "All"
-  @ui.group_end
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Sync Kit Support</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Connected Lenses position synchronization (requires SpectaclesSyncKit)</span>'
+  )
+
+  /**
+   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
+   * If set to true, the InteractableManipulation's position will be synced whenever a new user joins the same Connected Lenses session.
+   * isSynced must also be enabled on the InteractableManipulation's Interactable.
+   */
+  @input
+  @label("Is Synced")
+  @hint("Sync position in Connected Lenses sessions. Also enable isSynced on the Interactable.")
+  public isSynced: boolean = false
   private defaultFilterConfig: OneEuroFilterConfig | undefined
   private camera = WorldCameraFinderProvider.getInstance()
   private interactionManager = InteractionManager.getInstance()
@@ -308,6 +385,33 @@ speed. Higher values make the filter more responsive to velocity changes."
 
   // Native Logging
   private log = new NativeLogger(TAG)
+
+  private state: StateMachineData = {
+    stateMachine: new StateMachine("InteractableManipulation"),
+    triggeringInteractors: [],
+    previousCapabilitiesState: {
+      enabled: true,
+      canTranslate: true,
+      canRotate: true,
+      canScale: true
+    },
+    activeEvents: {
+      translation: false,
+      rotation: false,
+      scale: false,
+      manipulation: false
+    },
+    states: {
+      Idle: "Idle",
+      Active: "Active"
+    },
+    signals: {
+      StartManipulation: "StartManipulation",
+      EndManipulation: "EndManipulation",
+      ChangeInteractors: "ChangeInteractors",
+      CapabilitiesChanged: "CapabilitiesChanged"
+    }
+  }
 
   // If the manipulate parent is set, use that SceneObject's transform, otherwise use the transform of the script's SceneObject.
   // This is useful when using an external object to move other objects (e.g. grab bar).
@@ -334,9 +438,15 @@ speed. Higher values make the filter more responsive to velocity changes."
 
   private cachedTargetingMode: TargetingMode = TargetingMode.None
 
+  // Cache for getTriggeringInteractors to avoid multiple allocations per frame
+  private cachedTriggeringInteractors: Interactor[] | null = null
+  private cachedTriggeringInteractorsTime: number = -1
+
   // Used to avoid gimbal lock when crossing the Y-axis during single-axis manipulation.
   private currentRotationSign = 0
   private currentUp = vec3.zero()
+
+  private rayDistanceMap: Map<Interactor, number> = new Map<Interactor, number>()
 
   /**
    * - HandTracking's OneEuroFilter does not support quaternions.
@@ -348,6 +458,13 @@ speed. Higher values make the filter more responsive to velocity changes."
   private translateFilter!: OneEuroFilterVec3
   private rotationFilter!: OneEuroFilterQuat
   private scaleFilter!: OneEuroFilterVec3
+
+  // Only defined if SyncKit is present within the lens project.
+  private syncKitBridge = SyncKitBridge.getInstance()
+  private syncEntity =
+    this.isSynced && !this.findContainerFrame(this.sceneObject.getParent())
+      ? this.syncKitBridge.createSyncEntity(this)
+      : null
 
   /**
    * Gets the transform of the root of the manipulated object(s).
@@ -361,6 +478,7 @@ speed. Higher values make the filter more responsive to velocity changes."
    */
   setManipulateRoot(root: Transform): void {
     this.manipulateRoot = root
+    this.cacheTransform()
   }
 
   /**
@@ -374,35 +492,48 @@ speed. Higher values make the filter more responsive to velocity changes."
    * Toggle for allowing an object to translate
    */
   setCanTranslate(enabled: boolean): void {
-    this.enableTranslation = enabled
+    if (this.enableTranslation !== enabled) {
+      this.enableTranslation = enabled
+      this.notifyCapabilityChanged()
+    }
   }
 
   /**
    * Returns true if any of rotation x, y, or z is enabled
    */
   canRotate(): boolean {
-    return this.enableRotation
+    return (
+      this.enableRotation &&
+      (this.state.triggeringInteractors.length === 2 ||
+        (this.state.triggeringInteractors.length === 1 && this.cachedTargetingMode === TargetingMode.Direct))
+    )
   }
 
   /**
    * Toggle for allowing an object to rotate
    */
   setCanRotate(enabled: boolean): void {
-    this.enableRotation = enabled
+    if (this.enableRotation !== enabled) {
+      this.enableRotation = enabled
+      this.notifyCapabilityChanged()
+    }
   }
 
   /**
    * Returns true if any of scale x, y, or z is enabled
    */
   canScale(): boolean {
-    return this.enableScale
+    return this.enableScale && this.state.triggeringInteractors.length === 2
   }
 
   /**
    * Toggle for allowing an object to scale
    */
   setCanScale(enabled: boolean): void {
-    this.enableScale = enabled
+    if (this.enableScale !== enabled) {
+      this.enableScale = enabled
+      this.notifyCapabilityChanged()
+    }
   }
 
   /**
@@ -541,19 +672,20 @@ speed. Higher values make the filter more responsive to velocity changes."
   onManipulationEnd: PublicApi<TransformEventArg> = this.onManipulationEndEvent.publicApi()
 
   onAwake(): void {
-    this.interactable = this.getSceneObject().getComponent(Interactable.getTypeName())
-
-    if (this.interactable === null) {
-      throw new Error("InteractableManipulation requires an interactable to function.")
-    }
+    this.setupStateMachine()
 
     this.setManipulateRoot(
       !isNull(this.manipulateRootSceneObject) ? this.manipulateRootSceneObject!.getTransform() : this.getTransform()
     )
 
     this.createEvent("OnDestroyEvent").bind(() => this.onDestroy())
-    this.cacheTransform()
-    this.setupCallbacks()
+    this.createEvent("OnDisableEvent").bind(() => {
+      this.state.stateMachine.sendSignal(this.state.signals.EndManipulation)
+    })
+
+    this.createEvent("OnStartEvent").bind(() => {
+      this.onStart()
+    })
 
     this.defaultFilterConfig = {
       frequency: 60, //fps
@@ -565,10 +697,132 @@ speed. Higher values make the filter more responsive to velocity changes."
     this.translateFilter = new OneEuroFilterVec3(this.defaultFilterConfig)
     this.rotationFilter = new OneEuroFilterQuat(this.defaultFilterConfig)
     this.scaleFilter = new OneEuroFilterVec3(this.defaultFilterConfig)
+
+    if (this.syncEntity !== null) {
+      this.syncEntity.notifyOnReady(this.setupConnectionCallbacks.bind(this))
+    }
+  }
+
+  onStart() {
+    const interactable = this.getSceneObject().getComponent(Interactable.getTypeName()) as Interactable
+    if (interactable === null) {
+      this.log.w("InteractableManipulation requires an interactable to function.")
+      return
+    }
+    this.setNewInteractable(interactable)
+  }
+
+  /**
+   * Set a new Interactable component to the InteractableManipulation.
+   * This will cleanup the existing callbacks and setup new ones for the new Interactable.
+   * Be sure to call this if there is no Interactable component on the SceneObject.
+   * @param interactable The new Interactable component to set.
+   */
+  public setNewInteractable(interactable: Interactable): void {
+    if (this.interactable !== null) {
+      if (this.interactable === interactable) {
+        return
+      }
+      this.cleanupCallbacks()
+    }
+
+    this.interactable = null
+
+    if (interactable === null) {
+      throw new Error("InteractableManipulation requires an interactable to function.")
+    }
+
+    this.interactable = interactable
+
+    this.interactable.keepHoverOnTrigger = true
+    this.interactable.useFilteredPinch = true
+    // Temporarily limit manipulatable Interactables to not be pokeable until fixing the transition from poke to pinch.
+    if ((this.interactable.targetingMode & TargetingMode.Poke) !== 0) {
+      this.log.e(
+        `Poke targeting is incompatible with InteractableManipulation. Poke targeting for Interactable of ${this.sceneObject.name} will be disabled.`
+      )
+      this.interactable.targetingMode = this.interactable.targetingMode & ~TargetingMode.Poke
+    }
+
+    this.setupCallbacks()
+  }
+
+  /**
+   * If the component is synced, set up additional callbacks for the synced datastore
+   * to ensure another connected user's manipulation propagates to the local scene.
+   */
+  private setupConnectionCallbacks(): void {
+    if (
+      this.syncEntity.currentStore.getAllKeys().find((key: string) => {
+        return key === MANIPULATION_VALUE_KEY
+      })
+    ) {
+      const locationTransform = this.syncEntity.currentStore.getMat4(MANIPULATION_VALUE_KEY)
+      const worldTransform = this.syncKitBridge.locationTransformToWorldTransform(locationTransform)
+
+      this.manipulateRoot!.setWorldTransform(worldTransform)
+    } else {
+      const locationTransform = this.syncKitBridge.worldTransformToLocationTransform(
+        this.manipulateRoot!.getWorldTransform()
+      )
+
+      this.syncEntity.currentStore.putMat4(MANIPULATION_VALUE_KEY, locationTransform)
+    }
+
+    this.syncEntity.storeCallbacks.onStoreUpdated.add(this.processStoreUpdate.bind(this))
+  }
+
+  private processStoreUpdate(
+    _session: MultiplayerSession,
+    store: GeneralDataStore,
+    key: string,
+    info: ConnectedLensModule.RealtimeStoreUpdateInfo
+  ) {
+    const connectionId = info.updaterInfo.connectionId
+    const updatedByLocal = connectionId === this.syncKitBridge.sessionController.getLocalConnectionId()
+
+    if (updatedByLocal) {
+      return
+    }
+
+    if (key === MANIPULATION_VALUE_KEY) {
+      const locationTransform = store.getMat4(MANIPULATION_VALUE_KEY)
+      const worldTransform = this.syncKitBridge.locationTransformToWorldTransform(locationTransform)
+
+      this.manipulateRoot!.setWorldTransform(worldTransform)
+    }
+  }
+
+  private updateSyncStore() {
+    if (this.syncEntity !== null && this.syncEntity.isSetupFinished) {
+      const locationTransform = this.syncKitBridge.worldTransformToLocationTransform(
+        this.manipulateRoot!.getWorldTransform()
+      )
+
+      this.syncEntity.currentStore.putMat4(MANIPULATION_VALUE_KEY, locationTransform)
+    }
+  }
+
+  // If the InteractableManipulation script is instantiated by ContainerFrame, allow the ContainerFrame
+  // to handle the transform syncing.
+  private findContainerFrame(ancestor: SceneObject): boolean {
+    if (ancestor === null) {
+      return false
+    } else if (ancestor.getComponent(ContainerFrame.getTypeName())) {
+      return true
+    } else {
+      return this.findContainerFrame(ancestor.getParent())
+    }
   }
 
   private onDestroy(): void {
     // If we don't unsubscribe, component will keep working after destroy() due to event callbacks added to Interactable Events
+    this.cleanupCallbacks()
+    this.state.stateMachine.destroy()
+    this.interactors = []
+  }
+
+  private cleanupCallbacks(): void {
     this.unsubscribeBag.forEach((unsubscribeCallback: unsubscribe) => {
       unsubscribeCallback()
     })
@@ -613,9 +867,67 @@ speed. Higher values make the filter more responsive to velocity changes."
         }
       })
     )
+
+    this.unsubscribeBag.push(
+      this.interactable.onTriggerEndOutside.add((event) => {
+        if (event.propagationPhase === "Target" || event.propagationPhase === "BubbleUp") {
+          event.stopPropagation()
+          this.onTriggerToggle(event)
+        }
+      })
+    )
   }
 
-  private updateStartValues(): void {
+  /**
+   * Returns true if the object is currently being actively manipulated (i.e., in the Active state).
+   */
+  public isManipulating(): boolean {
+    return this.state.stateMachine.currentState?.name === this.state.states.Active
+  }
+
+  /**
+   * Updates the starting transform values mid-manipuation if some other script has displaced, rotated, or scaled the object
+   * during the interaction.
+   */
+  public updateStartTransform() {
+    // If called when not actively manipulating, ignore the call since all values have already been reset.
+    if (this.state.stateMachine.currentState?.name === this.state.states.Idle) {
+      return
+    }
+
+    const interactor = this.interactors[0]
+    if (this.isInteractorValid(interactor) === false) {
+      this.log.e("Interactor must not be valid for setting initial values")
+      return
+    }
+
+    validate(this.manipulateRoot)
+
+    // Reset filters
+    this.translateFilter.reset()
+    this.rotationFilter.reset()
+    this.scaleFilter.reset()
+
+    // Set the starting transform values to be used for callbacks
+    this.startTransform = {
+      transform: this.manipulateRoot.getWorldTransform(),
+      position: this.manipulateRoot.getWorldPosition(),
+      rotation: this.manipulateRoot.getWorldRotation(),
+      scale: this.manipulateRoot.getWorldScale()
+    }
+
+    // For Direct mode, use endPoint (fingertip) so hand rotation moves the object
+    // Bang operators are fine here because isInteractorValid checks for null values.
+    const anchorPoint =
+      this.cachedTargetingMode === TargetingMode.Direct ? interactor.endPoint! : interactor.startPoint!
+
+    // Ensure that stretch value does not affect the new hitPointToTransformValue.
+    this.hitPointToTransform = this.startTransform.position.sub(
+      anchorPoint.add(interactor.direction!.uniformScale(this.offsetPosition.length + this.smoothedStretch))!
+    )
+  }
+
+  public updateStartValues(): void {
     validate(this.manipulateRoot)
     validate(this.interactable)
 
@@ -651,9 +963,18 @@ speed. Higher values make the filter more responsive to velocity changes."
       this.cachedTargetingMode = interactor.activeTargetingMode
 
       if (interactor.activeTargetingMode === TargetingMode.Direct) {
-        this.offsetPosition = this.startTransform.position.sub(startPoint)
+        // For Direct mode, use endPoint (fingertip) so hand rotation moves the object
+        const anchorPoint = interactor.endPoint ?? vec3.zero()
+        this.offsetPosition = vec3.zero()
+        this.hitPointToTransform = this.startTransform.position.sub(anchorPoint)
         this.offsetRotation = orientation.invert().multiply(this.startTransform.rotation)
       } else {
+        // Bang operator is fine here because isInteractorValid checks for null values.
+        const distance = interactor.distanceToTarget!
+
+        // Cache the distance when starting manipulation to maintain the same position along the targeting ray.
+        this.rayDistanceMap.set(interactor, distance)
+
         const rayPosition = this.getRayPosition(interactor)
 
         this.offsetPosition = rayPosition.sub(startPoint)
@@ -669,21 +990,28 @@ speed. Higher values make the filter more responsive to velocity changes."
         return
       }
 
-      const isDirect =
-        this.interactors[0].activeTargetingMode === TargetingMode.Direct ||
-        this.interactors[1].activeTargetingMode === TargetingMode.Direct
-      this.cachedTargetingMode = isDirect ? TargetingMode.Direct : TargetingMode.Indirect
+      const isFirstDirect = this.interactors[0].activeTargetingMode === TargetingMode.Direct
+      const isSecondDirect = this.interactors[1].activeTargetingMode === TargetingMode.Direct
+      const hasAnyDirect = isFirstDirect || isSecondDirect
+      this.cachedTargetingMode = hasAnyDirect ? TargetingMode.Direct : TargetingMode.Indirect
 
-      const firstStartPoint = this.interactors[0].startPoint ?? vec3.zero()
-      const secondStartPoint = this.interactors[1].startPoint ?? vec3.zero()
+      // Each interactor uses its own appropriate point:
+      // - Direct mode: endPoint (fingertip) so hand rotation moves the object
+      // - Indirect mode: startPoint (ray origin)
+      const firstPoint = isFirstDirect
+        ? (this.interactors[0].endPoint ?? vec3.zero())
+        : (this.interactors[0].startPoint ?? vec3.zero())
+      const secondPoint = isSecondDirect
+        ? (this.interactors[1].endPoint ?? vec3.zero())
+        : (this.interactors[1].startPoint ?? vec3.zero())
 
-      const interactorMidPoint = firstStartPoint.add(secondStartPoint).uniformScale(0.5)
+      const interactorMidPoint = firstPoint.add(secondPoint).uniformScale(0.5)
 
       this.currentUp = vec3.up()
       this.currentRotationSign = 0
       const dualInteractorDirection = this.getDualInteractorDirection(this.interactors[0], this.interactors[1])
 
-      this.initialInteractorDistance = firstStartPoint.distance(secondStartPoint)
+      this.initialInteractorDistance = firstPoint.distance(secondPoint)
       this.initialObjectScale = this.manipulateRoot.getLocalScale()
 
       if (dualInteractorDirection === null) {
@@ -692,15 +1020,33 @@ speed. Higher values make the filter more responsive to velocity changes."
 
       this.offsetRotation = dualInteractorDirection.invert().multiply(this.startTransform.rotation)
 
-      if (isDirect) {
-        this.offsetPosition = this.startTransform.position.sub(interactorMidPoint)
+      if (hasAnyDirect) {
+        this.offsetPosition = vec3.zero()
+        this.hitPointToTransform = this.startTransform.position.sub(interactorMidPoint)
       } else {
+        // Bang operator is fine here because isInteractorValid checks for null values.
+        const firstDistance = this.interactors[0].distanceToTarget!
+        const secondDistance = this.interactors[1].distanceToTarget!
+
+        // Cache the distance when starting manipulation to maintain the same position along the targeting ray.
+        this.rayDistanceMap.set(this.interactors[0], firstDistance)
+        this.rayDistanceMap.set(this.interactors[1], secondDistance)
+
         const firstRayPosition = this.getRayPosition(this.interactors[0])
         const secondRayPosition = this.getRayPosition(this.interactors[1])
         const dualRayPosition = firstRayPosition.add(secondRayPosition).uniformScale(0.5)
 
+        const direction0 = this.interactors[0].direction ?? vec3.zero()
+        const direction1 = this.interactors[1].direction ?? vec3.zero()
+        const dualDirection = direction0.add(direction1).uniformScale(0.5)
+        const dualRaycastDistance =
+          (this.interactors[0].maxRaycastDistance + this.interactors[1].maxRaycastDistance) * 0.5
+        const rayMidpointToInteractorDistance = dualRayPosition.distance(interactorMidPoint)
+        const projectedHitDistance = Math.min(dualRaycastDistance, rayMidpointToInteractorDistance)
+        const hitPoint = interactorMidPoint.add(dualDirection.uniformScale(projectedHitDistance))
+
         this.offsetPosition = dualRayPosition.sub(interactorMidPoint)
-        this.hitPointToTransform = this.startTransform.position.sub(dualRayPosition)
+        this.hitPointToTransform = this.startTransform.position.sub(hitPoint)
       }
     }
   }
@@ -717,7 +1063,7 @@ speed. Higher values make the filter more responsive to velocity changes."
 
     const startPoint = interactor.startPoint ?? vec3.zero()
     const direction = interactor.direction ?? vec3.zero()
-    const distanceToTarget = interactor.distanceToTarget ?? 0
+    const distanceToTarget = this.rayDistanceMap.get(interactor) ?? 0
 
     return startPoint.add(direction.uniformScale(distanceToTarget))
   }
@@ -744,179 +1090,519 @@ speed. Higher values make the filter more responsive to velocity changes."
     }
   }
 
-  private onTriggerToggle(_eventData: InteractorEvent): void {
-    if (!this.enabled || (!this.canTranslate() && !this.canRotate() && !this.canScale())) {
-      return
+  private resetActiveEvents(): void {
+    this.state.activeEvents.translation = false
+    this.state.activeEvents.rotation = false
+    this.state.activeEvents.scale = false
+    this.state.activeEvents.manipulation = false
+  }
+
+  private setupStateMachine(): void {
+    this.state.previousCapabilitiesState = {
+      enabled: this.enabled,
+      canTranslate: this.canTranslate(),
+      canRotate: this.canRotate(),
+      canScale: this.canScale()
     }
 
+    this.state.stateMachine.addState({
+      name: this.state.states.Idle,
+      onEnter: () => {
+        this.log.v("Entered Idle state")
+        this.interactors = []
+        this.resetActiveEvents()
+      },
+      transitions: [
+        {
+          nextStateName: this.state.states.Active,
+          checkOnSignal: (signal: string, data: any) => {
+            return (
+              signal === this.state.signals.StartManipulation &&
+              this.hasActiveCapabilities() &&
+              data?.interactors?.length > 0
+            )
+          }
+        }
+      ]
+    })
+
+    this.state.stateMachine.addState({
+      name: this.state.states.Active,
+      onEnter: () => {
+        this.log.v("Entered Active state")
+        this.startManipulation(this.state.triggeringInteractors)
+      },
+      onUpdate: () => {
+        this.performManipulation()
+      },
+      onExit: () => {
+        this.log.v("Exited Active state")
+        this.endManipulation()
+      },
+      onSignal: (signal: string, data: any) => {
+        if (signal === this.state.signals.ChangeInteractors && data?.interactors) {
+          this.log.v("Handling interactor change within Active state")
+          this.interactors = data.interactors
+          this.updateStartValues()
+          this.updateEventStates()
+        } else if (signal === this.state.signals.CapabilitiesChanged) {
+          this.log.v("Handling capability changes within Active state")
+          this.updateStartValues()
+          this.updateEventStates()
+        }
+      },
+      transitions: [
+        {
+          nextStateName: this.state.states.Idle,
+          checkOnSignal: (signal: string) => {
+            return signal === this.state.signals.EndManipulation
+          }
+        }
+      ]
+    })
+
+    this.state.stateMachine.enterState(this.state.states.Idle)
+  }
+
+  private hasActiveCapabilities(): boolean {
+    return this.enabled && (this.canTranslate() || this.canRotate() || this.canScale())
+  }
+
+  private onTriggerToggle(_eventData: InteractorEvent): void {
     const previousInteractors = this.interactors
-    const previousInteractorsCount = previousInteractors.length
-    const currentInteractors = this.getTriggeringInteractors()
-    const currentInteractorsCount = currentInteractors.length
+    const currentInteractors = this.getTriggeringInteractorsCached()
+    this.log.v(`onTriggerToggle called with ${currentInteractors.length} interactors`)
+    this.state.triggeringInteractors = currentInteractors
 
-    const wasManipulating = previousInteractorsCount > 0
-    const isManipulating = currentInteractorsCount > 0
-    const countChanged = previousInteractorsCount !== currentInteractorsCount
+    const currentState = this.state.stateMachine.currentState?.name
+    const hasCapabilities = this.hasActiveCapabilities()
 
-    const wasScaling = previousInteractorsCount === 2
-    const isScaling = currentInteractorsCount === 2
+    // Try transition to Active
+    if (currentState === this.state.states.Idle && currentInteractors.length > 0 && hasCapabilities) {
+      this.log.v("Attempting transition: Idle -> Active")
+      this.state.stateMachine.sendSignal(this.state.signals.StartManipulation, {
+        interactors: currentInteractors
+      })
+    }
 
-    if (isManipulating) {
-      if (wasManipulating && countChanged) {
-        // Invoke End Events for previous manipulations
-        this.invokeEvents(
-          this.onTranslationEndEvent,
-          this.onRotationEndEvent,
-          wasScaling ? this.onScaleEndEvent : null,
-          this.onManipulationEndEvent
-        )
-        this.log.v("InteractionEvent : On Manipulation End Event")
-      }
+    // Try transition to Idle
+    if (currentState === this.state.states.Active && (currentInteractors.length === 0 || !hasCapabilities)) {
+      this.log.v("Attempting transition: Active -> Idle")
+      this.state.stateMachine.sendSignal(this.state.signals.EndManipulation)
+    }
 
-      // Cache interactors before updating start values and invoking Start Events
-      this.interactors = currentInteractors
-      this.updateStartValues()
-
-      // Invoke Start Events for current manipulations
-      this.invokeEvents(
-        this.onTranslationStartEvent,
-        this.onRotationStartEvent,
-        isScaling ? this.onScaleStartEvent : null,
-        this.onManipulationStartEvent
-      )
-      this.log.v("InteractionEvent : On Manipulation Start Event")
-    } else if (wasManipulating) {
-      // Invoke all End Events
-      this.invokeEvents(
-        this.onTranslationEndEvent,
-        this.onRotationEndEvent,
-        wasScaling ? this.onScaleEndEvent : null,
-        this.onManipulationEndEvent
-      )
-      this.log.v("InteractionEvent : On Manipulation End Event")
-
-      // Cache interactors after invoking end events
-      this.interactors = currentInteractors
-    } else {
-      this.interactors = currentInteractors
+    // Try update if Interactors changed
+    if (
+      currentState === this.state.states.Active &&
+      hasCapabilities &&
+      currentInteractors.length > 0 &&
+      this.interactorsChanged(previousInteractors, currentInteractors)
+    ) {
+      this.log.v("Attempting to update interactors within Active state")
+      this.state.stateMachine.sendSignal(this.state.signals.ChangeInteractors, {interactors: currentInteractors})
     }
   }
 
   private onTriggerUpdate(_eventData: InteractorEvent): void {
-    if (!this.enabled || (!this.canTranslate() && !this.canRotate() && !this.canScale())) {
+    const currentInteractors = this.getTriggeringInteractorsCached()
+    this.state.triggeringInteractors = currentInteractors
+
+    this.notifyCapabilityChanged()
+
+    const currentState = this.state.stateMachine.currentState?.name
+
+    if (currentState === this.state.states.Active) {
+      const hasCapabilities = this.hasActiveCapabilities()
+
+      if (currentInteractors.length === 0 || !hasCapabilities) {
+        this.state.stateMachine.sendSignal(this.state.signals.EndManipulation)
+      } else if (this.interactorsChanged(this.interactors, currentInteractors)) {
+        this.state.stateMachine.sendSignal(this.state.signals.ChangeInteractors, {interactors: currentInteractors})
+      }
+    }
+  }
+
+  private getCurrentCapabilitiesState(): CapabilitiesState {
+    return {
+      enabled: this.enabled,
+      canTranslate: this.canTranslate(),
+      canRotate: this.canRotate(),
+      canScale: this.canScale()
+    }
+  }
+
+  private capabilitiesChanged(previous: CapabilitiesState, current: CapabilitiesState): boolean {
+    return (
+      previous.enabled !== current.enabled ||
+      previous.canTranslate !== current.canTranslate ||
+      previous.canRotate !== current.canRotate ||
+      previous.canScale !== current.canScale
+    )
+  }
+
+  private notifyCapabilityChanged(): void {
+    const currentCapabilities = this.getCurrentCapabilitiesState()
+
+    if (this.capabilitiesChanged(this.state.previousCapabilitiesState, currentCapabilities)) {
+      this.handleCapabilityChange(this.hasActiveCapabilities())
+      this.state.previousCapabilitiesState = currentCapabilities
+    }
+  }
+
+  private handleCapabilityChange(hasCapabilities: boolean): void {
+    const currentState = this.state.stateMachine.currentState?.name
+
+    if (!hasCapabilities && currentState === this.state.states.Active) {
+      this.log.v("All capabilities disabled during active manipulation, ending manipulation")
+      this.state.stateMachine.sendSignal(this.state.signals.EndManipulation)
+    } else if (
+      hasCapabilities &&
+      currentState === this.state.states.Active &&
+      this.state.triggeringInteractors.length > 0
+    ) {
+      this.log.v("Capabilities changed during active manipulation")
+      this.state.stateMachine.sendSignal(this.state.signals.CapabilitiesChanged)
+    } else if (
+      hasCapabilities &&
+      currentState === this.state.states.Idle &&
+      this.state.triggeringInteractors.length > 0
+    ) {
+      this.log.v("Capabilities enabled while in Idle state, starting manipulation")
+      this.state.stateMachine.sendSignal(this.state.signals.StartManipulation, {
+        interactors: this.state.triggeringInteractors
+      })
+    }
+  }
+
+  private updateEventStates(): void {
+    validate(this.interactable)
+    validate(this.manipulateRoot)
+
+    const canTranslate = this.canTranslate()
+    const canRotate = this.canRotate()
+    const canScale = this.canScale()
+
+    // Handle translation events
+    if (canTranslate && !this.state.activeEvents.translation) {
+      this.state.activeEvents.translation = true
+      this.invokeTranslationStart()
+    } else if (!canTranslate && this.state.activeEvents.translation) {
+      this.state.activeEvents.translation = false
+      this.invokeTranslationEnd()
+    }
+
+    // Handle rotation events
+    if (canRotate && !this.state.activeEvents.rotation) {
+      this.state.activeEvents.rotation = true
+      this.invokeRotationStart()
+    } else if (!canRotate && this.state.activeEvents.rotation) {
+      this.state.activeEvents.rotation = false
+      this.invokeRotationEnd()
+    }
+
+    // Handle scale events
+    if (canScale && !this.state.activeEvents.scale) {
+      this.state.activeEvents.scale = true
+      this.invokeScaleStart()
+    } else if (!canScale && this.state.activeEvents.scale) {
+      this.state.activeEvents.scale = false
+      this.invokeScaleEnd()
+    }
+  }
+
+  private startManipulation(interactors: Interactor[]): void {
+    this.log.v(`startManipulation called with ${interactors.length} interactors`)
+    this.interactors = interactors
+    this.updateStartValues()
+
+    this.state.activeEvents.manipulation = true
+    this.state.activeEvents.translation = this.canTranslate()
+    this.state.activeEvents.rotation = this.canRotate()
+    this.state.activeEvents.scale = this.canScale()
+
+    this.invokeManipulationStart()
+
+    if (this.state.activeEvents.translation) {
+      this.invokeTranslationStart()
+    }
+
+    if (this.state.activeEvents.rotation) {
+      this.invokeRotationStart()
+    }
+
+    if (this.state.activeEvents.scale) {
+      this.invokeScaleStart()
+    }
+  }
+
+  private performManipulation(): void {
+    const fresh = this.getTriggeringInteractorsCached()
+    if (fresh.length === 0 || !this.hasActiveCapabilities()) {
+      this.state.stateMachine.sendSignal(this.state.signals.EndManipulation)
       return
     }
+    if (this.interactorsChanged(this.interactors, fresh)) {
+      this.state.stateMachine.sendSignal(this.state.signals.ChangeInteractors, {interactors: fresh})
+      return
+    }
+
+    const canTranslate = this.canTranslate()
+    const canRotate = this.canRotate()
+    const canScale = this.canScale()
 
     if (this.interactors.length === 1) {
       this.singleInteractorTransform(this.interactors[0])
     } else if (this.interactors.length === 2) {
       this.dualInteractorsTransform(this.interactors)
     } else {
-      this.log.w(`${this.interactors.length} interactors found for onTriggerUpdate. This is not supported.`)
+      this.log.e(`${this.interactors.length} interactors found for manipulation. This is not supported.`)
       return
     }
 
-    // Scale only happens with two handed manipulation, so its event firing is deferred to this.dualInteractorsTransform()
-    this.invokeEvents(this.onTranslationUpdateEvent, this.onRotationUpdateEvent, null, this.onManipulationUpdateEvent)
+    if (canTranslate) {
+      this.invokeTranslationUpdate()
+    }
+
+    if (canRotate) {
+      this.invokeRotationUpdate()
+    }
+
+    if (canScale) {
+      this.invokeScaleUpdate()
+    }
+
+    if (canTranslate || canRotate || canScale) {
+      this.invokeManipulationUpdate()
+    }
+
+    this.updateSyncStore()
+  }
+
+  private endManipulation(): void {
+    this.log.v(`endManipulation called with ${this.interactors.length} interactors`)
+
+    if (this.state.activeEvents.translation) {
+      this.invokeTranslationEnd()
+      this.state.activeEvents.translation = false
+    }
+
+    if (this.state.activeEvents.rotation) {
+      this.invokeRotationEnd()
+      this.state.activeEvents.rotation = false
+    }
+
+    if (this.state.activeEvents.scale) {
+      this.invokeScaleEnd()
+      this.state.activeEvents.scale = false
+    }
+
+    if (this.state.activeEvents.manipulation) {
+      this.invokeManipulationEnd()
+      this.state.activeEvents.manipulation = false
+    }
+  }
+
+  private interactorsChanged(previous: Interactor[], current: Interactor[]): boolean {
+    if (previous.length !== current.length) return true
+    return previous.some((prev, i) => prev !== current[i])
   }
 
   private getTriggeringInteractors(): Interactor[] {
     validate(this.interactable)
 
-    let interactors: Interactor[] = this.interactionManager.getInteractorsByType(this.interactable.triggeringInteractor)
-    interactors = interactors.filter((interactor) => {
-      return (
-        interactor.currentInteractable === this.interactable && interactor.currentTrigger !== InteractorTriggerType.None
-      )
-    })
-
-    if (interactors === null) {
+    const interactors = this.interactionManager.getInteractorsByType(this.interactable.triggeringInteractor)
+    if (!interactors) {
       this.log.w(
-        `Failed to retrieve interactors on ${this.getSceneObject().name}: ${
-          this.interactable.triggeringInteractor
-        } (InteractorInputType)`
+        `Failed to retrieve interactors on ${this.getSceneObject().name}: ${this.interactable?.triggeringInteractor} (InteractorInputType)`
       )
       return []
     }
 
-    return interactors
+    return interactors.filter((interactor): interactor is Interactor => {
+      if (!interactor) {
+        this.log.w(
+          `Failed to retrieve interactors on ${this.getSceneObject().name}: ${this.interactable?.triggeringInteractor} (InteractorInputType)`
+        )
+        return false
+      }
+
+      const hasEngagedTrigger =
+        interactor.currentTrigger !== InteractorTriggerType.None &&
+        ((InteractorTriggerType as any).Hover === undefined ||
+          interactor.currentTrigger !== (InteractorTriggerType as any).Hover)
+
+      return interactor.isActive() && interactor.currentInteractable === this.interactable && hasEngagedTrigger
+    })
   }
 
-  private invokeEvents(
-    translateEvent: Event<TranslateEventArg> | null,
-    rotationEvent: Event<RotationEventArg> | null,
-    scaleEvent: Event<ScaleEventArg> | null,
-    manipulationEvent: Event<TransformEventArg> | null
-  ): void {
+  /**
+   * Cached version of getTriggeringInteractors to avoid multiple array allocations per frame.
+   * The cache is invalidated each frame based on the current time.
+   */
+  private getTriggeringInteractorsCached(): Interactor[] {
+    const currentTime = getTime()
+    if (this.cachedTriggeringInteractorsTime !== currentTime) {
+      this.cachedTriggeringInteractors = this.getTriggeringInteractors()
+      this.cachedTriggeringInteractorsTime = currentTime
+    }
+    return this.cachedTriggeringInteractors!
+  }
+
+  private invokeEvent<T>(event: Event<T>, createArgs: () => T): void {
     validate(this.interactable)
     validate(this.manipulateRoot)
+    event.invoke(createArgs())
+  }
 
-    if (this.canTranslate() && translateEvent) {
-      translateEvent.invoke({
-        interactors: this.interactors,
-        interactable: this.interactable,
-        startPosition: this.startTransform.position,
-        currentPosition: this.manipulateRoot.getWorldPosition()
-      })
+  // Event args creator helpers
+  private createTranslationEventArgs(): TranslateEventArg {
+    validate(this.interactable)
+    validate(this.manipulateRoot)
+    return {
+      interactors: this.interactors,
+      interactable: this.interactable,
+      startPosition: this.startTransform.position,
+      currentPosition: this.manipulateRoot.getWorldPosition()
+    }
+  }
+
+  private createRotationEventArgs(): RotationEventArg {
+    validate(this.interactable)
+    validate(this.manipulateRoot)
+    return {
+      interactors: this.interactors,
+      interactable: this.interactable,
+      startRotation: this.startTransform.rotation,
+      currentRotation: this.manipulateRoot.getWorldRotation()
+    }
+  }
+
+  private createScaleEventArgs(): ScaleEventArg {
+    validate(this.interactable)
+    validate(this.manipulateRoot)
+    return {
+      interactors: this.interactors,
+      interactable: this.interactable,
+      startWorldScale: this.startTransform.scale,
+      currentWorldScale: this.manipulateRoot.getWorldScale()
+    }
+  }
+
+  private createManipulationEventArgs(): TransformEventArg {
+    validate(this.interactable)
+    validate(this.manipulateRoot)
+    return {
+      interactors: this.interactors,
+      interactable: this.interactable,
+      startTransform: this.startTransform.transform,
+      currentTransform: this.manipulateRoot.getWorldTransform()
+    }
+  }
+
+  // Translation events
+  private invokeTranslationStart(): void {
+    this.invokeEvent(this.onTranslationStartEvent, () => this.createTranslationEventArgs())
+  }
+
+  private invokeTranslationUpdate(): void {
+    this.invokeEvent(this.onTranslationUpdateEvent, () => this.createTranslationEventArgs())
+  }
+
+  private invokeTranslationEnd(): void {
+    this.invokeEvent(this.onTranslationEndEvent, () => this.createTranslationEventArgs())
+  }
+
+  // Rotation events
+  private invokeRotationStart(): void {
+    this.invokeEvent(this.onRotationStartEvent, () => this.createRotationEventArgs())
+  }
+
+  private invokeRotationUpdate(): void {
+    this.invokeEvent(this.onRotationUpdateEvent, () => this.createRotationEventArgs())
+  }
+
+  private invokeRotationEnd(): void {
+    this.invokeEvent(this.onRotationEndEvent, () => this.createRotationEventArgs())
+  }
+
+  // Scale events
+  private invokeScaleStart(): void {
+    this.invokeEvent(this.onScaleStartEvent, () => this.createScaleEventArgs())
+  }
+
+  private invokeScaleUpdate(): void {
+    this.invokeEvent(this.onScaleUpdateEvent, () => this.createScaleEventArgs())
+  }
+
+  private invokeScaleEnd(): void {
+    this.invokeEvent(this.onScaleEndEvent, () => this.createScaleEventArgs())
+  }
+
+  // Manipulation events
+  private invokeManipulationStart(): void {
+    this.invokeEvent(this.onManipulationStartEvent, () => this.createManipulationEventArgs())
+  }
+
+  private invokeManipulationUpdate(): void {
+    this.invokeEvent(this.onManipulationUpdateEvent, () => this.createManipulationEventArgs())
+  }
+
+  private invokeManipulationEnd(): void {
+    this.invokeEvent(this.onManipulationEndEvent, () => this.createManipulationEventArgs())
+  }
+
+  private getRotationAxis(): vec3 {
+    let axis: vec3
+    switch (this.rotationAxis) {
+      case RotationAxis.X:
+        axis = vec3.right()
+        break
+      case RotationAxis.Y:
+        axis = vec3.up()
+        break
+      case RotationAxis.Z:
+        axis = vec3.forward()
+        break
+      default:
+        return vec3.up()
     }
 
-    if (this.canRotate() && rotationEvent) {
-      rotationEvent.invoke({
-        interactors: this.interactors,
-        interactable: this.interactable,
-        startRotation: this.startTransform.rotation,
-        currentRotation: this.manipulateRoot.getWorldRotation()
-      })
+    if (this.manipulateRoot) {
+      const parent = this.manipulateRoot.getSceneObject().getParent()
+      if (parent) {
+        axis = parent.getTransform().getWorldRotation().multiplyVec3(axis)
+      }
     }
 
-    if (this.canScale() && scaleEvent) {
-      scaleEvent.invoke({
-        interactors: this.interactors,
-        interactable: this.interactable,
-        startWorldScale: this.startTransform.scale,
-        currentWorldScale: this.manipulateRoot.getWorldScale()
-      })
-    }
-
-    if ((this.canTranslate() || this.canRotate() || this.canScale()) && manipulationEvent) {
-      manipulationEvent.invoke({
-        interactors: this.interactors,
-        interactable: this.interactable,
-        startTransform: this.startTransform.transform,
-        currentTransform: this.manipulateRoot.getWorldTransform()
-      })
-    }
+    return axis
   }
 
   private getDualInteractorDirection(interactor1: Interactor, interactor2: Interactor): quat | null {
     if (
       interactor1 === null ||
       interactor1.startPoint === null ||
+      interactor1.endPoint === null ||
       interactor2 === null ||
-      interactor2.startPoint === null
+      interactor2.startPoint === null ||
+      interactor2.endPoint === null
     ) {
-      this.log.e("Interactors and their start points should not be null for getDualInteractorDirection")
+      this.log.e("Interactors and their points should not be null for getDualInteractorDirection")
       return null
     }
 
-    let point1 = interactor1.startPoint
-    let point2 = interactor2.startPoint
+    // Each interactor uses its own appropriate point:
+    // - Direct mode: endPoint (fingertip) so hand rotation affects object rotation
+    // - Indirect mode: startPoint (ray origin)
+    const isFirstDirect = interactor1.activeTargetingMode === TargetingMode.Direct
+    const isSecondDirect = interactor2.activeTargetingMode === TargetingMode.Direct
+    let point1 = isFirstDirect ? interactor1.endPoint : interactor1.startPoint
+    let point2 = isSecondDirect ? interactor2.endPoint : interactor2.startPoint
     let sign: number = 0
 
     // Handle single axis rotation by projecting the start points onto plane.
     if (this.rotationAxis !== RotationAxis.All) {
-      let axis: vec3
-      switch (this.rotationAxis) {
-        case RotationAxis.X:
-          axis = vec3.right()
-          break
-        case RotationAxis.Y:
-          axis = vec3.up()
-          break
-        case RotationAxis.Z:
-          axis = vec3.forward()
-          break
-      }
+      const axis = this.getRotationAxis()
+
       // When rotating about a single axis, project the start points onto the plane defined by that axis to calculate rotation about that axis.
       point1 = point1.projectOnPlane(axis)
       point2 = point2.projectOnPlane(axis)
@@ -943,21 +1629,53 @@ speed. Higher values make the filter more responsive to velocity changes."
   }
 
   private limitQuatRotation(rotation: quat): quat {
-    const euler = rotation.toEulerAngles()
-
     if (!this.canRotate()) {
-      euler.x = 0
-      euler.y = 0
-      euler.z = 0
+      return quat.quatIdentity()
     }
 
-    return quat.fromEulerVec(euler)
+    return rotation
+  }
+
+  /**
+   * Extracts the rotation component around a single world axis from a quaternion
+   * using swing-twist decomposition. This avoids Euler angle singularities that
+   * cause rotation reversals at certain angles.
+   * Used for single-interactor manipulation when rotation is constrained to one axis.
+   */
+  private extractSingleAxisRotation(rotation: quat): quat {
+    if (this.rotationAxis === RotationAxis.All) {
+      return rotation
+    }
+
+    let axis = this.getRotationAxis()
+
+    // Swing-twist decomposition: extract the twist component around the desired axis.
+    // For a quaternion q = (w, x, y, z) and axis a, the twist quaternion is the
+    // projection of q onto the axis, normalized.
+    const rotationVec = new vec3(rotation.x, rotation.y, rotation.z)
+    const dotProduct = rotationVec.dot(axis)
+    const projection = axis.uniformScale(dotProduct)
+
+    // Construct the twist quaternion from the projected vector component and original w
+    const twist = new quat(rotation.w, projection.x, projection.y, projection.z)
+
+    // Check for near-zero length before normalizing to avoid NaN.
+    // This occurs when the rotation is ~180° around an axis perpendicular to the constrained axis.
+    const lengthSquared = twist.w * twist.w + twist.x * twist.x + twist.y * twist.y + twist.z * twist.z
+    if (lengthSquared < 0.0001) {
+      return quat.quatIdentity()
+    }
+
+    twist.normalize()
+
+    return twist
   }
 
   private isInteractorValid(interactor: Interactor): boolean {
     return (
       interactor !== null &&
       interactor.startPoint !== null &&
+      interactor.endPoint !== null &&
       interactor.orientation !== null &&
       interactor.direction !== null &&
       interactor.distanceToTarget !== null &&
@@ -977,21 +1695,20 @@ speed. Higher values make the filter more responsive to velocity changes."
     const direction = interactor.direction ?? vec3.zero()
 
     const limitRotation = this.limitQuatRotation(orientation).multiply(this.offsetRotation)
-    // Do not rotate the object if using a single Interactor for single axis usecase.
-    let deltaRotation =
-      this.rotationAxis === RotationAxis.All
-        ? limitRotation.multiply(this.manipulateRoot.getWorldRotation().invert())
-        : quat.quatIdentity()
+    // Compute full delta first, then extract only the constrained axis component.
+    // This preserves the object's rotation on non-constrained axes.
+    const fullDelta = limitRotation.multiply(this.startTransform.rotation.invert())
+    let deltaRotation = this.canRotate() ? this.extractSingleAxisRotation(fullDelta) : quat.quatIdentity()
 
     // Single Interactor Direct
     if (this.enableTranslation) {
       let newPosition: vec3 | null
 
       if (this.cachedTargetingMode === TargetingMode.Direct) {
-        newPosition = startPoint.add(
-          this.canRotate()
-            ? limitRotation.multiply(this.startTransform.rotation.invert()).multiplyVec3(this.offsetPosition)
-            : this.offsetPosition
+        // For Direct mode, use endPoint (fingertip) so hand rotation moves the object
+        const anchorPoint = interactor.endPoint ?? vec3.zero()
+        newPosition = anchorPoint.add(
+          this.canRotate() ? deltaRotation.multiplyVec3(this.hitPointToTransform) : this.hitPointToTransform
         )
 
         this.updatePosition(newPosition, this.useFilter)
@@ -1012,7 +1729,7 @@ speed. Higher values make the filter more responsive to velocity changes."
 
     if (this.canRotate()) {
       if (this.cachedTargetingMode === TargetingMode.Direct) {
-        const newRotation = deltaRotation.multiply(this.manipulateRoot.getWorldRotation())
+        const newRotation = deltaRotation.multiply(this.startTransform.rotation)
         this.updateRotation(newRotation, this.useFilter)
       }
     }
@@ -1021,28 +1738,34 @@ speed. Higher values make the filter more responsive to velocity changes."
   private dualInteractorsTransform(interactors: Interactor[]): void {
     if (interactors.length < 2 || !this.isInteractorValid(interactors[0]) || !this.isInteractorValid(interactors[1])) {
       this.log.e("There should be two valid interactors for dualInteractorsTransform")
+      return
     }
     validate(this.manipulateRoot)
     validate(this.interactable)
 
-    const isDirect = this.cachedTargetingMode === TargetingMode.Direct
+    const hasAnyDirect = this.cachedTargetingMode === TargetingMode.Direct
 
-    const startPoint1 = interactors[0].startPoint
-    const startPoint2 = interactors[1].startPoint
+    // Each interactor uses its own appropriate point:
+    // - Direct mode: endPoint (fingertip) so hand rotation moves the object
+    // - Indirect mode: startPoint (ray origin)
+    const isFirstDirect = interactors[0].activeTargetingMode === TargetingMode.Direct
+    const isSecondDirect = interactors[1].activeTargetingMode === TargetingMode.Direct
+    const point1 = isFirstDirect ? interactors[0].endPoint : interactors[0].startPoint
+    const point2 = isSecondDirect ? interactors[1].endPoint : interactors[1].startPoint
 
-    if (startPoint1 === null || startPoint2 === null) {
-      this.log.e("Both start points should be valid for dualInteractorsTransform")
+    if (point1 === null || point2 === null) {
+      this.log.e("Both anchor points should be valid for dualInteractorsTransform")
       return
     }
 
-    const interactorMidPoint = startPoint1.add(startPoint2).uniformScale(0.5)
+    const interactorMidPoint = point1.add(point2).uniformScale(0.5)
     const dualDirection = this.getDualInteractorDirection(interactors[0], interactors[1])
 
     if (dualDirection === null) {
       return
     }
 
-    const dualDistance = startPoint1.distance(startPoint2)
+    const dualDistance = point1.distance(point2)
 
     if (this.canRotate()) {
       const newRotation = dualDirection.multiply(this.offsetRotation)
@@ -1052,26 +1775,26 @@ speed. Higher values make the filter more responsive to velocity changes."
     if (this.enableTranslation) {
       let newPosition: vec3 | null
 
-      // Dual Interactor Direct
-      if (isDirect) {
+      // Dual Interactor Direct (or mixed mode)
+      if (hasAnyDirect) {
         newPosition =
-          this.canRotate() && isDirect
+          this.canRotate() && hasAnyDirect
             ? interactorMidPoint.add(
                 this.manipulateRoot
                   .getWorldRotation()
                   .multiply(this.startTransform.rotation.invert())
-                  .multiplyVec3(this.offsetPosition)
+                  .multiplyVec3(this.hitPointToTransform)
               )
-            : interactorMidPoint.add(this.offsetPosition)
+            : interactorMidPoint.add(this.hitPointToTransform)
         this.updatePosition(newPosition, this.useFilter)
       } else {
         // Dual Interactor Indirect
         const dualRaycastDistance = (interactors[0].maxRaycastDistance + interactors[1].maxRaycastDistance) * 0.5
         const zDistance = Math.min(dualRaycastDistance, this.offsetPosition.length)
 
-        const direction1 = interactors[0].direction ?? vec3.zero()
-        const direction2 = interactors[1].direction ?? vec3.zero()
-        const dualDirection = direction1.add(direction2).uniformScale(0.5)
+        const direction0 = interactors[0].direction ?? vec3.zero()
+        const direction1 = interactors[1].direction ?? vec3.zero()
+        const dualDirection = direction0.add(direction1).uniformScale(0.5)
 
         const finalOffset = dualDirection.uniformScale(zDistance).add(this.hitPointToTransform)
         newPosition = interactorMidPoint.add(finalOffset)
@@ -1091,13 +1814,6 @@ speed. Higher values make the filter more responsive to velocity changes."
       const updatedObjectScale = this.initialObjectScale.uniformScale(uniformScalingFactor)
 
       this.setScale(updatedObjectScale, this.useFilter)
-
-      this.onScaleUpdateEvent.invoke({
-        interactors: this.interactors,
-        interactable: this.interactable,
-        startWorldScale: this.startTransform.scale,
-        currentWorldScale: this.manipulateRoot.getWorldScale()
-      })
     }
   }
 
@@ -1158,7 +1874,7 @@ speed. Higher values make the filter more responsive to velocity changes."
     const maxDragDistance = Math.max(MIN_DRAG_DISTANCE_CM, interactor.maxRaycastDistance - MAX_USER_ARM_EXTENSION_CM)
 
     //scale movement based on distance from ray start to object
-    const currDistance = interactor.distanceToTarget ?? 0
+    const currDistance = this.rayDistanceMap.get(interactor) ?? 0
     const distanceFactor = (this.zStretchFactorMax / maxDragDistance) * currDistance + this.zStretchFactorMin
 
     const minStretch = -this.offsetPosition.length + 1
@@ -1197,7 +1913,7 @@ speed. Higher values make the filter more responsive to velocity changes."
      * is to the min or max scale limits.
      */
     const minRatio = Math.min(scale.x / minScale.x, scale.y / minScale.y, scale.z / minScale.z)
-    const maxRatio = Math.min(scale.x / maxScale.x, scale.y / maxScale.y, scale.z / maxScale.z)
+    const maxRatio = Math.max(scale.x / maxScale.x, scale.y / maxScale.y, scale.z / maxScale.z)
 
     /*
      * If the minRatio is less than 1, it means at least one axis of the input

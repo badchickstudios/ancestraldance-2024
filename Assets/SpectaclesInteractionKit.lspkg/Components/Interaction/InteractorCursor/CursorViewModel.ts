@@ -63,7 +63,6 @@ export type ManipulateLineData = {
   delta: vec3 | null
 }
 
-const DISTANCE_SCALE_FACTOR = 10
 const DEFAULT_INITIAL_DISTANCE = 160
 const MIN_DISTANCE = 15
 const DEFAULT_MANIPULATE_STRENGTH = 1
@@ -77,6 +76,8 @@ const DEFAULT_FAR_FIELD_SCALE = 1.2
 const DEFAULT_NEAR_FIELD_THRESHOLD_CM = 70
 const DEFAULT_MID_FIELD_THRESHOLD_CM = 130
 const DEFAULT_FAR_FIELD_THRESHOLD_CM = 200
+
+const GEOMETRY_EPSILON = 1e-4
 
 const DEFAULT_CURSOR_FILTER = {
   frequency: 60,
@@ -119,6 +120,9 @@ export class CursorViewModel {
 
   private cursorDistance = DEFAULT_INITIAL_DISTANCE
 
+  // Jump to targeting position rather than hit point position.
+  private cursorJumpCancelSet = new CancelSet()
+
   private distanceCancelSet = new CancelSet()
   private isAnimating = false
 
@@ -132,6 +136,11 @@ export class CursorViewModel {
    */
   private filter = new OneEuroFilterVec3(DEFAULT_CURSOR_FILTER)
 
+  // Tracks if the outline circle should hold around the inner circle or if it should move indepedently.
+  private useHitPosition: boolean = true
+
+  private cursorJumpLerpValue: number = 0
+
   constructor(
     private enableCursorHolding: boolean,
     private enableFilter: boolean,
@@ -143,6 +152,10 @@ export class CursorViewModel {
     }
 
     this.setupStateMachine()
+  }
+
+  destroy() {
+    this.stateMachine.destroy()
   }
 
   setInteractor(interactor: Interactor): void {
@@ -260,9 +273,10 @@ export class CursorViewModel {
             this.interactor?.targetHitInfo?.hit.position.distance(this.interactor.startPoint) ?? this.cursorDistance
         }
 
-        const position = this.shouldCursorHold() ? this.getHeldCursorPosition() : this.getFarFieldCursorPosition()
+        // Get the cursor's position based on the hit data of the Interactor and its trigger state.
+        const hitPosition = this.getTriggerPointCursorPosition()
 
-        this.updateIndirectCursorPosition(this.interactor?.interactionStrength ?? null, position)
+        this.updateIndirectCursorPosition(this.interactor?.interactionStrength ?? null, hitPosition)
       },
       transitions: [
         {
@@ -280,16 +294,20 @@ export class CursorViewModel {
         {
           nextStateName: CursorState.Manipulating,
           checkOnUpdate: () => {
-            return this.interactor?.currentTrigger !== InteractorTriggerType.None && this.currentManipulation !== null
+            return (
+              this.interactor?.currentTrigger !== InteractorTriggerType.None &&
+              this.currentManipulation !== null &&
+              (this.currentManipulation.canTranslate() ||
+                this.currentManipulation.canRotate() ||
+                this.currentManipulation.canScale())
+            )
           }
         },
         {
           nextStateName: CursorState.Scrolling,
           checkOnUpdate: () => {
             return (
-              this.interactor?.currentTrigger !== InteractorTriggerType.None &&
-              this.isScrolling &&
-              (this.scrollView?.isDragging ?? false)
+              this.interactor?.currentTrigger !== InteractorTriggerType.None && (this.scrollView?.isDragging ?? false)
             )
           }
         }
@@ -307,7 +325,7 @@ export class CursorViewModel {
          * We were showing the cursor held to center as a visual feedback if line is disabled,
          * But we disabled this by default in LAF-3485.
          */
-        this.updateIndirectCursorPosition(DEFAULT_MANIPULATE_STRENGTH, this.getHeldCursorPosition())
+        this.updateIndirectCursorPosition(DEFAULT_MANIPULATE_STRENGTH, this.getTriggerPointCursorPosition(true))
       },
       transitions: [
         {
@@ -377,7 +395,7 @@ export class CursorViewModel {
 
     const position = this.interactor.planecastPoint
 
-    return this.shouldFilter() && position ? this.filter.filter(position, getTime()) : position
+    return position
   }
 
   private checkPlanecastWithinScrollView() {
@@ -405,65 +423,60 @@ export class CursorViewModel {
       )
       return null
     }
+
     const position = origin.add(direction.uniformScale(this.cursorDistance))
-    return this.shouldFilter() ? this.filter.filter(position, getTime()) : position
+    return position
   }
 
   /**
-   * Returns the held cursor position, where it's stuck to the center of target when currently selecting, or the hit position otherwise.
+   * Returns the trigger cursor position, where it moves along the plane defined by the Interactable's forward vector and hit point
    * @returns the position of the held cursor, with the regular far field cursor position or null as a fallback if the target hit position cannot be found.
    */
-  private getHeldCursorPosition(): vec3 | null {
-    let position: vec3 | null
-
-    if (!this.interactor) {
+  private getTriggerPointCursorPosition(shouldStick = false): vec3 | null {
+    const origin = this.interactor?.startPoint ?? null
+    const direction = this.interactor?.direction ?? null
+    if (this.interactor === null || origin === null || direction === null) {
+      this.log.d(
+        "Cursor failed to get trigger point position due to null interactor, origin, or direction, and will return null."
+      )
       return null
     }
-    const isTriggering = (this.interactor.currentTrigger & InteractorTriggerType.Select) !== 0
 
+    let position: vec3 | null = null
+
+    const isTriggering = (this.interactor.currentTrigger & InteractorTriggerType.Select) !== 0
     const wasTriggering = (this.interactor.previousTrigger & InteractorTriggerType.Select) !== 0
 
-    if (isTriggering) {
+    // If triggering an Interactable, move the cursor along the plane defined by the Interactable's forward vector.
+    if (isTriggering && this.interactor.currentInteractable) {
       // While triggering, ensuring that the initial local position is maintained.
       position =
         this.interactor?.currentInteractable?.sceneObject
           .getTransform()
           .getWorldTransform()
           .multiplyPoint(this.interactor?.targetHitInfo?.localHitPosition ?? vec3.zero()) ?? null
+
+      if (!shouldStick) {
+        const planeNormal = this.interactor.currentInteractable.sceneObject.getTransform().forward
+
+        const denom = direction.dot(planeNormal)
+        if (Math.abs(denom) > GEOMETRY_EPSILON) {
+          const t = position.sub(origin).dot(planeNormal) / denom
+          if (t >= 0) {
+            position = origin.add(direction.uniformScale(t))
+          }
+        }
+      }
     } else if (wasTriggering && !isTriggering) {
       // On the frame that the Interactor stops triggering, maintain the same cursor position as previous frame to account for targeting changes.
       position = this.cursorPosition
-    } else {
-      // We calculate the direction from the interactor to the hit point, then use the stored cursor distance to respect animated distance.
-      const origin = this.interactor.startPoint
-      if (!origin) {
-        return null
-      }
-      const direction = this.interactor.targetHitInfo?.hit.position?.sub(origin).normalize()
-
-      if (!direction) {
-        return null
-      }
-
-      position = origin.add(direction.uniformScale(this.cursorDistance))
     }
 
     if (position) {
-      return this.shouldFilter() ? this.filter.filter(position, getTime()) : position
+      return position
     } else {
       return this.getFarFieldCursorPosition()
     }
-  }
-
-  /**
-   * @returns if the cursor should be held to the hit position.
-   * During manipulation, since the interactor is assumed to be triggered, we hold the cursor to maintain local offset.
-   */
-  private shouldCursorHold(): boolean {
-    return (
-      this.enableCursorHolding &&
-      ((this.interactor && (this.interactor.inputType & InteractorInputType.BothHands) !== 0) ?? false)
-    )
   }
 
   private shouldFilter(): boolean {
@@ -495,7 +508,7 @@ export class CursorViewModel {
 
   /**
    * Cancel the existing animation and set the isAnimating boolean to false,
-   * allowing other functions ({@link getFarFieldCursorPosition} and {@link getHeldCursorPosition})
+   * allowing other functions ({@link getFarFieldCursorPosition} and {@link getHitPointCursorPosition})
    * to modify {@link cursorDistance} to jump the cursor to the Interactable object
    */
   private cancelAnimation() {
@@ -528,11 +541,20 @@ export class CursorViewModel {
    */
   private updateIndirectCursorPosition(interactionStrength: number | null, position: vec3 | null): void {
     if (position !== null) {
+      position = this.shouldFilter() ? this.filter.filter(position, getTime()) : position
+
       if (!this.isAnimating) {
         this.cursorDistance = this.interactor?.startPoint?.distance(position) ?? this.cursorDistance
       }
 
       this._cursorPosition = this.positionOverride ?? position
+
+      const isTriggering = (this.interactor!.currentTrigger & InteractorTriggerType.Select) !== 0
+      const wasTriggering = (this.interactor!.previousTrigger & InteractorTriggerType.Select) !== 0
+
+      if (!isTriggering && wasTriggering) {
+        this.useHitPosition = true
+      }
 
       this.onCursorUpdateEvent.invoke({
         cursorEnabled: true,

@@ -1,8 +1,8 @@
-- !<AssetImportMetadata/26edb5a2-791f-877a-8024-dbc8928ed87d>
+- !<AssetImportMetadata/2af636f1-4dae-9df8-dd2e-1630ef8797a9>
   ImportedAssetIds:
-    ObjectPrefab: !<reference> fac43cb4-73a2-457a-905d-e70267fb3230
+    ObjectPrefab: !<reference> 02b8d14a-eb10-4418-b6ac-27b1fb9c8339
   ImporterName: ObjectPrefabImporter
-  PrimaryAsset: !<reference> fac43cb4-73a2-457a-905d-e70267fb3230
+  PrimaryAsset: !<reference> 02b8d14a-eb10-4418-b6ac-27b1fb9c8339
   PackageType: NotAPackage
   LegacyPackagePolicy: ~
   ExtraData:
@@ -89,8 +89,8 @@
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
   Materials:
-    - !<reference> 5cf9448b-42f7-48f5-bf7f-21e04c4a288a
-  Mesh: !<reference> 19d6b039-6383-425c-88d7-54475b68f57a
+    - !<reference> 67190f48-f63b-4e55-bbf7-07f93f2cbec0
+  Mesh: !<reference> d01e4946-993f-4a69-900c-6c2ecd8fa08d
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
@@ -101,7 +101,7 @@
     []
   Name: TableTop
   Enabled: true
-  ScriptAsset: !<reference> a7086363-33b7-4a30-9e9c-db50e620ecc5
+  ScriptAsset: !<reference> 08e61ab3-7ce0-4f5b-b6b2-e4d011359c97
   ScriptInputsDefault:
     confirmText: true
     enableLogging: true
@@ -116,7 +116,7 @@
       enableLogging: false
       enableLoggingLifecycle: false
       instructTextObj: !<reference.SceneObject> 120728e6-5a1f-42b5-44f5-1b047dc16cab
-      sliderPrefab: !<reference.ObjectPrefab> 7237dbfa-de7c-4092-9216-01cf73241123
+      sliderPrefab: !<reference.ObjectPrefab> ffc14c40-024a-443a-b304-210acb727734
   ScriptTypes:
     "":
       {}
@@ -125,7 +125,7 @@
     []
   Name: CircleAnimation
   Enabled: true
-  ScriptAsset: !<reference> e7ffe463-b3f6-4bbe-b753-1fccb140892f
+  ScriptAsset: !<reference> 7bfa95bf-f1cc-465a-a2a3-46966e4fcdba
   ScriptInputsDefault:
     {}
   ScriptTypesDefault:

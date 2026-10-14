@@ -5,7 +5,8 @@
   LazyLoading: false
   RetainAssets: true
 - !<SceneObject/0abb1929-28c2-4c98-b267-95aa97f6dc2c>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Scene
   Enabled: true
   Layers: 1
@@ -19,14 +20,17 @@
   Components:
     - !<own> 237404a8-faf2-466a-90bb-10d63cd67216
 - !<AnimationPlayer/237404a8-faf2-466a-90bb-10d63cd67216>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: component_1
   Enabled: true
   Autoplay: true
   ClipRangeType: Frames
-  AnimationClips: []
+  AnimationClips:
+    []
 - !<RenderMeshVisual/79879bed-ab2a-4db3-b717-2e27827ec7e5>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Object_0.001
   Enabled: true
   RenderOrder: 0
@@ -42,9 +46,11 @@
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
-  BlendShapes: {}
+  BlendShapes:
+    {}
 - !<SceneObject/d3103d0b-4b00-4798-9a1a-6ebee0f2946e>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Scenes
   Enabled: true
   Layers: 1
@@ -55,9 +61,11 @@
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 0abb1929-28c2-4c98-b267-95aa97f6dc2c
-  Components: []
+  Components:
+    []
 - !<SceneObject/da93af9e-5a98-472b-afa2-f116e93fcd8e>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Object_2.001
   Enabled: true
   Layers: 1
@@ -66,19 +74,27 @@
     Rotation: {x: -90.000023, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> 79879bed-ab2a-4db3-b717-2e27827ec7e5
 - !<SceneObject/f25e16b4-9ae8-4f1e-988f-4318002a4317>
-  PrefabRemaps: []
+  PrefabRemaps:
+    - 0abb1929-28c2-4c98-b267-95aa97f6dc2c: 0abb1929-28c2-4c98-4d98-6a55680923d3
+    - 237404a8-faf2-466a-90bb-10d63cd67216: 237404a8-faf2-466a-6f44-ef29c3298de9
+    - 79879bed-ab2a-4db3-b717-2e27827ec7e5: 79879bed-ab2a-4db3-48e8-d1d87d81381a
+    - d3103d0b-4b00-4798-9a1a-6ebee0f2946e: d3103d0b-4b00-4798-65e5-91411f0d6b91
+    - da93af9e-5a98-472b-afa2-f116e93fcd8e: da93af9e-5a98-472b-505d-0ee916c03271
+    - f25e16b4-9ae8-4f1e-988f-4318002a4317: f25e16b4-9ae8-4f1e-6770-bce7ffd5bce8
   Name: dodecahedron3
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 100.000000, y: 100.000000, z: 100.000000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> d3103d0b-4b00-4798-9a1a-6ebee0f2946e
-  Components: []
+  Components:
+    []

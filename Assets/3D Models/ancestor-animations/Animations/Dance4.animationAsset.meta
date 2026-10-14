@@ -4,7 +4,7 @@
   ImporterName: AnimationAssetImporter
   PrimaryAsset: !<reference> 5c96d2f4-4dc6-4228-9ad4-288e37670ce3
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:

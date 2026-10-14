@@ -5,34 +5,39 @@
   LazyLoading: false
   RetainAssets: true
 - !<SceneObject/48069a96-0727-4146-bd2a-7c5bf4b69608>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Body
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 3.000000, y: 3.000000, z: 3.000000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> 70457154-f355-4c09-8567-c7763611d026
 - !<SceneObject/55d1686b-2442-4eb8-91a9-f876c3e99624>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: FireFly Comp
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.407345, y: 27.759575, z: 0.000000}
-    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 48069a96-0727-4146-bd2a-7c5bf4b69608
     - !<own> be0cc80a-987e-4e40-986c-c2557ee20ef0
-  Components: []
+  Components:
+    []
 - !<RenderMeshVisual/5f0fe423-fcab-4a2d-ab8f-fb9344a2c669>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Render Mesh Visual
   Enabled: true
   RenderOrder: 0
@@ -48,9 +53,11 @@
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
-  BlendShapes: {}
+  BlendShapes:
+    {}
 - !<RenderMeshVisual/70457154-f355-4c09-8567-c7763611d026>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Render Mesh Visual
   Enabled: true
   RenderOrder: 0
@@ -66,9 +73,11 @@
   Skin: !<reference> 00000000-0000-0000-0000-000000000000
   BlendShapesEnabled: true
   BlendNormals: false
-  BlendShapes: {}
+  BlendShapes:
+    {}
 - !<SceneObject/be0cc80a-987e-4e40-986c-c2557ee20ef0>
-  PrefabRemaps: []
+  PrefabRemaps:
+    []
   Name: Glow
   Enabled: true
   Layers: 1
@@ -77,11 +86,18 @@
     Rotation: {x: 90.000000, y: -0.000000, z: 0.000000}
     Scale: {x: 10.000000, y: 10.000000, z: 10.000000}
     HasSegmentScaleCompensation: false
-  Children: []
+  Children:
+    []
   Components:
     - !<own> 5f0fe423-fcab-4a2d-ab8f-fb9344a2c669
 - !<SceneObject/da3851d9-2933-42c1-ae13-1a2d0aed30a9>
-  PrefabRemaps: []
+  PrefabRemaps:
+    - 48069a96-0727-4146-bd2a-7c5bf4b69608: 48069a96-0727-4146-42d5-83a40b4969f7
+    - 55d1686b-2442-4eb8-91a9-f876c3e99624: 55d1686b-2442-4eb8-6e56-07893c1669db
+    - 5f0fe423-fcab-4a2d-ab8f-fb9344a2c669: 5f0fe423-fcab-4a2d-5470-046cbb5d3996
+    - 70457154-f355-4c09-8567-c7763611d026: 70457154-f355-4c09-7a98-3889c9ee2fd9
+    - be0cc80a-987e-4e40-986c-c2557ee20ef0: be0cc80a-987e-4e40-6793-3daa811df10f
+    - da3851d9-2933-42c1-ae13-1a2d0aed30a9: da3851d9-2933-42c1-51ec-e5d2f512cf56
   Name: Firefly
   Enabled: true
   Layers: 1
@@ -92,4 +108,5 @@
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 55d1686b-2442-4eb8-91a9-f876c3e99624
-  Components: []
+  Components:
+    []

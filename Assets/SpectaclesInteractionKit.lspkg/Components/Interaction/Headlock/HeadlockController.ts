@@ -31,8 +31,6 @@ export type DefaultHeadlockConfig = {
 
 const rotationAxes = [RotationAxis.Pitch, RotationAxis.Yaw]
 
-const TAG = "HeadlockController"
-
 const DEFAULT_DURATION = 0.033
 
 export default class DefaultHeadlockController {
@@ -286,12 +284,12 @@ export default class DefaultHeadlockController {
   // Place the target at correct position according to offsets.
   public resetPosition(): void {
     let offset = this.getFaceForwardVector().uniformScale(this.distance)
-    let pitchQuaternion = quat.angleAxis(
+    const pitchQuaternion = quat.angleAxis(
       MathUtils.DegToRad * (this.headlockComponent.pitchOffsetDegrees ?? 0),
       vec3.left()
     )
     offset = pitchQuaternion.multiplyVec3(offset)
-    let yawQuaternion = quat.angleAxis(MathUtils.DegToRad * (this.headlockComponent.yawOffsetDegrees ?? 0), vec3.up())
+    const yawQuaternion = quat.angleAxis(MathUtils.DegToRad * (this.headlockComponent.yawOffsetDegrees ?? 0), vec3.up())
     offset = yawQuaternion.multiplyVec3(offset)
     this.targetTransform.setWorldPosition(this.cameraTransform.getWorldPosition().add(offset))
   }

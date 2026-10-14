@@ -1,7 +1,5 @@
 import Filter from "./Filter"
 
-const TAG = "MovingAverageFilter"
-
 /**
  * Implements a moving average algorithm. A window of specified length,
  * moves over the data, sample by sample, and the average is computed

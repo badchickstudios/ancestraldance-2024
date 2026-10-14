@@ -1,4 +1,4 @@
-- !<NativePackageDescriptor/8e3a8637-95ae-460e-8a5a-c57b96387443>
+- !<NativePackageDescriptor/1c60ea28-64cc-42eb-9b1c-0fe13fc48b49>
   PackagePath: ""
   StudioVersion:
     major: 5
@@ -25,7 +25,7 @@
   ExportUid: 3e491f94-610c-485f-9973-8e4412f565a1
   ComponentUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpackedTransparent
-  ReadMe: !<reference> 374e1e53-41e4-4137-9ec7-cb2b73a17af1
+  ReadMe: !<reference> d87fb1ff-d4ec-4460-8ac6-87c1c9013bee
   Tags:
     []
   Attachments:

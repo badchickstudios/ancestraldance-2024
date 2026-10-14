@@ -1,4 +1,4 @@
-- !<Material/9dd8d122-7602-498b-871c-94f02c1044e9>
+- !<Material/7e823085-830d-470e-84a6-ac4580370667>
   PackagePath: ""
   PassesInfo:
     - !<own> 7de9a304-4ee5-42ef-b2f7-dc4be8434678
@@ -135,4 +135,4 @@
     alpha:
       typeIdx: 1
       value: 1.000000
-  Pass: !<reference> 1766b7b7-216f-4d2c-8269-330f184aa40b
+  Pass: !<reference> d2472616-7ed7-405b-99ba-406ad87cae87

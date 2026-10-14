@@ -8,13 +8,13 @@
   ExtraData:
     {}
   AssetDataMap:
-    ObjectPrefab: !<own> ece5ab01-31cb-4c1a-a2fd-e70ea9e3268b
+    ObjectPrefab: !<own> da801bb7-2624-4c37-9e5b-472671e9615a
   DependentFiles:
     []
   ImporterSettings: !<AssetImporterSettings>
     {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
-- !<RenderMeshVisual/2ee0e86b-dbc4-487a-59f6-52721ae14345>
+- !<RenderMeshVisual/1c464947-6eeb-4414-8c73-e747b86f33b0>
   PrefabRemaps:
     []
   Name: component_6
@@ -35,7 +35,7 @@
   BlendShapes:
     Pinch: 0.000000
     Z depth: 1.000000
-- !<SceneObject/315f513f-3522-482b-6ff5-bfbeb4f931c9>
+- !<SceneObject/69906a08-e2ce-4d2d-b14b-a05da7643a35>
   PrefabRemaps:
     []
   Name: container-button
@@ -49,9 +49,10 @@
   Children:
     []
   Components:
-    - !<own> 2ee0e86b-dbc4-487a-59f6-52721ae14345
-    - !<own> 353478e5-0c7a-4db7-7ec1-3bcc44cbdbf6
-- !<ScriptComponent/353478e5-0c7a-4db7-7ec1-3bcc44cbdbf6>
+    - !<own> 1c464947-6eeb-4414-8c73-e747b86f33b0
+    - !<own> adceb746-832f-4438-b10d-633a93cc4a9e
+    - !<own> eb602b93-11cd-4ebd-6f0c-518be0fa1e8d
+- !<ScriptComponent/adceb746-832f-4438-b10d-633a93cc4a9e>
   PrefabRemaps:
     []
   Name: Interactable
@@ -59,6 +60,9 @@
   ScriptAsset: !<reference> 652e631a-22d0-4941-9f74-2943df59f34c
   ScriptInputsDefault:
     targetingMode: true
+    targetingVisual: true
+    ignoreInteractionPlane: true
+    keepHoverOnTrigger: true
     enableInstantDrag: true
     isScrollable: true
     allowMultipleInteractors: true
@@ -66,13 +70,15 @@
     acceptableXDirections: true
     acceptableYDirections: true
     acceptableZDirections: true
-    isSynced: true
-    acceptableSyncInteractionTypes: true
+    useFilteredPinch: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       targetingMode: !<float> 3.000000
+      targetingVisual: !<float> 1.000000
+      ignoreInteractionPlane: false
+      keepHoverOnTrigger: false
       enableInstantDrag: false
       isScrollable: false
       allowMultipleInteractors: true
@@ -80,13 +86,30 @@
       acceptableXDirections: !<float> 0.000000
       acceptableYDirections: !<float> 0.000000
       acceptableZDirections: !<float> 1.000000
-      isSynced: true
-      acceptableSyncInteractionTypes: !<float> 7.000000
+      useFilteredPinch: false
   ScriptTypes:
     "":
       {}
-- !<ObjectPrefabAssetData/ece5ab01-31cb-4c1a-a2fd-e70ea9e3268b>
-  Prototype: !<ObjectOwner/04fa869d-b807-4154-8a26-7bc755c0bc97>
+- !<ObjectPrefabAssetData/da801bb7-2624-4c37-9e5b-472671e9615a>
+  Prototype: !<ObjectOwner/85104b06-ab66-4df4-8350-91cf33fdf3d9>
     PackagePath: ""
     objects:
-      - !<own> 315f513f-3522-482b-6ff5-bfbeb4f931c9
+      - !<own> 69906a08-e2ce-4d2d-b14b-a05da7643a35
+- !<ColliderComponent/eb602b93-11cd-4ebd-6f0c-518be0fa1e8d>
+  PrefabRemaps:
+    []
+  Name: Physics Collider
+  Enabled: true
+  Shape: !<Sphere>
+    FitVisual: true
+    Radius: 6.000000
+  Matter: !<reference> 00000000-0000-0000-0000-000000000000
+  Filter: !<reference> 00000000-0000-0000-0000-000000000000
+  OverlapFilter: !<reference> 00000000-0000-0000-0000-000000000000
+  WorldSettings: !<reference> 00000000-0000-0000-0000-000000000000
+  EnableSmoothing: false
+  PositionTension: 30.000000
+  RotationTension: 30.000000
+  ForceCompound: false
+  Intangible: false
+  ShowCollider: false

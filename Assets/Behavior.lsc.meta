@@ -6,7 +6,7 @@
   ImporterName: NativePackageImporter
   PrimaryAsset: !<reference> cb810535-72a2-4409-aada-fc2e26194661
   PackageType: PackedNativePackageRoot
-  PackagePolicy: CannotBeUnpacked
+  LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:

@@ -114,13 +114,13 @@ export default class View<Config extends ViewConfig = ViewConfig> {
     this.cascadeDestroy()
     this.getSceneObject().destroy()
 
-    for (let callback of this.onDestroyCallbacks) {
+    for (const callback of this.onDestroyCallbacks) {
       callback()
     }
   }
 
   private cascadeDestroy() {
-    for (let child of this.childViews) {
+    for (const child of this.childViews) {
       child.destroy()
     }
   }
@@ -139,7 +139,7 @@ export default class View<Config extends ViewConfig = ViewConfig> {
   private setAlphaInternal(a: number) {
     this._alpha = a
     // also set alpha on all of the child views
-    for (let child of this.childViews) {
+    for (const child of this.childViews) {
       child.setAlpha(a)
     }
   }
@@ -327,7 +327,7 @@ export default class View<Config extends ViewConfig = ViewConfig> {
    */
   protected removeChild<Child extends View<any>>(child: Child): void {
     child.destroy()
-    let index = this.childViews.indexOf(child)
+    const index = this.childViews.indexOf(child)
     if (index === -1) {
       return
     }
@@ -340,7 +340,7 @@ export default class View<Config extends ViewConfig = ViewConfig> {
    * @returns whether the child was destroyed
    */
   protected destroyChild<Child extends View<any>>(child: Child): boolean {
-    let index = this.childViews.indexOf(child)
+    const index = this.childViews.indexOf(child)
     if (index === -1) {
       return false
     }
@@ -355,7 +355,7 @@ export default class View<Config extends ViewConfig = ViewConfig> {
    * @returns whether the child was detached
    */
   protected detachChild<Child extends View<any>>(child: Child): boolean {
-    let index = this.childViews.indexOf(child)
+    const index = this.childViews.indexOf(child)
     if (index === -1) {
       return false
     }
@@ -371,7 +371,7 @@ export default class View<Config extends ViewConfig = ViewConfig> {
   // onAttachToScene is a lifecycle hook that happens when a view is attached
   // to its parent. It is the place where "defaults" should be used, since they
   // will not cascade prior to this hook
-  protected onAttachToScene(defaults: Defaults, parentView: View | null) {
+  protected onAttachToScene(_defaults: Defaults, _parentView: View | null) {
     // default is noop
   }
 
@@ -384,9 +384,9 @@ export default class View<Config extends ViewConfig = ViewConfig> {
     fieldName: FieldName,
     newValue: FieldType
   ) {
-    let viewStack: any[] = [...this.childViews]
+    const viewStack: any[] = [...this.childViews]
     while (viewStack.length > 0) {
-      let view = viewStack.pop()
+      const view = viewStack.pop()
 
       if (fieldName in view) {
         view[fieldName] = newValue
@@ -398,7 +398,7 @@ export default class View<Config extends ViewConfig = ViewConfig> {
 
   private attachToParent(parent: View<any> | SceneObject, preserveWorldTransform: boolean = false) {
     // set the scene object parent
-    let parentSceneObject: SceneObject = parent instanceof View ? parent.getSceneObject() : parent
+    const parentSceneObject: SceneObject = parent instanceof View ? parent.getSceneObject() : parent
     if (preserveWorldTransform) {
       this.container.setParentPreserveWorldTransform(parentSceneObject)
     } else {
@@ -410,14 +410,14 @@ export default class View<Config extends ViewConfig = ViewConfig> {
     // creates a prototype cain so that defaults will "fall back"
     // to the parent's defaults
     const objectWithFallback = (obj: any, fallback: any) => {
-      let result = Object.create(fallback, {})
+      const result = Object.create(fallback, {})
       Object.assign(result, obj)
       return result
     }
 
     // compute the defaults as either a prototype chain of the available
     // defaults, or the first non-null default
-    let defaults =
+    const defaults =
       parentDefaults !== null && this._defaults !== null
         ? objectWithFallback(this._defaults, parentDefaults)
         : (parentDefaults ?? this._defaults ?? {})
@@ -428,7 +428,7 @@ export default class View<Config extends ViewConfig = ViewConfig> {
     this.attachedToScene = true
     this.onAttachToScene(defaults, parentView)
 
-    for (let child of this.childViews) {
+    for (const child of this.childViews) {
       child.cascadeAttachToSceneCallbacks(defaults, this)
     }
   }

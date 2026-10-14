@@ -39,7 +39,6 @@ import NativeLogger from "./NativeLogger"
 
 const TAG = "OneEuroFilter"
 
-const eps = 0.00001
 const minimumDt = 1.0 / 120.0
 
 /**
@@ -423,15 +422,6 @@ interface Filter<T> {
    * @param timestamp - timestamp when the sample was measured
    */
   filter(sample: T, timestamp: number): T
-}
-
-/**
- * A filter that does nothing.
- */
-class NoOpFilter<T> implements Filter<T> {
-  filter(sample: T, timestamp: number): T {
-    return sample
-  }
 }
 
 class LowPassFilter_v2<T> implements Filter<T> {

@@ -14,7 +14,7 @@ export default interface Filter<T> {
  * A filter that does nothing.
  */
 export class NoOpFilter<T> implements Filter<T> {
-  filter(sample: T, timestamp: number): T {
+  filter(sample: T, _timestamp: number): T {
     return sample
   }
 }

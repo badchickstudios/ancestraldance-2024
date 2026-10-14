@@ -18,6 +18,7 @@ export function averageVec3(values: vec3[]): vec3 {
 export const DegToRad = Math.PI / 180
 export const RadToDeg = 180 / Math.PI
 export const NANOSECONDS_PER_MILLISECOND = 1_000_000
+export const NANOSECONDS_PER_SECOND = 1_000_000_000
 
 /**
  * Compute the average vector of a list of values
@@ -56,10 +57,10 @@ export function interpolateVec3(vectorA: vec3, vectorB: vec3, ratio: number): ve
 
 // Transforms `localPoint` from `transform` local space to world space.
 export function transformPoint(transform: Transform, localPoint: vec3): vec3 {
-  let t = mat4.fromTranslation(transform.getWorldPosition())
-  let r = mat4.fromRotation(transform.getWorldRotation())
-  let s = mat4.fromScale(transform.getWorldScale())
-  let m = t.mult(r).mult(s)
+  const t = mat4.fromTranslation(transform.getWorldPosition())
+  const r = mat4.fromRotation(transform.getWorldRotation())
+  const s = mat4.fromScale(transform.getWorldScale())
+  const m = t.mult(r).mult(s)
   return m.multiplyPoint(localPoint)
 }
 
@@ -84,6 +85,11 @@ export function lerp(value1: number, value2: number, amount: number) {
   amount = amount < 0 ? 0 : amount
   amount = amount > 1 ? 1 : amount
   return value1 + (value2 - value1) * amount
+}
+
+export function smoothstep(edge0: number, edge1: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
+  return t * t * (3 - 2 * t)
 }
 
 /**

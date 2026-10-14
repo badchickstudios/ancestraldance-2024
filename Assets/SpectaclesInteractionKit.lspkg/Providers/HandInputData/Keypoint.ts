@@ -1,8 +1,6 @@
 import {validate} from "../../Utils/validate"
 import WorldCameraFinderProvider from "../CameraProvider/WorldCameraFinderProvider"
 
-const TAG = "Keypoint"
-
 /**
  * This class represents a keypoint represneting one of the many joints of a Hand in 3D space, providing methods to retrieve its world position, world rotation, and screen-space position. It uses an ObjectTracking3D component to create an attachment point and a WorldCameraFinderProvider to convert world coordinates to screen coordinates.
  *

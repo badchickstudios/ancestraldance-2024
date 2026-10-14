@@ -4,12 +4,15 @@
   ImporterName: JavaScriptAssetImporter
   PrimaryAsset: !<reference> 909cc7d1-d932-4847-be80-dcf035abdfcf
   PackageType: NotAPackage
-  PackagePolicy: CannotBeUnpacked
-  ExtraData: {}
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
   AssetDataMap:
     JavaScriptAsset: !<own> bbba90fd-5f46-480f-b34d-d1b0614cdc09
-  DependentFiles: []
-  ImporterSettings: !<AssetImporterSettings> {}
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
 - !<ScriptAssetData/bbba90fd-5f46-480f-b34d-d1b0614cdc09>
   SvgIcon: ""
@@ -21,6 +24,7 @@
   VersionPatch: 0
   ComponentUid: 0901bf24-65f1-4aae-9b01-27109396c9f6
   ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     animType: false
     animateImageAction: false
@@ -307,9 +311,14 @@
     triggeringEventType: false
     tweenEndTargetObject: false
     tweenEndTweenName: false
-  ScriptTypesHidden: {}
+  ScriptTypesHidden:
+    {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
   DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
   DefaultScriptInputs:
     - triggeringEventType: TouchEvent
       touchEventEventType: TapEvent
@@ -356,7 +365,8 @@
       machineLearningEventMlComponent: !<reference.MLComponent> 00000000-0000-0000-0000-000000000000
       recordingEventEventType: SnapRecordStartEvent
       onCustomTriggerTriggerName: ""
-      onCustomTriggerTriggerNames: !<string[]> []
+      onCustomTriggerTriggerNames: !<string[]>
+        []
       onCustomTriggerUseList: false
       physicsColliderEventCollider: !<reference.ColliderComponent> 00000000-0000-0000-0000-000000000000
       physicsColliderEventCollisionType: Collision
@@ -365,9 +375,11 @@
       physicsColliderEventOverlapDynamic: true
       physicsColliderEventOverlapIntangible: true
       physicsColliderEventFilterObjectsBy: None
-      physicsColliderEventAllowedObjects: !<reference.ColliderComponent[]> []
+      physicsColliderEventAllowedObjects: !<reference.ColliderComponent[]>
+        []
       physicsColliderEventNameMatchType: Equals
-      physicsColliderEventAllowedNames: !<string[]> []
+      physicsColliderEventAllowedNames: !<string[]>
+        []
       physicsRaycastRaycastSource: touch
       physicsRaycastSourceObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       physicsRaycastFlipForwardVec: false
@@ -384,9 +396,11 @@
       physicsRaycastOverlapDynamic: true
       physicsRaycastOverlapIntangible: true
       physicsRaycastFilterObjectsBy: None
-      physicsRaycastAllowedObjects: !<reference.ColliderComponent[]> []
+      physicsRaycastAllowedObjects: !<reference.ColliderComponent[]>
+        []
       physicsRaycastNameMatchType: Equals
-      physicsRaycastAllowedNames: !<string[]> []
+      physicsRaycastAllowedNames: !<string[]>
+        []
       triggerLimitType: Always
       triggerInterval: !<float> 1.000000
       triggerDelay: !<float> 0.000000
@@ -517,18 +531,30 @@
       callScriptAPI_arg1AssetValue: !<reference.Asset> 00000000-0000-0000-0000-000000000000
       callScriptAPI_arg1TextureValue: !<reference.Texture> 00000000-0000-0000-0000-000000000000
       callScriptAPI_arg1ComponentValue: !<reference.Component> 00000000-0000-0000-0000-000000000000
-      callScriptAPI_arg1BoolArrayValue: !<bool[]> []
-      callScriptAPI_arg1IntArrayValue: !<int[]> []
-      callScriptAPI_arg1FloatArrayValue: !<float[]> []
-      callScriptAPI_arg1StringArrayValue: !<string[]> []
-      callScriptAPI_arg1Vec2ArrayValue: !<Vec2[]> []
-      callScriptAPI_arg1Vec3ArrayValue: !<Vec3[]> []
-      callScriptAPI_arg1Vec4ArrayValue: !<Vec4[]> []
-      callScriptAPI_arg1QuatArrayValue: !<Quat[]> []
-      callScriptAPI_arg1SceneObjectArrayValue: !<reference.SceneObject[]> []
-      callScriptAPI_arg1AssetArrayValue: !<reference.Asset[]> []
-      callScriptAPI_arg1TextureArrayValue: !<reference.Texture[]> []
-      callScriptAPI_arg1ComponentArrayValue: !<reference.Component[]> []
+      callScriptAPI_arg1BoolArrayValue: !<bool[]>
+        []
+      callScriptAPI_arg1IntArrayValue: !<int[]>
+        []
+      callScriptAPI_arg1FloatArrayValue: !<float[]>
+        []
+      callScriptAPI_arg1StringArrayValue: !<string[]>
+        []
+      callScriptAPI_arg1Vec2ArrayValue: !<Vec2[]>
+        []
+      callScriptAPI_arg1Vec3ArrayValue: !<Vec3[]>
+        []
+      callScriptAPI_arg1Vec4ArrayValue: !<Vec4[]>
+        []
+      callScriptAPI_arg1QuatArrayValue: !<Quat[]>
+        []
+      callScriptAPI_arg1SceneObjectArrayValue: !<reference.SceneObject[]>
+        []
+      callScriptAPI_arg1AssetArrayValue: !<reference.Asset[]>
+        []
+      callScriptAPI_arg1TextureArrayValue: !<reference.Texture[]>
+        []
+      callScriptAPI_arg1ComponentArrayValue: !<reference.Component[]>
+        []
       callScriptAPI_arg2ValueType: None
       callScriptAPI_arg2BoolValue: false
       callScriptAPI_arg2IntValue: 0
@@ -544,18 +570,30 @@
       callScriptAPI_arg2AssetValue: !<reference.Asset> 00000000-0000-0000-0000-000000000000
       callScriptAPI_arg2TextureValue: !<reference.Texture> 00000000-0000-0000-0000-000000000000
       callScriptAPI_arg2ComponentValue: !<reference.Component> 00000000-0000-0000-0000-000000000000
-      callScriptAPI_arg2BoolArrayValue: !<bool[]> []
-      callScriptAPI_arg2IntArrayValue: !<int[]> []
-      callScriptAPI_arg2FloatArrayValue: !<float[]> []
-      callScriptAPI_arg2StringArrayValue: !<string[]> []
-      callScriptAPI_arg2Vec2ArrayValue: !<Vec2[]> []
-      callScriptAPI_arg2Vec3ArrayValue: !<Vec3[]> []
-      callScriptAPI_arg2Vec4ArrayValue: !<Vec4[]> []
-      callScriptAPI_arg2QuatArrayValue: !<Quat[]> []
-      callScriptAPI_arg2SceneObjectArrayValue: !<reference.SceneObject[]> []
-      callScriptAPI_arg2AssetArrayValue: !<reference.Asset[]> []
-      callScriptAPI_arg2TextureArrayValue: !<reference.Texture[]> []
-      callScriptAPI_arg2ComponentArrayValue: !<reference.Component[]> []
+      callScriptAPI_arg2BoolArrayValue: !<bool[]>
+        []
+      callScriptAPI_arg2IntArrayValue: !<int[]>
+        []
+      callScriptAPI_arg2FloatArrayValue: !<float[]>
+        []
+      callScriptAPI_arg2StringArrayValue: !<string[]>
+        []
+      callScriptAPI_arg2Vec2ArrayValue: !<Vec2[]>
+        []
+      callScriptAPI_arg2Vec3ArrayValue: !<Vec3[]>
+        []
+      callScriptAPI_arg2Vec4ArrayValue: !<Vec4[]>
+        []
+      callScriptAPI_arg2QuatArrayValue: !<Quat[]>
+        []
+      callScriptAPI_arg2SceneObjectArrayValue: !<reference.SceneObject[]>
+        []
+      callScriptAPI_arg2AssetArrayValue: !<reference.Asset[]>
+        []
+      callScriptAPI_arg2TextureArrayValue: !<reference.Texture[]>
+        []
+      callScriptAPI_arg2ComponentArrayValue: !<reference.Component[]>
+        []
       callScriptAPI_valueValueType: float
       callScriptAPI_valueBoolValue: false
       callScriptAPI_valueIntValue: 0
@@ -571,20 +609,33 @@
       callScriptAPI_valueAssetValue: !<reference.Asset> 00000000-0000-0000-0000-000000000000
       callScriptAPI_valueTextureValue: !<reference.Texture> 00000000-0000-0000-0000-000000000000
       callScriptAPI_valueComponentValue: !<reference.Component> 00000000-0000-0000-0000-000000000000
-      callScriptAPI_valueBoolArrayValue: !<bool[]> []
-      callScriptAPI_valueIntArrayValue: !<int[]> []
-      callScriptAPI_valueFloatArrayValue: !<float[]> []
-      callScriptAPI_valueStringArrayValue: !<string[]> []
-      callScriptAPI_valueVec2ArrayValue: !<Vec2[]> []
-      callScriptAPI_valueVec3ArrayValue: !<Vec3[]> []
-      callScriptAPI_valueVec4ArrayValue: !<Vec4[]> []
-      callScriptAPI_valueQuatArrayValue: !<Quat[]> []
-      callScriptAPI_valueSceneObjectArrayValue: !<reference.SceneObject[]> []
-      callScriptAPI_valueAssetArrayValue: !<reference.Asset[]> []
-      callScriptAPI_valueTextureArrayValue: !<reference.Texture[]> []
-      callScriptAPI_valueComponentArrayValue: !<reference.Component[]> []
+      callScriptAPI_valueBoolArrayValue: !<bool[]>
+        []
+      callScriptAPI_valueIntArrayValue: !<int[]>
+        []
+      callScriptAPI_valueFloatArrayValue: !<float[]>
+        []
+      callScriptAPI_valueStringArrayValue: !<string[]>
+        []
+      callScriptAPI_valueVec2ArrayValue: !<Vec2[]>
+        []
+      callScriptAPI_valueVec3ArrayValue: !<Vec3[]>
+        []
+      callScriptAPI_valueVec4ArrayValue: !<Vec4[]>
+        []
+      callScriptAPI_valueQuatArrayValue: !<Quat[]>
+        []
+      callScriptAPI_valueSceneObjectArrayValue: !<reference.SceneObject[]>
+        []
+      callScriptAPI_valueAssetArrayValue: !<reference.Asset[]>
+        []
+      callScriptAPI_valueTextureArrayValue: !<reference.Texture[]>
+        []
+      callScriptAPI_valueComponentArrayValue: !<reference.Component[]>
+        []
       sendCustomTriggerTriggerName: ""
-      sendCustomTriggerTriggerNames: !<string[]> []
+      sendCustomTriggerTriggerNames: !<string[]>
+        []
       sendCustomTriggerUseList: false
       sendCustomTriggerLoopAfterEnd: true
       physicsApplyForceBody: !<reference.BodyComponent> 00000000-0000-0000-0000-000000000000
@@ -597,4 +648,5 @@
       setBlendshapesName: ""
       setBlendshapesWeight: !<float> 0.000000
   ScriptTypes:
-    - {}
+    -
+      {}

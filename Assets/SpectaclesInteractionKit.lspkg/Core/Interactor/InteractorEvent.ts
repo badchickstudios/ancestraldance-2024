@@ -10,6 +10,7 @@ export type InteractableEventName =
   | "TriggerStart"
   | "TriggerUpdate"
   | "TriggerEnd"
+  | "TriggerEndOutside"
   | "TriggerCanceled"
 
 export type DispatchableEventArgs = {

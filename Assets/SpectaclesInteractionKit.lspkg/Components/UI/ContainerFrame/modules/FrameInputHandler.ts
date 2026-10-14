@@ -1,12 +1,8 @@
 import {InteractableManipulation} from "../../../../Components/Interaction/InteractableManipulation/InteractableManipulation"
 import {CursorMode} from "../../../../Components/Interaction/InteractorCursor/InteractorCursor"
 import Event from "../../../../Utils/Event"
-import NativeLogger from "../../../../Utils/NativeLogger"
 import {ContainerFrame, InputState} from "../ContainerFrame"
 import {CursorHandler} from "./CursorHandler"
-
-const TAG = "FrameInputController"
-const log = new NativeLogger(TAG)
 
 export type FrameInputOptions = {
   frame: ContainerFrame
@@ -308,6 +304,10 @@ export class FrameInputHandler {
 
     this.state.translating = isTranslating
 
-    this.state.translating ? this.onTranslationStartEvent.invoke() : this.onTranslationEndEvent.invoke()
+    if (this.state.translating) {
+      this.onTranslationStartEvent.invoke()
+    } else {
+      this.onTranslationEndEvent.invoke()
+    }
   }
 }

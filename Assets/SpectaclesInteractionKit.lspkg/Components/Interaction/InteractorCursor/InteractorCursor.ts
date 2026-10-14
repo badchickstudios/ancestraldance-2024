@@ -1,14 +1,18 @@
-import {Interactor, InteractorInputType} from "../../../Core/Interactor/Interactor"
-import LineRenderer, {LineViewConfig} from "../../../Utils/views/LineRenderer/LineRenderer"
-import {CircleVisual, CircleVisualConfig, CircleVisualMaterialParameters} from "./CircleVisual"
-import {CursorData, CursorState, CursorViewModel, CursorViewState, ManipulateLineData} from "./CursorViewModel"
-
 import {InteractionManager} from "../../../Core/InteractionManager/InteractionManager"
 import BaseInteractor from "../../../Core/Interactor/BaseInteractor"
+import {Interactor, InteractorInputType} from "../../../Core/Interactor/Interactor"
+import WorldCameraFinderProvider from "../../../Providers/CameraProvider/WorldCameraFinderProvider"
 import {CursorControllerProvider} from "../../../Providers/CursorControllerProvider/CursorControllerProvider"
 import {HandType} from "../../../Providers/HandInputData/HandType"
 import Event from "../../../Utils/Event"
+import NativeLogger from "../../../Utils/NativeLogger"
 import {validate} from "../../../Utils/validate"
+import {RAY_VISIBILITY_THRESHOLD} from "../InteractorRayVisual/InteractorRayVisual"
+import {CircleVisual, CircleVisualConfig, CircleVisualMaterialParameters} from "./CircleVisual"
+import {CircleVisual as CircleVisualV2, CircleVisualConfig as CircleVisualConfigV2} from "./CircleVisualV2"
+import type {CursorController} from "./CursorController"
+import {CursorData, CursorState, CursorViewModel, CursorViewState} from "./CursorViewModel"
+import {CursorViewModel as CursorViewModelV2, CursorViewState as CursorViewStateV2} from "./CursorViewModelV2"
 
 export enum CursorMode {
   Auto = "Auto",
@@ -26,11 +30,6 @@ export type CursorParameters = {
   isShown: boolean
 } & CircleVisualMaterialParameters
 
-const TAG = "InteractorCursor"
-
-const LINE_VERTICES = 10
-const LINE_MIDPOINT = 0.7
-
 const DEFAULT_IDLE_OUTLINE_OFFSET = 0.0
 const DEFAULT_HOVER_OUTLINE_OFFSET = 0.1
 
@@ -40,34 +39,191 @@ const DEFAULT_SQUISH_SCALE = 0.6
 const DEFAULT_IDLE_OUTLINE_ALPHA = 1.0
 const DEFAULT_HOVER_OUTLINE_ALPHA = 0.5
 
-const MESH_SCENE_OBJECT_INDEX = 0
+const TAG = "InteractorCursor"
 
 /**
  * This class represents a cursor for interactors, providing visual feedback for different interaction states. It manages the cursor's appearance, including its circle visual and manipulation line, and handles state changes and events.
  */
 @component
 export class InteractorCursor extends BaseScriptComponent {
-  private circleVisualConfig!: CircleVisualConfig
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Cursor Behavior</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Configure how the cursor responds to hand movement and interactions</span>'
+  )
 
-  private manipulateLineConfig!: LineViewConfig
+  /**
+   * Controls the "stickiness" of the cursor when hovering over interactable objects. When enabled, the cursor
+   * maintains its position on the target object, even when the hand moves slightly, making interaction with small
+   * targets easier. Only applies to hand-based interactions, not other input types like mouse. Disable for immediate
+   * 1:1 cursor movement that follows the hand position exactly.
+   */
+  @input
+  @label("Enable Cursor Holding")
+  @hint(
+    'Controls the "stickiness" of the cursor when hovering over interactable objects. When enabled, the cursor \
+maintains its position on the target object, even when the hand moves slightly, making interaction with small \
+targets easier. Only applies to hand-based interactions, not other input types like mouse. Disable for immediate \
+1:1 cursor movement that follows the hand position exactly.'
+  )
+  enableCursorHolding: boolean = true
+
+  /**
+   * Applies smoothing to cursor movement for hand-based interactions. When enabled, reduces jitter and makes cursor
+   * motion appear more stable, improving precision when interacting with small targets. Only applies to hand-based
+   * interactions.
+   */
+  @input
+  @label("Enable Filter")
+  @hint(
+    "Applies smoothing to cursor movement for hand-based interactions. When enabled, reduces jitter and makes cursor \
+motion appear more stable, improving precision when interacting with small targets. Only applies to hand-based \
+interactions."
+  )
+  enableFilter: boolean = false
+
+  @ui.separator
+  @ui.label('<span style="color: #60A5FA;">Interactor Reference</span>')
+  @ui.label(
+    '<span style="color: #94A3B8; font-size: 11px;">Link this cursor to an interactor (typically set automatically by CursorController)</span>'
+  )
+
+  /**
+   * Reference to the interactor component that this cursor will visualize. The cursor will update its position
+   * and appearance based on the interactor's state. This is typically set automatically by CursorController,
+   * but can be manually assigned for custom cursor setups.
+   */
+  @input("Component.ScriptComponent")
+  @label("Interactor")
+  @hint(
+    "Reference to the interactor component that this cursor will visualize. The cursor will update its position and \
+appearance based on the interactor's state. This is typically set automatically by CursorController, but can be \
+manually assigned for custom cursor setups."
+  )
+  @allowUndefined
+  _interactor?: BaseInteractor
+
+  /**
+   * Enable debug rendering for this cursor (cone collider, center ray, and closest-point helpers).
+   * @internal Not exposed in Inspector - debug visualization only
+   */
+  drawDebug: boolean = false
+
+  private log = new NativeLogger(TAG)
+
+  private circleVisualConfig!: CircleVisualConfig
+  private circleVisualConfigV2!: CircleVisualConfigV2
 
   private circleVisual!: CircleVisual
+  private circleVisualV2!: CircleVisualV2
   private circleVisualEnabled = true
 
-  private manipulateLine!: LineRenderer
+  public blendFactor: number = 0.0
+  private _rayAlpha: number = 0.0
+  private _wasRayVisible: boolean = false
 
   private viewModel!: CursorViewModel
+  private viewModelV2!: CursorViewModelV2
 
   private interactionManager = InteractionManager.getInstance()
   private cursorController = CursorControllerProvider.getInstance()
 
   // Events
   private onEnableChangedEvent = new Event<boolean>()
+  private onRayVisibilityChangedEvent = new Event<boolean>()
+
+  private _useV2: boolean = true
+
+  private cameraProvider = WorldCameraFinderProvider.getInstance()
+  private cameraTransform = this.cameraProvider.getTransform()
+
+  private tempScaleVec = new vec3(1, 1, 1)
+
+  // Cache for expensive property updates
+  private lastCursorPosition = new vec3(0, 0, 0)
+  private lastCursorScale = -1
+  private lastOutlineAlpha = -1
+  private lastOutlineOffset = -1
+  private lastCircleSquish = -1
+  private lastOverallOpacity = -1
+
+  // Thresholds for change detection
+  private static readonly POSITION_EPSILON_SQ = 1e-4
+  private static readonly SCALE_EPSILON = 1e-2
+  private static readonly ALPHA_EPSILON = 1e-2
+  private static readonly OFFSET_EPSILON = 1e-2
+  private static readonly SQUISH_EPSILON = 1e-2
 
   /**
    * Called whenever the cursor changes enabled state (showing / hiding the cursor visual)
    */
   onEnableChanged = this.onEnableChangedEvent.publicApi()
+
+  /**
+   * Called whenever the ray visibility changes (becomes visible or invisible based on rayAlpha threshold).
+   */
+  onRayVisibilityChanged = this.onRayVisibilityChangedEvent.publicApi()
+
+  /**
+   * Gets the current ray alpha value.
+   */
+  public get rayAlpha(): number {
+    return this._rayAlpha
+  }
+
+  /**
+   * Sets the ray alpha value and triggers visibility change events when crossing the threshold.
+   */
+  public set rayAlpha(value: number) {
+    this._rayAlpha = value
+
+    const isNowVisible = value > RAY_VISIBILITY_THRESHOLD
+
+    if (isNowVisible !== this._wasRayVisible) {
+      this._wasRayVisible = isNowVisible
+      this.onRayVisibilityChangedEvent.invoke(isNowVisible)
+    }
+  }
+
+  /**
+   * Shows the cursor visual.
+   * @param duration The fade in duration.
+   */
+  public show(duration: number = 0.2): void {
+    if (this._useV2 && this.viewModelV2) {
+      this.viewModelV2.fadeIn(duration)
+    } else {
+      this.circleVisualEnabled = true
+    }
+  }
+
+  /**
+   * Hides the cursor visual.
+   * @param duration The fade out duration.
+   */
+  public hide(duration: number = 0.2): void {
+    if (this._useV2 && this.viewModelV2) {
+      this.viewModelV2.fadeOut(duration)
+    } else {
+      this.circleVisualEnabled = false
+    }
+  }
+
+  /**
+   * Initializes the cursor with the useV2 setting from the CursorController.
+   * @param _caller The CursorController that initialized this cursor.
+   * @param _useV2 Whether to use the V2 cursor implementation.
+   */
+  init(_caller: CursorController, _useV2: boolean) {
+    this._useV2 = _useV2
+  }
+
+  /**
+   * @returns Whether the cursor is using the V2 cursor implementation.
+   */
+  get useV2(): boolean {
+    return this._useV2
+  }
 
   private onStateChange = (state: CursorState) => {
     switch (state) {
@@ -98,55 +254,68 @@ export class InteractorCursor extends BaseScriptComponent {
     }
 
     this.circleVisual.isShown = shouldShow
-    this.circleVisual.multipleInteractorsActive = this.checkMultipleInteractorsActive()
+    this.circleVisual.multipleInteractorsActive = this.interactionManager.hasMultipleActiveTargetingInteractors()
 
-    this.manipulateLine.setEnabled(viewState.lineEnabled)
     if (viewState.cursorEnabled) {
       this.updateWorldCursor(viewState.cursorData)
     }
-    if (viewState.lineEnabled) {
-      this.updateManipulateLine(viewState.lineData)
-    }
   }
 
-  /**
-   * Controls the "stickiness" of the cursor when hovering over interactable objects. When enabled, the cursor
-   * maintains its position on the target object, even when the hand moves slightly, making interaction with small
-   * targets easier. Only applies to hand-based interactions, not other input types like mouse. Disable for immediate
-   * 1:1 cursor movement that follows the hand position exactly.
-   */
-  @input
-  @hint(
-    'Controls the "stickiness" of the cursor when hovering over interactable objects. When enabled, the cursor \
-maintains its position on the target object, even when the hand moves slightly, making interaction with small \
-targets easier. Only applies to hand-based interactions, not other input types like mouse. Disable for immediate \
-1:1 cursor movement that follows the hand position exactly.'
-  )
-  enableCursorHolding: boolean = true
-  /**
-   * Applies smoothing to cursor movement for hand-based interactions. When enabled, reduces jitter and makes cursor
-   * motion appear more stable, improving precision when interacting with small targets. Only applies to hand-based
-   * interactions.
-   */
-  @input
-  @hint(
-    "Applies smoothing to cursor movement for hand-based interactions. When enabled, reduces jitter and makes cursor \
-motion appear more stable, improving precision when interacting with small targets. Only applies to hand-based \
-interactions."
-  )
-  enableFilter: boolean = false
+  private onCursorUpdateV2 = (viewStateV2: CursorViewStateV2) => {
+    const shouldShow = viewStateV2.cursorEnabled && this.circleVisualEnabled
 
-  /**
-   * Reference to the component that this cursor will visualize. The cursor will update its position and appearance
-   * based on the interactor's state.
-   */
-  @input("Component.ScriptComponent")
-  @allowUndefined
-  @hint(
-    "Reference to the component that this cursor will visualize. The cursor will update its position and appearance \
-based on the interactor's state."
-  )
-  _interactor?: BaseInteractor
+    this.blendFactor = viewStateV2.cursorAlpha
+    this.rayAlpha = viewStateV2.rayAlpha
+    this.circleVisualV2.isTriggering = viewStateV2.isTriggering
+
+    const isHovering = this.interactor?.targetHitInfo !== null
+
+    const targetOutlineAlpha = isHovering ? DEFAULT_HOVER_OUTLINE_ALPHA : DEFAULT_IDLE_OUTLINE_ALPHA
+    const targetOutlineOffset = isHovering ? DEFAULT_HOVER_OUTLINE_OFFSET : DEFAULT_IDLE_OUTLINE_OFFSET
+
+    if (Math.abs(targetOutlineAlpha - this.lastOutlineAlpha) > InteractorCursor.ALPHA_EPSILON) {
+      this.circleVisualV2.outlineAlpha = targetOutlineAlpha
+      this.lastOutlineAlpha = targetOutlineAlpha
+    }
+
+    if (Math.abs(targetOutlineOffset - this.lastOutlineOffset) > InteractorCursor.OFFSET_EPSILON) {
+      this.circleVisualV2.outlineOffset = targetOutlineOffset
+      this.lastOutlineOffset = targetOutlineOffset
+    }
+
+    const interactionStrength = this.interactor?.interactionStrength ?? 0
+    const clampedStrength = Math.max(0, Math.min(1, interactionStrength))
+
+    const squishScale = 1.0 - 0.45 * clampedStrength
+    if (Math.abs(squishScale - this.lastCircleSquish) > InteractorCursor.SQUISH_EPSILON) {
+      this.circleVisualV2.circleSquishScale = squishScale
+      this.lastCircleSquish = squishScale
+    }
+
+    this.circleVisualV2.multipleInteractorsActive = this.interactionManager.hasMultipleActiveTargetingInteractors()
+
+    if (Math.abs(viewStateV2.cursorAlpha - this.lastOverallOpacity) > InteractorCursor.ALPHA_EPSILON) {
+      this.circleVisualV2.overallOpacity = viewStateV2.cursorAlpha
+      this.lastOverallOpacity = viewStateV2.cursorAlpha
+    }
+
+    if (shouldShow) {
+      if (viewStateV2.position.distanceSquared(this.lastCursorPosition) > InteractorCursor.POSITION_EPSILON_SQ) {
+        this.circleVisualV2.worldPosition = viewStateV2.position
+        this.lastCursorPosition.x = viewStateV2.position.x
+        this.lastCursorPosition.y = viewStateV2.position.y
+        this.lastCursorPosition.z = viewStateV2.position.z
+      }
+
+      if (Math.abs(viewStateV2.scale - this.lastCursorScale) > InteractorCursor.SCALE_EPSILON) {
+        this.tempScaleVec.x = viewStateV2.scale
+        this.tempScaleVec.y = viewStateV2.scale
+        this.tempScaleVec.z = viewStateV2.scale
+        this.circleVisualV2.transform.setWorldScale(this.tempScaleVec)
+        this.lastCursorScale = viewStateV2.scale
+      }
+    }
+  }
 
   visual!: SceneObject
 
@@ -154,62 +323,40 @@ based on the interactor's state."
     this.defineScriptEvents()
 
     this.visual = this.createVisual()
-
-    this.circleVisualConfig = {
-      meshSceneObject: this.visual,
-      textures: {
-        translate: requireAsset("./translate.png") as Texture,
-        scaleTL: requireAsset("./scale-tl.png") as Texture,
-        scaleTR: requireAsset("./scale-tr.png") as Texture,
-        disabled: requireAsset("./disabled.png") as Texture
+    this._useV2 = CursorControllerProvider.getInstance().getDefaultUseV2()
+    if (this._useV2) {
+      this.circleVisualConfigV2 = {
+        meshSceneObject: this.visual,
+        textures: {
+          translate: requireAsset("./translate.png") as Texture,
+          scaleTL: requireAsset("./scale-tl.png") as Texture,
+          scaleTR: requireAsset("./scale-tr.png") as Texture,
+          disabled: requireAsset("./disabled.png") as Texture
+        }
       }
-    }
-    this.manipulateLineConfig = {
-      points: [new vec3(0, 0, 0), new vec3(0, 100, 0)],
-      material: requireAsset("./ManipulateLineMaterial.mat") as Material,
-      startWidth: 0.1,
-      endWidth: 0.1,
-      startColor: new vec4(1, 1, 1, 1),
-      endColor: new vec4(1, 1, 1, 1),
-      enabled: false
-    }
-
-    this.circleVisual = new CircleVisual(this.circleVisualConfig)
-
-    this.manipulateLine = new LineRenderer(this.manipulateLineConfig)
-    this.manipulateLine.getSceneObject().setParent(this.getSceneObject())
-
-    this.viewModel = new CursorViewModel(this.enableCursorHolding, this.enableFilter, this.interactor as Interactor)
-    this.viewModel.onStateChange.add(this.onStateChange)
-    this.viewModel.onCursorUpdate.add(this.onCursorUpdate)
-
-    if (this._interactor !== undefined) {
-      this.interactor = this._interactor
+      this.circleVisualV2 = new CircleVisualV2(this.circleVisualConfigV2)
+    } else {
+      this.circleVisualConfig = {
+        meshSceneObject: this.visual,
+        textures: {
+          translate: requireAsset("./translate.png") as Texture,
+          scaleTL: requireAsset("./scale-tl.png") as Texture,
+          scaleTR: requireAsset("./scale-tr.png") as Texture,
+          disabled: requireAsset("./disabled.png") as Texture
+        }
+      }
+      this.circleVisual = new CircleVisual(this.circleVisualConfig)
     }
   }
 
   set interactor(interactor: BaseInteractor) {
     validate(interactor, "InteractorCursor cannot have an undefined Interactor reference.")
 
-    this._interactor = interactor as BaseInteractor
-    this.viewModel.setInteractor(interactor)
-
-    this.cursorController.registerCursor(this)
-
-    let handType: HandType | null
-    switch (interactor.inputType) {
-      case InteractorInputType.LeftHand:
-        handType = "left"
-        break
-      case InteractorInputType.RightHand:
-        handType = "right"
-        break
-
-      default:
-        return
+    if (this.interactor !== null) {
+      this.log.f(`InteractorCursor's Interactor has already been set to: ${this.interactor.sceneObject.name}`)
     }
 
-    this.circleVisual.handType = handType
+    this._interactor = interactor as BaseInteractor
   }
 
   get interactor(): BaseInteractor | null {
@@ -234,6 +381,8 @@ based on the interactor's state."
   private updateWorldCursor(data: CursorData) {
     validate(data.position)
 
+    const cameraRotation = this.cameraTransform.getWorldRotation()
+    this.circleVisual.worldRotation = cameraRotation
     this.circleVisual.worldPosition = data.position
     if (data.interactionStrength !== null) {
       this.circleVisual.circleSquishScale = MathUtils.lerp(
@@ -255,7 +404,11 @@ based on the interactor's state."
    * @returns vec3 of the worldPosition
    */
   get cursorPosition(): vec3 | null {
-    return this.viewModel.cursorPosition
+    if (this._useV2) {
+      return this.viewModelV2.cursorPosition
+    } else {
+      return this.viewModel.cursorPosition
+    }
   }
 
   /**
@@ -263,7 +416,11 @@ based on the interactor's state."
    * @param position - vec3 of the worldPosition, null to revert to default behavior to follow raycast
    */
   set cursorPosition(position: vec3 | null) {
-    this.viewModel.positionOverride = position
+    if (this._useV2) {
+      this.viewModelV2.positionOverride = position
+    } else {
+      this.viewModel.positionOverride = position
+    }
   }
 
   /**
@@ -272,7 +429,11 @@ based on the interactor's state."
    * @param mode - The new mode of the cursor visual
    */
   set cursorMode(mode: CursorMode) {
-    this.circleVisual.cursorMode = mode
+    if (this._useV2) {
+      this.circleVisualV2.cursorMode = mode
+    } else {
+      this.circleVisual.cursorMode = mode
+    }
   }
 
   /**
@@ -281,27 +442,37 @@ based on the interactor's state."
    * @param texture - The custom texture (typically cached via requireAsset(.../assetName.png) as Texture) to use
    */
   set customTexture(texture: Texture) {
-    this.circleVisual.customTexture = texture
+    if (this._useV2) {
+      this.circleVisualV2.customTexture = texture
+    } else {
+      this.circleVisual.customTexture = texture
+    }
   }
 
   /**
    * Set the render order of the cursor visual.
    */
   set renderOrder(renderOrder: number) {
-    this.circleVisual.renderOrder = renderOrder
+    if (this._useV2) {
+      this.circleVisualV2.renderOrder = renderOrder
+    } else {
+      this.circleVisual.renderOrder = renderOrder
+    }
   }
 
   /**
    * @returns the transform and material parameters of the cursor to allow other cursor implementations to re-use the same values.
    */
   get cursorParameters(): CursorParameters {
-    const transform = this.circleVisual.sceneObject.getTransform()
-    const materialParameters = this.circleVisual.materialParameters
+    const visual = this._useV2 ? this.circleVisualV2 : this.circleVisual
+    const transform = visual.transform
+    const materialParameters = visual.materialParameters
+
     return {
       worldPosition: transform.getWorldPosition(),
       worldRotation: transform.getWorldRotation().toEulerAngles(),
       worldScale: transform.getWorldScale(),
-      isShown: this.circleVisual.isShown,
+      isShown: visual.isShown,
       maxAlpha: materialParameters.maxAlpha,
       outlineAlpha: materialParameters.outlineAlpha,
       outlineOffset: materialParameters.outlineOffset,
@@ -312,10 +483,6 @@ based on the interactor's state."
       handType: materialParameters.handType,
       multipleInteractorsActive: materialParameters.multipleInteractorsActive
     }
-  }
-
-  private updateManipulateLine(data: ManipulateLineData) {
-    this.manipulateLine.points = this.getCurvedLinePoints(data.origin, data.endPoint, data.delta)
   }
 
   private defineScriptEvents() {
@@ -330,55 +497,67 @@ based on the interactor's state."
     this.createEvent("OnDestroyEvent").bind(() => {
       this.onDestroy()
     })
+
+    this.createEvent("OnStartEvent").bind(() => {
+      if (this.interactor === null) {
+        this.log.f(`InteractorCursor must have an Interactor set immediately after initializiation.`)
+      } else {
+        if (this.cursorController.getCursorByInteractor(this.interactor) === null) {
+          this.cursorController.registerCursor(this)
+        }
+      }
+
+      const interactor = this.interactor as Interactor
+      if (this._useV2) {
+        this.viewModelV2 = new CursorViewModelV2(interactor)
+        this.viewModelV2.setDebugDraw(this.drawDebug)
+        this.viewModelV2.onCursorUpdate.add(this.onCursorUpdateV2)
+      } else {
+        this.viewModel = new CursorViewModel(this.enableCursorHolding, this.enableFilter, this.interactor as Interactor)
+        this.viewModel.onStateChange.add(this.onStateChange)
+        this.viewModel.onCursorUpdate.add(this.onCursorUpdate)
+      }
+
+      let handType: HandType | null
+      switch (this.interactor!.inputType) {
+        case InteractorInputType.LeftHand:
+          handType = "left"
+          break
+        case InteractorInputType.RightHand:
+          handType = "right"
+          break
+        default:
+          handType = null
+      }
+
+      if (this._useV2) {
+        this.circleVisualV2.handType = handType
+        const interactorLabel = `${interactor.inputType}`
+        this.circleVisualConfigV2.eventLabel = `${interactorLabel}`
+        this.circleVisualV2.onStart()
+
+        this.viewModelV2.enableUpdateEvent(true)
+        this.circleVisualV2.enableUpdateEvent(true)
+      } else {
+        this.circleVisual.handType = handType
+      }
+    })
   }
 
-  /**
-   * Enable the cursor visual.
-   */
   private onEnable() {
-    this.circleVisualEnabled = true
+    this.show()
   }
 
-  /**
-   * Disable the cursor visual.
-   */
   private onDisable() {
-    this.circleVisualEnabled = false
+    this.hide()
   }
 
   private onDestroy() {
+    if (this._useV2) {
+      this.viewModelV2.destroy()
+      this.circleVisualV2.destroy()
+    }
     this.visual.destroy()
-  }
-
-  /**
-   * Creates the points of the curved line used for far field manipulation.
-   * @param start - where the line starts
-   * @param end - where the line ends
-   * @param curveOffset - the vector that the line's midpoint will be offset by to create the curve
-   * @returns an array of points along the curved line created from start to end.
-   */
-  private getCurvedLinePoints(start: vec3, end: vec3, curveOffset: vec3 | null): vec3[] {
-    let midPoint = vec3.lerp(start, end, LINE_MIDPOINT)
-    if (curveOffset !== null) {
-      midPoint = midPoint.add(curveOffset)
-    }
-    const points = []
-    for (let ratio = 0; ratio <= 1; ratio += 1 / LINE_VERTICES) {
-      const tangent1 = vec3.lerp(start, midPoint, ratio)
-      const tangent2 = vec3.lerp(midPoint, end, ratio)
-      const curve = vec3.lerp(tangent1, tangent2, ratio)
-      points.push(curve)
-    }
-    return points
-  }
-
-  private checkMultipleInteractorsActive(): boolean {
-    const interactors = this.interactionManager.getInteractorsByType(InteractorInputType.All)
-
-    const activeInteractors = interactors.filter((interactor) => {
-      return interactor.isActive() && interactor.isTargeting()
-    })
-
-    return activeInteractors.length > 1
+    this.viewModel.destroy()
   }
 }

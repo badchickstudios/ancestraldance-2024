@@ -1,11 +1,12 @@
-import NativeLogger from "../../Utils/NativeLogger"
+import {Interactable} from "../../Components/Interaction/Interactable/Interactable"
 import {Interactor, InteractorInputType, InteractorTriggerType, TargetingMode} from "../Interactor/Interactor"
 
-import {Interactable, SyncInteractionType} from "../../Components/Interaction/Interactable/Interactable"
 import {InteractionPlane} from "../../Components/Interaction/InteractionPlane/InteractionPlane"
 import {Singleton} from "../../Decorators/Singleton"
+import {ColliderUtils} from "../../Utils/ColliderUtils"
 import {LensConfig} from "../../Utils/LensConfig"
-import {getSafeReference} from "../../Utils/SafeReference"
+import NativeLogger from "../../Utils/NativeLogger"
+import {SyncKitBridge} from "../../Utils/SyncKitBridge"
 import {HandInteractor} from "../HandInteractor/HandInteractor"
 import BaseInteractor from "../Interactor/BaseInteractor"
 import {DispatchableEventArgs} from "../Interactor/InteractorEvent"
@@ -32,30 +33,26 @@ export class InteractionManager {
   private log = new NativeLogger(TAG)
 
   private interactors = new Set<Interactor>()
-  private interactables = new Set<Interactable>()
-  private interactionPlanes = new Set<InteractionPlane>()
+  private _interactables = new Set<Interactable>()
+  private _interactionPlanes = new Set<InteractionPlane>()
+
+  public get interactables(): ReadonlySet<Interactable> {
+    return this._interactables
+  }
+
+  public get interactionPlanes(): ReadonlySet<InteractionPlane> {
+    return this._interactionPlanes
+  }
 
   private interactableSceneObjects = new Map<SceneObject, Interactable>()
   private colliderToInteractableMap = new Map<ColliderComponent, Interactable>()
   private eventDispatcher = new EventDispatcher(this.interactableSceneObjects)
 
-  /**
-   * Relevant only to lenses that use SpectaclesSyncKit when it has SyncInteractionManager in its prefab.
-   * This index number is used to link instances of the same Interactable across different connections (if Interactable.isSynced = true).
-   * The InteractionManager assumes that Interactables will be created in same order.
-   * Further refinement to linking Interactables across connections without developer friction will happen on future versions.
-   */
-  private interactableIdIdx = 0
   private interactablesByInteractableId = new Map<string, Interactable>()
 
   private _debugModeEnabled = false
 
-  /* 
-    shouldEnableNonMobileInteractors is nullable because we use this as a cached class-level condition to
-    compare against the function-level condition in disableOtherInteractorsIfMobileInputTypeIsDetected().
-    Initializing to null here ensures the first frame always initializes the interactor's activeness properly.
-  */
-  private shouldEnableNonMobileInteractors: boolean | null = null
+  private syncKitBridge = SyncKitBridge.getInstance()
 
   constructor() {
     this.defineScriptEvents()
@@ -68,7 +65,7 @@ export class InteractionManager {
    * @param interactor The {@link Interactor} to register.
    */
   registerInteractor(interactor: BaseInteractor): void {
-    if (interactor === null || interactor === undefined) {
+    if (isNull(interactor)) {
       this.log.e("Cannot register null or uninitialized interactor.")
       return
     }
@@ -88,7 +85,7 @@ export class InteractionManager {
    * @param interactor The {@link Interactor} to deregister.
    */
   deregisterInteractor(interactor: BaseInteractor): void {
-    if (interactor === null || interactor === undefined) {
+    if (isNull(interactor)) {
       this.log.e("Cannot deregister null or uninitialized interactor.")
       return
     }
@@ -103,7 +100,7 @@ export class InteractionManager {
    * @returns An array of interactors that match the input type.
    */
   getInteractorsByType(inputType: InteractorInputType): Interactor[] {
-    let returnValue: Interactor[] = []
+    const returnValue: Interactor[] = []
     this.interactors.forEach((interactor: Interactor) => {
       if ((interactor.inputType & inputType) !== 0) {
         returnValue.push(interactor)
@@ -118,7 +115,7 @@ export class InteractionManager {
    * @returns An array of interactors that are targeting.
    */
   getTargetingInteractors(): Interactor[] {
-    let returnValue: Interactor[] = []
+    const returnValue: Interactor[] = []
     this.interactors.forEach((interactor: Interactor) => {
       if (interactor.isTargeting()) {
         returnValue.push(interactor)
@@ -129,17 +126,34 @@ export class InteractionManager {
   }
 
   /**
+   * Checks if there are multiple interactors that are both active and targeting.
+   * @returns True if there are 2 or more active and targeting interactors.
+   */
+  hasMultipleActiveTargetingInteractors(): boolean {
+    let activeCount = 0
+    for (const interactor of this.interactors) {
+      if (interactor.isActive() && interactor.isTargeting()) {
+        activeCount++
+        if (activeCount > 1) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  /**
    * Adds an {@link InteractionPlane} to the interaction manager's registry,
    * so it can be used to determine which {interactors} are interacting
    * with interaction planes.
    * @param interactionPlane The {@link InteractionPlane} to register.
    */
   registerInteractionPlane(interactionPlane: InteractionPlane): void {
-    if (interactionPlane === null || interactionPlane === undefined) {
+    if (isNull(interactionPlane)) {
       this.log.e("Cannot register null or uninitialized interaction plane.")
       return
     }
-    this.interactionPlanes.add(interactionPlane)
+    this._interactionPlanes.add(interactionPlane)
 
     if (this.debugModeEnabled) {
       interactionPlane.drawDebug = true
@@ -153,7 +167,7 @@ export class InteractionManager {
    * @param interactionPlane The {@link InteractionPlane} to deregister.
    */
   deregisterInteractionPlane(interactionPlane: InteractionPlane): void {
-    if (interactionPlane === null || interactionPlane === undefined) {
+    if (isNull(interactionPlane)) {
       this.log.e("Cannot deregister null or uninitialized interaction plane.")
       return
     }
@@ -167,17 +181,9 @@ export class InteractionManager {
       handInteractor.clearInteractionPlane(interactionPlane)
     }
 
-    if (this.interactionPlanes.delete(interactionPlane)) {
+    if (this._interactionPlanes.delete(interactionPlane)) {
       this.log.d(`Deregistered interaciton plane  "${interactionPlane.sceneObject.name}"`)
     }
-  }
-
-  getInteractionPlanes(): InteractionPlane[] {
-    const interactionPlanes = []
-    for (const plane of this.interactionPlanes) {
-      interactionPlanes.push(plane)
-    }
-    return interactionPlanes
   }
 
   /**
@@ -187,16 +193,15 @@ export class InteractionManager {
    * @param interactable The {@link Interactable} to register.
    */
   registerInteractable(interactable: Interactable): void {
-    if (interactable === null || interactable === undefined) {
+    if (isNull(interactable)) {
       this.log.e("Cannot register null or uninitialized interactable.")
       return
     }
-    this.interactables.add(interactable)
+    this._interactables.add(interactable)
     this.interactableSceneObjects.set(interactable.sceneObject, interactable)
-    // Set the Interactable's ID by the order it was instantiated in the scene if synced.
-    if (interactable.isSynced) {
-      this.interactablesByInteractableId.set(this.interactableIdIdx.toString(), interactable)
-      this.interactableIdIdx++
+
+    if (interactable.syncEntity !== null) {
+      this.interactablesByInteractableId.set(interactable.syncEntity.networkId, interactable)
     }
     const colliders = this.findOrCreateColliderForInteractable(interactable)
     for (let i = 0; i < colliders.length; i++) {
@@ -217,7 +222,7 @@ export class InteractionManager {
    * @param interactable The {@link Interactable} to deregister.
    */
   deregisterInteractable(interactable: Interactable): void {
-    if (interactable === null || interactable === undefined) {
+    if (isNull(interactable)) {
       this.log.e("Cannot deregister null or uninitialized interactable.")
       return
     }
@@ -235,14 +240,18 @@ export class InteractionManager {
     // Only check for deletion from ID map if it was synced and registered to ID map.
     const interactableId = this.getInteractableIdByInteractable(interactable)
     const needToDeleteFromIds = interactableId !== null
-    const deletedFromIds = this.interactablesByInteractableId.delete(interactableId)
 
     if (
-      this.interactables.delete(interactable) &&
+      this._interactables.delete(interactable) &&
       this.interactableSceneObjects.delete(interactable.sceneObject) &&
-      (!needToDeleteFromIds || deletedFromIds)
+      (!needToDeleteFromIds || this.interactablesByInteractableId.delete(interactableId))
     ) {
       this.log.d(`Deregistered interactable "${interactable.sceneObject.name}"`)
+    }
+
+    for (const collider of interactable.colliders) {
+      this.colliderToInteractableMap.delete(collider)
+      ColliderUtils.invalidateCacheEntry(collider)
     }
   }
 
@@ -257,7 +266,7 @@ export class InteractionManager {
     if (!interactable) {
       return null
     }
-    if (getSafeReference(interactable.sceneObject) === null) {
+    if (isNull(interactable.sceneObject)) {
       this.colliderToInteractableMap.delete(collider)
     }
 
@@ -280,7 +289,7 @@ export class InteractionManager {
       return null
     }
 
-    if (getSafeReference(interactable.sceneObject) === null) {
+    if (isNull(interactable.sceneObject)) {
       this.interactableSceneObjects.delete(sceneObject)
     }
 
@@ -330,7 +339,7 @@ export class InteractionManager {
    */
   getInteractablesThatTarget(targetingMode: TargetingMode): Interactable[] {
     const returnArray: Interactable[] = []
-    this.interactables.forEach((interactable: Interactable) => {
+    this._interactables.forEach((interactable: Interactable) => {
       if ((interactable.targetingMode & targetingMode) !== 0) {
         returnArray.push(interactable)
       }
@@ -351,38 +360,29 @@ export class InteractionManager {
    * @param eventArgs The event arguments to dispatch.
    */
   dispatchEvent(eventArgs: DispatchableEventArgs, propagateEvent: boolean = false): void {
-    // Retrieve the SessionController to check if this lens is connected.
-    const sessionController = (global as any).sessionController
-    const localConnectionId = sessionController !== undefined ? sessionController.getLocalConnectionId() : null
-    const isNotSynced = localConnectionId === null || !eventArgs.target.isSynced
-
-    // If the user is not synced to any connection, dispatch the event with no further checks.
-    if (sessionController === undefined || isNotSynced) {
-      this.eventDispatcher.dispatch(eventArgs)
-      return
-    }
+    const localConnectionId =
+      this.syncKitBridge.sessionController !== undefined
+        ? this.syncKitBridge.sessionController.getLocalConnectionId()
+        : null
+    const isNotSynced = localConnectionId === null
 
     // If the connectionId is undefined, the event is coming from the local user's Interactors (rather than a propagated event).
     if (eventArgs.connectionId === undefined) {
       eventArgs.connectionId = localConnectionId
     }
 
-    // When in a synced state, check that the interaction is coming from an allowed type before dispatching the event.
-    const isLocal = eventArgs.connectionId === eventArgs.target.localConnectionId ? SyncInteractionType.Local : 0
-    const isOther = !isLocal ? SyncInteractionType.Other : 0
-
-    const hostConnectionId = sessionController.getHostConnectionId()
-    const isHost = hostConnectionId === eventArgs.connectionId ? SyncInteractionType.Host : 0
-
-    const syncInteractionType = isHost | isLocal | isOther
-
-    if ((eventArgs.target.acceptableSyncInteractionTypes & syncInteractionType) !== 0) {
-      if (propagateEvent && eventArgs.target.isSynced) {
-        this.dispatchEventArgs.push(eventArgs)
-      }
-
+    // If the user is not synced to any connection, dispatch the event with no further checks.
+    if (isNotSynced) {
       this.eventDispatcher.dispatch(eventArgs)
+      return
     }
+
+    // Propagate the event to dispatchEventArgs for SyncInteractionManager to process in other connections.
+    if (propagateEvent) {
+      this.dispatchEventArgs.push(eventArgs)
+    }
+
+    this.eventDispatcher.dispatch(eventArgs)
   }
 
   set debugModeEnabled(enabled: boolean) {
@@ -396,7 +396,7 @@ export class InteractionManager {
       collider.debugDrawEnabled = enabled
     }
 
-    for (const plane of this.interactionPlanes.keys()) {
+    for (const plane of this._interactionPlanes.keys()) {
       plane.drawDebug = enabled
     }
   }
@@ -416,8 +416,6 @@ export class InteractionManager {
    * are being interacted with, and send events to them
    */
   private update() {
-    this.disableOtherInteractorsIfMobileInputTypeIsDetected()
-
     // Update interactors
     this.updateInteractors()
 
@@ -446,7 +444,7 @@ export class InteractionManager {
        * event to keep the interactable up to date.
        */
 
-      if (interactor.previousInteractable) {
+      if (interactor.previousInteractable && !isNull(interactor.previousInteractable)) {
         if ((InteractorTriggerType.Select & interactor.previousTrigger) !== 0) {
           this.dispatchEvent(
             {
@@ -473,7 +471,7 @@ export class InteractionManager {
     }
 
     // Process events
-    if (interactor.currentInteractable) {
+    if (interactor.currentInteractable && !isNull(interactor.currentInteractable)) {
       this.processHoverEvents(interactor)
       this.processTriggerEvents(interactor)
     } else if (interactor.previousInteractable) {
@@ -508,6 +506,12 @@ export class InteractionManager {
     this.interactors.forEach((interactor: Interactor) => {
       interactor.updateState()
 
+      const interactable = interactor.currentInteractable
+      // Flush any disabled Interactables from Interactors.
+      if (!isNull(interactable) && !(interactable?.sceneObject.isEnabledInHierarchy && interactable.enabled)) {
+        interactor.clearCurrentInteractable()
+      }
+
       if (interactor.currentInteractable !== interactor.previousInteractable) {
         interactor.currentInteractableChanged()
       }
@@ -518,7 +522,7 @@ export class InteractionManager {
          * losing tracking / being disabled. If we were, send a cancel
          * event to keep the interactable up to date.
          */
-        if (interactor.previousInteractable) {
+        if (interactor.previousInteractable && !isNull(interactor.previousInteractable)) {
           if ((InteractorTriggerType.Select & interactor.previousTrigger) !== 0) {
             this.dispatchEvent(
               {
@@ -547,14 +551,14 @@ export class InteractionManager {
   }
 
   private processHoverEvents(interactor: Interactor) {
-    if (interactor.currentInteractable === null) {
+    if (!interactor.currentInteractable || isNull(interactor.currentInteractable)) {
       return
     }
 
     // If first time targeted
     if (interactor.previousInteractable !== interactor.currentInteractable) {
       // Alert previous interactable that we've left it
-      if (interactor.previousInteractable !== null) {
+      if (interactor.previousInteractable && !isNull(interactor.previousInteractable)) {
         if ((interactor.inputType & interactor.previousInteractable.hoveringInteractor) !== 0) {
           this.dispatchEvent(
             {
@@ -588,7 +592,7 @@ export class InteractionManager {
   }
 
   private processTriggerEvents(interactor: Interactor) {
-    if (interactor.currentInteractable === null) {
+    if (!interactor.currentInteractable || isNull(interactor.currentInteractable)) {
       return
     }
 
@@ -608,7 +612,31 @@ export class InteractionManager {
         },
         true
       )
-    } else if (previousTrigger === currentTrigger && currentTrigger !== InteractorTriggerType.None) {
+    } else if (previousTrigger !== InteractorTriggerType.None && currentTrigger !== InteractorTriggerType.None) {
+      const wasHoveringCurrentInteractable = interactor.wasHoveringCurrentInteractable
+      const isHoveringCurrentInteractable = interactor.isHoveringCurrentInteractable
+
+      // Whenever we detect a change in hover during a trigger, send HoverEnter and HoverExit events.
+      if (isHoveringCurrentInteractable && !wasHoveringCurrentInteractable) {
+        this.dispatchEvent(
+          {
+            target: interactor.currentInteractable,
+            interactor: interactor,
+            eventName: "HoverEnter"
+          },
+          true
+        )
+      } else if (!isHoveringCurrentInteractable && wasHoveringCurrentInteractable) {
+        this.dispatchEvent(
+          {
+            target: interactor.currentInteractable,
+            interactor: interactor,
+            eventName: "HoverExit"
+          },
+          true
+        )
+      }
+
       this.dispatchEvent(
         {
           ...eventArgs,
@@ -620,16 +648,27 @@ export class InteractionManager {
       previousTrigger !== InteractorTriggerType.None &&
       // This check ensures that the interactor being in a 'triggering' state only invokes onTriggerEnd of an Interactable
       // if the trigger was actually applied to the Interactable in a previous update.
-      interactor.previousInteractable !== null
+      !isNull(interactor.previousInteractable)
     ) {
-      this.dispatchEvent(
-        {
-          ...eventArgs,
-          eventName: "TriggerEnd",
-          endedInsideInteractable: (interactor as BaseInteractor).endedInsideInteractable
-        },
-        true
-      )
+      if (interactor.isHoveringCurrentInteractable) {
+        this.dispatchEvent(
+          {
+            ...eventArgs,
+            eventName: "TriggerEnd",
+            endedInsideInteractable: (interactor as BaseInteractor).endedInsideInteractable ?? undefined
+          },
+          true
+        )
+      } else {
+        this.dispatchEvent(
+          {
+            ...eventArgs,
+            eventName: "TriggerEndOutside",
+            endedInsideInteractable: (interactor as BaseInteractor).endedInsideInteractable ?? undefined
+          },
+          true
+        )
+      }
     }
   }
 
@@ -641,12 +680,14 @@ export class InteractionManager {
    */
   private findOrCreateColliderForInteractable(interactable: Interactable): ColliderComponent[] {
     let colliders = interactable.colliders
-    let sceneObject = interactable.sceneObject
+    const sceneObject = interactable.sceneObject
     if (colliders.length === 0) {
       colliders = this.findCollidersForSceneObject(sceneObject, colliders, true)
     }
     if (colliders.length === 0) {
-      this.log.d(`No ColliderComponent in ${sceneObject.name}'s hierarchy. Creating one...`)
+      this.log.e(
+        `No ColliderComponent in ${sceneObject.name}'s hierarchy. Creating temporary collider. Please create a ColliderComponent for this SceneObject.`
+      )
 
       colliders.push(sceneObject.createComponent("Physics.ColliderComponent"))
     }
@@ -692,34 +733,5 @@ export class InteractionManager {
     }
 
     return colliders
-  }
-
-  private disableOtherInteractorsIfMobileInputTypeIsDetected() {
-    const mobileInteractors = this.getInteractorsByType(InteractorInputType.Mobile)
-    if (mobileInteractors.length === 0) {
-      return
-    }
-    const handInteractors = this.getInteractorsByType(InteractorInputType.BothHands)
-    const shouldEnableOtherInteractors = !mobileInteractors[0].isActive()
-
-    if (this.shouldEnableNonMobileInteractors !== shouldEnableOtherInteractors) {
-      this.shouldEnableNonMobileInteractors = shouldEnableOtherInteractors
-
-      if (this.shouldEnableNonMobileInteractors) {
-        this.log.d("Switching to non-Mobile interactors.")
-      } else {
-        this.log.d("Switching to Mobile interactor.")
-      }
-
-      handInteractors.forEach((handInteractor: Interactor) =>
-        handInteractor.setInputEnabled(shouldEnableOtherInteractors)
-      )
-      const mouseInteractors = this.getInteractorsByType(InteractorInputType.Mouse)
-      if (mouseInteractors.length > 0) {
-        mouseInteractors.forEach((mouseInteractor: Interactor) => {
-          mouseInteractor.enabled = shouldEnableOtherInteractors
-        })
-      }
-    }
   }
 }

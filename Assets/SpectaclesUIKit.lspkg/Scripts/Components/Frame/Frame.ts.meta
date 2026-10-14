@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/a253583a-3123-6d7e-02b8-51ac40f4ea63>
+- !<AssetImportMetadata/2a44fb46-a6b9-4595-96f8-d161e0bdbc3e>
   ImportedAssetIds:
     TypeScriptAsset: !<reference> 3b46d829-f6db-432a-914c-3551904d3994
   ImporterName: TypeScriptAssetImporter
@@ -41,7 +41,6 @@
     _showCloseButton: false
     _showFollowButton: false
     _targetingVisual: false
-    _themeOverride: false
     allowNonUniformScaling: false
     allowTranslation: false
     autoScaleContent: false
@@ -67,8 +66,7 @@
   Attachments:
     []
   DefaultScriptInputs:
-    - _themeOverride: Inherited
-      autoShowHide: true
+    - autoShowHide: true
       _appearance: Large
       _innerSize: !<Vec2> {x: 32.000000, y: 32.000000}
       _padding: !<Vec2> {x: 0.000000, y: 0.000000}
@@ -103,7 +101,6 @@
     -
       {}
   InputLines:
-    - '// @input string _themeOverride = "Inherited" {"label":"Theme", "widget":"combobox", "values":[{"label":"Inherited", "value":"Inherited"}, {"label":"SnapOS2", "value":"SnapOS2"}, {"label":"SnapOS3", "value":"SnapOS3"}]}'
     - '// @ui {"hint":"Controls the appearance, size, and interaction behavior of the frame.", "widget":"group_start", "label":"Frame Settings"}'
     - '// @input bool autoShowHide = true {"hint":"When enabled, the frame automatically appears when hovered and hides when not being interacted with. Disable to manually control frame visibility."}'
     - '// @input string _appearance {"hint":"Preset appearance configurations for the frame. <br><br> <code>Large</code> is useful for <i>far-field</i> interactons. <br><br> While, <code>Small</code> is useful for <i>near-field</i> interactions", "widget":"combobox", "values":[{"label":"Large", "value":"Large"}, {"label":"Small", "value":"Small"}]}'

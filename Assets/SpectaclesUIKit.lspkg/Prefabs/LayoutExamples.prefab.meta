@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/6c809efb-7f83-ab0d-4d85-3fab54f8642e>
+- !<AssetImportMetadata/22cbac93-fd9f-4d61-986d-e70f940a8ca2>
   ImportedAssetIds:
     ObjectPrefab: !<reference> d8dd1433-5f11-4f5c-9588-618a668518b7
   ImporterName: ObjectPrefabImporter
@@ -33,7 +33,7 @@
 - !<ScriptComponent/261eb416-16ce-4302-bb89-44e077b8461e>
   PrefabRemaps:
     []
-  Name: GridLayout
+  Name: SpatialLayout
   Enabled: true
   ScriptAsset: !<reference> e0925479-bf87-4d01-bec9-174dff93aae6
   ScriptInputsDefault:
@@ -93,7 +93,7 @@
     {}
   ScriptInputs:
     "":
-      GridLayout: !<MappingBased.AssignableType_1> 261eb416-16ce-4302-bb89-44e077b8461e
+      SpatialLayout: !<MappingBased.AssignableType_1> 261eb416-16ce-4302-bb89-44e077b8461e
       layoutItemPrefab: !<reference.ObjectPrefab> d383c86a-e5c2-4652-850f-66d4d45f577f
       _fallbackStrategy: push
   ScriptTypes:
@@ -114,26 +114,6 @@
     []
   Components:
     - !<own> 261eb416-16ce-4302-bb89-44e077b8461e
-- !<ScriptComponent/63dac317-5ee2-4a86-bcb7-c3870418c01f>
-  PrefabRemaps:
-    []
-  Name: SimpleDirectionalLayoutTest
-  Enabled: true
-  ScriptAsset: !<reference> edf410e5-07e4-4945-ab37-06de98080b22
-  ScriptInputsDefault:
-    layout: true
-    spawnInterval: true
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      layout: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
-      itemPrefab: !<reference.ObjectPrefab> d383c86a-e5c2-4652-850f-66d4d45f577f
-      numItems: !<float> 42.000000
-      spawnInterval: 0.500000
-  ScriptTypes:
-    "":
-      {}
 - !<SceneObject/66c3a348-cfa6-4fcb-b56f-41afc9995af4>
   PrefabRemaps:
     []
@@ -148,7 +128,7 @@
   Children:
     []
   Components:
-    - !<own> 63dac317-5ee2-4a86-bcb7-c3870418c01f
+    []
 - !<ObjectPrefabAssetData/7433f9b9-2125-4f5d-a986-ef2efcb55389>
   Prototype: !<ObjectOwner/64ff625d-3286-464e-ad11-08a64ef5b00d>
     PackagePath: ""
@@ -158,7 +138,7 @@
   PrefabRemaps:
     []
   Name: SimpleGridLayoutTest
-  Enabled: false
+  Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}

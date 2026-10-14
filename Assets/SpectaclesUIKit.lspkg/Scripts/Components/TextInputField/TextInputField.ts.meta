@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/abdc492d-8514-e0a7-4741-ae07cb0a421a>
+- !<AssetImportMetadata/8623d71a-72f4-4b4a-8145-82ee82fe45c0>
   ImportedAssetIds:
     TypeScriptAsset: !<reference> af79fabe-6fbd-46c3-8b98-0fd7b687282c
   ImporterName: TypeScriptAssetImporter
@@ -26,25 +26,23 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
-    _fontFamily: false
-    _fontSize: true
     _hasShadow: false
     _inactive: false
-    _placeholderText: false
     _playAudio: false
     _renderOrder: false
     _shadowPositionOffset: false
     _size: false
-    _themeOverride: false
     addCallbacks: false
     alternateIcon: false
     changeIconOnFocus: false
     contentRequiredOnDeactivate: false
+    fontFamily: false
     formatType: false
     icon: false
     inputType: false
     onKeyboardStateChangedCallbacks: false
     onTextChangedCallbacks: false
+    placeholderText: false
     useIcon: false
   ScriptTypesHidden:
     {}
@@ -61,22 +59,20 @@
       _playAudio: false
       _hasShadow: true
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
-      _themeOverride: Inherited
-      _fontSize: 0
-      _fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      inputType: default
+      formatType: date
+      placeholderText: ""
+      fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      useIcon: false
+      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      changeIconOnFocus: false
+      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      contentRequiredOnDeactivate: false
       addCallbacks: false
       onTextChangedCallbacks:
         []
       onKeyboardStateChangedCallbacks:
         []
-      _placeholderText: ""
-      inputType: default
-      formatType: date
-      useIcon: false
-      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
-      contentRequiredOnDeactivate: false
-      changeIconOnFocus: false
-      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -87,9 +83,15 @@
     - '// @input bool _playAudio {"label":"Play Audio", "hint":"Play audio on interaction"}'
     - // @input bool _hasShadow
     - '// @input vec3 _shadowPositionOffset = "{0.05,-0.05,-0.01}" {"showIf":"_hasShadow"}'
-    - '// @input string _themeOverride = "Inherited" {"label":"Theme", "widget":"combobox", "values":[{"label":"Inherited", "value":"Inherited"}, {"label":"SnapOS2", "value":"SnapOS2"}, {"label":"SnapOS3", "value":"SnapOS3"}]}'
-    - '// @input int _fontSize {"hint":"Custom font size. If not set, it will automatically scale from size.y"}'
-    - '// @input Asset.Font _fontFamily {"hint":"Font Family"}'
+    - '// @input string inputType = "default" {"widget":"combobox", "values":[{"label":"Default", "value":"default"}, {"label":"Numeric", "value":"numeric"}, {"label":"Password", "value":"password"}, {"label":"Pin", "value":"pin"}]}'
+    - '// @input string formatType = "date" {"widget":"combobox", "values":[{"label":"Date", "value":"date"}, {"label":"Email", "value":"email"}, {"label":"URL", "value":"url"}], "showIf":"inputType", "showIfValue":"format"}'
+    - '// @input string placeholderText {"hint":"Text that is displayed before any text is entered"}'
+    - '// @input Asset.Font fontFamily {"hint":"Font Family"}'
+    - '// @input bool useIcon {"hint":"Use an icon?"}'
+    - '// @input Asset.Texture icon {"hint":"Icon Texture", "showIf":"useIcon", "showIfValue":true}'
+    - '// @input bool changeIconOnFocus {"hint":"Switch to a different icon on focus", "showIf":"useIcon"}'
+    - '// @input Asset.Texture alternateIcon {"hint":"Alternate icon used on focus", "showIf":"changeIconOnFocus", "showIfValue":true}'
+    - '// @input bool contentRequiredOnDeactivate {"hint":"Throw error if unfocused with no input"}'
     - "// @input bool addCallbacks {\"hint\":\"Enable this to add functions from another script to this component's callbacks\"}"
     - /*
     - "@typedef Callback"
@@ -98,11 +100,3 @@
     - "*/"
     - '// @input Callback[] onTextChangedCallbacks = {} {"label":"On Text Changed Callbacks", "showIf":"addCallbacks"}'
     - '// @input Callback[] onKeyboardStateChangedCallbacks = {} {"label":"On Keyboard State Changed Callbacks", "showIf":"addCallbacks"}'
-    - '// @input string _placeholderText {"hint":"Text that is displayed before any text is entered"}'
-    - '// @input string inputType = "default" {"widget":"combobox", "values":[{"label":"Default", "value":"default"}, {"label":"Numeric", "value":"numeric"}, {"label":"Password", "value":"password"}, {"label":"Pin", "value":"pin"}]}'
-    - '// @input string formatType = "date" {"widget":"combobox", "values":[{"label":"Date", "value":"date"}, {"label":"Email", "value":"email"}, {"label":"URL", "value":"url"}], "showIf":"inputType", "showIfValue":"format"}'
-    - '// @input bool useIcon {"hint":"Use an icon?"}'
-    - '// @input Asset.Texture icon {"hint":"Icon Texture", "showIf":"useIcon", "showIfValue":true}'
-    - '// @input bool contentRequiredOnDeactivate {"hint":"Throw error if unfocused with no input"}'
-    - '// @input bool changeIconOnFocus {"hint":"Switch to a different icon on focus", "showIf":"useIcon"}'
-    - '// @input Asset.Texture alternateIcon {"hint":"Alternate icon used on focus", "showIf":"changeIconOnFocus", "showIfValue":true}'

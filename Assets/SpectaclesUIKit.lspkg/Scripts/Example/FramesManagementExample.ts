@@ -1,5 +1,5 @@
 import {Frame} from "../Components/Frame/Frame"
-import {GridLayout} from "../Components/Layout/GridLayout"
+import {SpatialLayout} from "../Components/Layout/SpatialLayout"
 import {AddLayoutItemFallbackStrategy} from "../Components/Layout/LayoutConfigurationTypes"
 import {LayoutItem} from "../Components/Layout/LayoutItem"
 
@@ -14,13 +14,13 @@ export class FramesManagementExample extends BaseScriptComponent {
   )
   private _fallbackStrategy: string = AddLayoutItemFallbackStrategy.ClosestAvailable.toString()
 
-  private GridLayout: GridLayout
+  private SpatialLayout: SpatialLayout
 
   public onAwake() {
-    this.GridLayout = this.sceneObject.getComponent(GridLayout.getTypeName())
+    this.SpatialLayout = this.sceneObject.getComponent(SpatialLayout.getTypeName())
     this.createEvent("OnStartEvent").bind(() => {
-      this.GridLayout.onInitialized.add(() => {
-        print(`GridLayout initialized: ${this.GridLayout.gridSize}. Items: ${this.framedLayoutItems.length}`)
+      this.SpatialLayout.onInitialized.add(() => {
+        print(`SpatialLayout initialized: ${this.SpatialLayout.gridSize}. Items: ${this.framedLayoutItems.length}`)
         for (let i = 0; i < this.framedLayoutItems.length; i++) {
           print(`Adding Settings ${i}`)
           const layoutItem = this.framedLayoutItems[i]
@@ -41,13 +41,13 @@ export class FramesManagementExample extends BaseScriptComponent {
 
   private onItemInitialized(frame: Frame, layoutItem: LayoutItem): void {
     print(`LayoutItem ${layoutItem.sceneObject.name} initialized`)
-    if (this.GridLayout.getPlacement(layoutItem)) {
+    if (this.SpatialLayout.getPlacement(layoutItem)) {
       print(`LayoutItem ${layoutItem.sceneObject.name} is already in the grid`)
       this.subscribeToTranslation(frame, layoutItem)
     } else {
       print(`Adding LayoutItem ${layoutItem.sceneObject.name} to the grid`)
       if (
-        this.GridLayout.addLayoutItem(layoutItem, undefined, this._fallbackStrategy as AddLayoutItemFallbackStrategy)
+        this.SpatialLayout.addLayoutItem(layoutItem, undefined, this._fallbackStrategy as AddLayoutItemFallbackStrategy)
       ) {
         print(
           `Added LayoutItem: ${layoutItem.sceneObject.name} with position ${layoutItem.position}, ${layoutItem.size}`
@@ -61,10 +61,10 @@ export class FramesManagementExample extends BaseScriptComponent {
 
   private subscribeToTranslation(frame: Frame, layoutItem: LayoutItem): void {
     frame.onTranslationStart.add(() => {
-      this.GridLayout.removeLayoutItem(layoutItem)
+      this.SpatialLayout.removeLayoutItem(layoutItem)
     })
     frame.onTranslationEnd.add(() => {
-      this.GridLayout.addLayoutItem(layoutItem, undefined, this._fallbackStrategy as AddLayoutItemFallbackStrategy)
+      this.SpatialLayout.addLayoutItem(layoutItem, undefined, this._fallbackStrategy as AddLayoutItemFallbackStrategy)
     })
   }
 }

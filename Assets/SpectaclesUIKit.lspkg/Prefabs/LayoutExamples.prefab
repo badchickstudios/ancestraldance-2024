@@ -8,7 +8,6 @@
   PrefabRemaps:
     - 13ef266c-3f37-4234-a536-c63e75762c31: 13ef266c-3f37-4234-5ac9-39c18a89d3ce
     - 326dd1f4-7ae4-4ec0-8cae-e23c9a20c179: 261eb416-16ce-4302-bb89-44e077b8461e
-    - 67a8a5c1-df1f-4e32-904e-ef3f10a8e0a3: 63dac317-5ee2-4a86-bcb7-c3870418c01f
     - 879b3107-8e1f-4f5c-9f74-75134c505007: 4bd26f75-601f-4f96-9153-55ab452f9b8e
     - bb230341-7e06-4615-8d2a-eef592d103bf: f02da9bd-5037-480d-ae28-4661646dc211
     - c7564cf6-3d6e-47a4-aaf3-5779738d1238: 53cec73f-b097-4853-9fed-a86587e974bf
@@ -29,7 +28,7 @@
 - !<ScriptComponent/326dd1f4-7ae4-4ec0-8cae-e23c9a20c179>
   PrefabRemaps:
     []
-  Name: GridLayout
+  Name: SpatialLayout
   Enabled: true
   ScriptAsset: !<reference> e0925479-bf87-4d01-bec9-174dff93aae6
   ScriptInputsDefault:
@@ -77,26 +76,6 @@
   ScriptTypes:
     "":
       {}
-- !<ScriptComponent/67a8a5c1-df1f-4e32-904e-ef3f10a8e0a3>
-  PrefabRemaps:
-    []
-  Name: SimpleDirectionalLayoutTest
-  Enabled: true
-  ScriptAsset: !<reference> edf410e5-07e4-4945-ab37-06de98080b22
-  ScriptInputsDefault:
-    layout: true
-    spawnInterval: true
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      layout: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
-      itemPrefab: !<reference.ObjectPrefab> d383c86a-e5c2-4652-850f-66d4d45f577f
-      numItems: !<float> 42.000000
-      spawnInterval: 0.500000
-  ScriptTypes:
-    "":
-      {}
 - !<ScriptComponent/879b3107-8e1f-4f5c-9f74-75134c505007>
   PrefabRemaps:
     []
@@ -109,7 +88,7 @@
     {}
   ScriptInputs:
     "":
-      GridLayout: !<MappingBased.AssignableType_1> 326dd1f4-7ae4-4ec0-8cae-e23c9a20c179
+      SpatialLayout: !<MappingBased.AssignableType_1> 326dd1f4-7ae4-4ec0-8cae-e23c9a20c179
       layoutItemPrefab: !<reference.ObjectPrefab> d383c86a-e5c2-4652-850f-66d4d45f577f
       _fallbackStrategy: push
   ScriptTypes:
@@ -119,7 +98,7 @@
   PrefabRemaps:
     []
   Name: SimpleGridLayoutTest
-  Enabled: false
+  Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -159,4 +138,4 @@
   Children:
     []
   Components:
-    - !<own> 67a8a5c1-df1f-4e32-904e-ef3f10a8e0a3
+    []

@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/f8fecb36-5a73-9fde-b0f1-17c66bfdd7c1>
+- !<AssetImportMetadata/8d83b5ae-567b-4e95-a423-12b531669020>
   ImportedAssetIds:
     TypeScriptAsset: !<reference> a14f4a47-ac92-4d69-b68e-57bb756969dd
   ImporterName: TypeScriptAssetImporter
@@ -34,7 +34,6 @@
     _renderOrder: false
     _shadowPositionOffset: true
     _size: false
-    _themeOverride: false
     addCallbacks: false
     customKnobSize: false
     hasTrackVisual: false
@@ -55,7 +54,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -75,7 +73,6 @@
     - '// @input bool _playAudio {"label":"Play Audio", "hint":"Play audio on interaction"}'
     - // @input bool _hasShadow
     - '// @input vec3 _shadowPositionOffset = "{0.05,-0.05,-0.01}" {"showIf":"_hasShadow"}'
-    - '// @input string _themeOverride = "Inherited" {"label":"Theme", "widget":"combobox", "values":[{"label":"Inherited", "value":"Inherited"}, {"label":"SnapOS2", "value":"SnapOS2"}, {"label":"SnapOS3", "value":"SnapOS3"}]}'
     - '// @input bool hasTrackVisual = true {"hint":"Enable this to show a fill on the track up to the knob position"}'
     - '// @input bool customKnobSize {"hint":"Enable this to customize the knob size"}'
     - '// @input vec2 _knobSize = {3,3} {"showIf":"customKnobSize"}'

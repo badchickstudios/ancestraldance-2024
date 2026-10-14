@@ -947,8 +947,6 @@ export class ScrollWindow extends BaseScriptComponent implements Layoutable {
           const interactorPos = this.transform.getInvertedWorldTransform().multiplyPoint(intersection)
 
           if (!this.interactorUpdated) {
-            this.startPosition = this.scrollerTransform.getLocalPosition()
-            this.lastPosition = this.startPosition
             this.interactorOffset = interactorPos
             this.interactorUpdated = true
             this.isDragging = true
@@ -957,10 +955,7 @@ export class ScrollWindow extends BaseScriptComponent implements Layoutable {
             this.cancelChildInteraction(event)
           }
 
-          this.dragAmount = new vec2(
-            interactorPos.x - this.interactorOffset.x,
-            interactorPos.y - this.interactorOffset.y
-          )
+          this.dragAmount = new vec2(interactorPos.x - this.interactorOffset.x, interactorPos.y - this.interactorOffset.y)
 
           let newPosition = this.startPosition.add(interactorPos.sub(this.interactorOffset))
           newPosition.z = 0
@@ -1120,6 +1115,7 @@ export class ScrollWindow extends BaseScriptComponent implements Layoutable {
    */
   private setScrollDimensions = (size: vec2) => {
     this._scrollDimensions = size
+    this.setWindowSize(this._windowSize)
     this.onScrollDimensionsUpdatedEvent.invoke(this._scrollDimensions)
   }
 

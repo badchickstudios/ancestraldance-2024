@@ -1,13 +1,13 @@
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
 import {setTimeout} from "SpectaclesInteractionKit.lspkg/Utils/FunctionTimingUtils"
-import {GridLayout} from "../Scripts/Components/Layout/GridLayout"
+import {SpatialLayout} from "../Scripts/Components/Layout/SpatialLayout"
 import {AddLayoutItemFallbackStrategy} from "../Scripts/Components/Layout/LayoutConfigurationTypes"
 import {LayoutItem} from "../Scripts/Components/Layout/LayoutItem"
 
 @component
-export class SimpleGridLayoutTest extends BaseScriptComponent {
+export class SimpleSpatialLayoutTest extends BaseScriptComponent {
   @input
-  private GridLayout: GridLayout
+  private SpatialLayout: SpatialLayout
 
   @input
   @allowUndefined
@@ -38,11 +38,11 @@ export class SimpleGridLayoutTest extends BaseScriptComponent {
       }
       layoutItem.sceneObject.name = `LayoutItem ${i++}`
       layoutItem.size = new vec3(
-        layoutItem.width - this.GridLayout.spacingX * 2,
-        layoutItem.height - this.GridLayout.spacingY * 2,
-        layoutItem.depth - this.GridLayout.spacingZ * 2
+        layoutItem.width - this.SpatialLayout.spacingX * 2,
+        layoutItem.height - this.SpatialLayout.spacingY * 2,
+        layoutItem.depth - this.SpatialLayout.spacingZ * 2
       )
-      const gridDistance = this.GridLayout.getTransform()
+      const gridDistance = this.SpatialLayout.getTransform()
         .getWorldPosition()
         .distance(this.cam.getTransform().getWorldPosition())
       const tapPosition = arg.getTapPosition()
@@ -55,7 +55,7 @@ export class SimpleGridLayoutTest extends BaseScriptComponent {
         )
         setTimeout(() => {
           if (
-            !this.GridLayout.addLayoutItem(
+            !this.SpatialLayout.addLayoutItem(
               layoutItem,
               undefined,
               this._fallbackStrategy as AddLayoutItemFallbackStrategy

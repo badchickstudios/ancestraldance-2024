@@ -246,14 +246,6 @@ export abstract class Element extends BaseScriptComponent implements Layoutable 
   }
 
   /**
-   * Register an externally-managed SceneObject so it is excluded from
-   * contentChildren and destroyed on release().
-   */
-  public registerManagedChild(sceneObject: SceneObject): void {
-    this.managedSceneObjects.add(sceneObject)
-  }
-
-  /**
    * Gets the ColliderComponent instance associated with this element.
    * The collider is used for detecting interactions or collisions with the element.
    *

@@ -182,6 +182,10 @@ export class ToolbarTextField extends ToolbarItem {
     const sizeChanged = useSetSize || this.lastAppliedSize === null || !this.lastAppliedSize.equal(newSize)
     if (sizeChanged) {
       this.lastAppliedSize = new vec3(newSize.x, newSize.y, newSize.z)
+      const currentText = this.textField.text || ""
+      if (currentText) {
+        this.textField.setVisibleText(currentText)
+      }
       if (this.textFieldConfig.textAlignment) {
         this.applyTextAlignment()
       }
@@ -296,7 +300,10 @@ export class ToolbarTextField extends ToolbarItem {
     if (!this.textField?.textComponent) {
       return
     }
-    if (this.textFieldConfig.textAlignment && !this.userIsEditing) {
+    const currentText = this.textField.text?.trim() ?? ""
+    const isPlaceholderOrEmpty = !this.userIsEditing && currentText === ""
+
+    if (this.textFieldConfig.textAlignment && isPlaceholderOrEmpty) {
       const alignment = this.textFieldConfig.textAlignment
       if (alignment === ToolbarAlignment.LEFT) {
         this.textField.textComponent.horizontalAlignment = HorizontalAlignment.Left

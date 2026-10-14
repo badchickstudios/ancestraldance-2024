@@ -58,33 +58,3 @@ export const SwitchKnobBorderYellowBright = HSVtoRGB(48, 0.36, 1, 1)
 export const SwitchKnobBorderYellowHover = HSVtoRGB(48, 0.36, 0.78, 1)
 export const SwitchHoverOrange = HSVtoRGB(47, 0.62, 0.51, 1)
 export const SwitchHoverYellow = HSVtoRGB(48, 0.59, 0.81, 1)
-
-// Slider-specific colors
-export const SliderKnobTriggeredBorderMid = HSVtoRGB(48, 0.64, 0.35, 0.5)
-
-// ConfirmationSlider-specific colors
-export const ConfirmationSliderFillLightGray = HSVtoRGB(0, 0, 0.8, 1)
-export const ConfirmationSliderFillDarkYellow = HSVtoRGB(43, 0.59, 0.31, 1)
-export const ConfirmationSliderFillMediumYellow = HSVtoRGB(51, 0.49, 0.64, 1)
-export const ConfirmationSliderShineColor = new vec3(0.702, 0.651, 0.400)
-
-export const ConfirmationSliderTrackDarkGray = HSVtoRGB(0, 0, 0.12, 1)
-export const ConfirmationSliderTrackGray = HSVtoRGB(0, 0, 0.17, 1)
-export const ConfirmationSliderTrackBorderLight = HSVtoRGB(0, 0, 0.28, 1)
-export const ConfirmationSliderTrackBorderTransparent = HSVtoRGB(0, 0, 0.17, 0)
-export const ConfirmationSliderTrackBorderGray = HSVtoRGB(0, 0, 0.36, 1)
-
-export const ConfirmationSliderKnobDark = HSVtoRGB(51, 0.18, 0.15, 1)
-export const ConfirmationSliderKnobBright = HSVtoRGB(50, 0.6, 0.35, 1)
-export const ConfirmationSliderKnobBorderTop = HSVtoRGB(50, 0.5, 0.46, 1)
-export const ConfirmationSliderKnobBorderBottom = HSVtoRGB(51, 0.37, 0.13, 1)
-
-export const ConfirmationSliderKnobHoverDark = HSVtoRGB(50, 0.42, 0.23, 1)
-export const ConfirmationSliderKnobHoverBright = HSVtoRGB(50, 0.58, 0.47, 1)
-export const ConfirmationSliderKnobHoverBorderTop = HSVtoRGB(50, 0.5, 0.5, 1)
-export const ConfirmationSliderKnobHoverBorderBottom = HSVtoRGB(51, 0.37, 0.15, 1)
-
-export const ConfirmationSliderKnobTriggeredDark = HSVtoRGB(43, 0.59, 0.29, 1)
-export const ConfirmationSliderKnobTriggeredBright = HSVtoRGB(51, 0.44, 0.68, 1)
-export const ConfirmationSliderKnobTriggeredBorderYellow = HSVtoRGB(48, 0.36, 0.94, 1)
-export const ConfirmationSliderKnobTriggeredBorderMid = HSVtoRGB(0, 0, 0.16, 1)

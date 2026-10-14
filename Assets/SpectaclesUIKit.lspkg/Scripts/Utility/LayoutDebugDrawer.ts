@@ -1,7 +1,5 @@
-import {Anchor, Axis, WrapDirection} from "../Components/Layout/LayoutConfigurationTypes"
-import {DIRECTIONAL_ALIGNMENT_MAPPING} from "./DirectionalLayoutUtilities"
-import {getCellKey} from "./GridLayoutUtilities"
-import {WRAP_DIRECTION_INFO} from "./LayoutUtilities"
+import {Anchor, Axis} from "../Components/Layout/LayoutConfigurationTypes"
+import {getCellKey} from "./SpatialLayoutUtilities"
 import {calculateFlexibleStartOffset} from "./SingleAxisLayoutUtilities"
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -16,7 +14,7 @@ const DebugColors = {
   item: new vec4(0, 1, 1, 1),
   /** Magenta - SingleAxisLayout bounds */
   singleAxis: new vec4(1, 0, 1, 1),
-  /** White - DirectionalLayout origin sphere */
+  /** White - Origin sphere */
   origin: new vec4(1, 1, 1, 1),
   /** Red - X-axis (horizontal) direction */
   axisX: new vec4(1, 0.2, 0.2, 1),
@@ -24,13 +22,9 @@ const DebugColors = {
   axisY: new vec4(0.2, 1, 0.2, 1),
   /** Blue - Z-axis (depth) direction */
   axisZ: new vec4(0.2, 0.5, 1, 1),
-  /** Yellow/Gold - combined direction line */
-  combined: new vec4(1, 0.8, 0, 1),
-  /** Magenta/Pink - wrap direction line */
-  wrap: new vec4(1, 0.4, 1, 1),
-  /** Green - GridLayout empty cell */
+  /** Green - SpatialLayout empty cell */
   gridEmptyCell: new vec4(0.2, 0.8, 0.4, 1),
-  /** Yellow/Gold - GridLayout occupied cell */
+  /** Yellow/Gold - SpatialLayout occupied cell */
   gridOccupiedCell: new vec4(1, 0.8, 0.2, 1)
 } as const
 
@@ -55,96 +49,14 @@ const AXIS_VECTORS: Readonly<Record<Axis, vec3>> = {
   [Axis.Z]: new vec3(0, 0, 1)
 }
 
-/**
- * Zero vector constant.
- */
-const VEC3_ZERO = new vec3(0, 0, 0)
-
-/**
- * Maps Axis enum to vec3 property name for indexed access.
- */
-const AXIS_TO_PROPERTY: Readonly<Record<Axis, "x" | "y" | "z">> = {
-  [Axis.X]: "x",
-  [Axis.Y]: "y",
-  [Axis.Z]: "z"
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// ALIGNMENT MAP (used for direction multiplier and anchor lookup)
-// ═══════════════════════════════════════════════════════════════════════════
-
-// Using shared mapping from LayoutUtilities
-const ALIGNMENT_MAP = DIRECTIONAL_ALIGNMENT_MAPPING
-
 // ═══════════════════════════════════════════════════════════════════════════
 // TYPE DEFINITIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Axis bounds with start and end positions.
+ * Configuration for SpatialLayout debug rendering.
  */
-type AxisBounds = {start: number; end: number}
-
-/**
- * Row information for wrapped layouts.
- */
-type RowInfo = {
-  mainAxisMin: number
-  mainAxisMax: number
-  wrapAxisPosition: number
-}
-
-/**
- * Child data for deriving row information.
- */
-type ChildData = {
-  position: vec3
-  size: vec3
-}
-
-/**
- * Axis layout data for calculating item bounds.
- */
-type AxisLayoutData = {
-  itemsLength: number
-  paddingStart: number
-  paddingEnd: number
-}
-
-/**
- * Configuration for DirectionalLayout debug rendering.
- */
-type DirectionalLayoutDebugConfig = {
-  transform: Transform
-  primaryDirection: Axis
-  childAlignmentX: string
-  childAlignmentY: string
-  childAlignmentZ: string
-  fixedWidth: boolean
-  fixedHeight: boolean
-  fixedDepth: boolean
-  width: number
-  height: number
-  depth: number
-  anchorX: Anchor
-  anchorY: Anchor
-  anchorZ: Anchor
-  wrapToSecondaryAxis: boolean
-  secondaryDirection: WrapDirection
-  /** Layout data for each axis (for calculating item bounds) */
-  axisLayoutData: {
-    x: AxisLayoutData
-    y: AxisLayoutData
-    z: AxisLayoutData
-  }
-  /** Children data for wrapped layouts (position and size) */
-  children: ChildData[]
-}
-
-/**
- * Configuration for GridLayout debug rendering.
- */
-type GridLayoutDebugConfig = {
+type SpatialLayoutDebugConfig = {
   transform: Transform
   /** Width of each cell (X dimension) */
   cellWidth: number
@@ -243,18 +155,18 @@ export function renderLayoutItemDebug(transform: Transform, width: number, heigh
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// GRIDLAYOUT DEBUG RENDERING
+// SPATIALLAYOUT DEBUG RENDERING
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Renders debug visualization for GridLayout.
+ * Renders debug visualization for SpatialLayout.
  * - Draws a white sphere at the grid origin
  * - Draws wireframe boxes for each cell in the grid
  * - Empty cells are drawn in green, occupied cells in yellow/gold
  *
  * @param config - The configuration for grid debug rendering.
  */
-export function renderGridLayoutDebug(config: GridLayoutDebugConfig): void {
+export function renderSpatialLayoutDebug(config: SpatialLayoutDebugConfig): void {
   const worldPosition = config.transform.getWorldPosition()
   const worldRotation = config.transform.getWorldRotation()
 
@@ -377,410 +289,6 @@ export function renderSingleAxisLayoutDebug(
       const sizeWithDirection = size * direction
       const endPos = worldPosition.add(worldRotation.multiplyVec3(axisVector.uniformScale(sizeWithDirection)))
       global.debugRenderSystem.drawLine(worldPosition, endPos, DebugColors.singleAxis)
-    }
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// DIRECTIONALLAYOUT DEBUG RENDERING
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Renders debug visualization for DirectionalLayout.
- * - Draws a white sphere at the origin
- * - Draws colored lines for each enabled axis direction showing alignment
- * - Draws a yellow/gold line for the combined direction
- * - Draws wrap direction lines when wrapping is enabled
- *
- * @param config - The configuration for debug rendering.
- */
-export function renderDirectionalLayoutDebug(config: DirectionalLayoutDebugConfig): void {
-  const worldPosition = config.transform.getWorldPosition()
-  const worldRotation = config.transform.getWorldRotation()
-
-  // Draw a sphere at the origin
-  global.debugRenderSystem.drawSphere(worldPosition, DebugSizes.sphereRadius, DebugColors.origin)
-
-  // Draw individual axis lines for enabled directions, showing alignment
-  if (config.primaryDirection === Axis.X) {
-    drawAxisAlignmentLine(
-      worldPosition,
-      worldRotation,
-      AXIS_VECTORS[Axis.X],
-      config.childAlignmentX,
-      config.fixedWidth ? config.width : DebugSizes.lineLength,
-      DebugColors.axisX,
-      config.fixedWidth,
-      config.anchorX
-    )
-  }
-
-  if (config.primaryDirection === Axis.Y) {
-    drawAxisAlignmentLine(
-      worldPosition,
-      worldRotation,
-      AXIS_VECTORS[Axis.Y],
-      config.childAlignmentY,
-      config.fixedHeight ? config.height : DebugSizes.lineLength,
-      DebugColors.axisY,
-      config.fixedHeight,
-      config.anchorY
-    )
-  }
-
-  if (config.primaryDirection === Axis.Z) {
-    drawAxisAlignmentLine(
-      worldPosition,
-      worldRotation,
-      AXIS_VECTORS[Axis.Z],
-      config.childAlignmentZ,
-      config.fixedDepth ? config.depth : DebugSizes.lineLength,
-      DebugColors.axisZ,
-      config.fixedDepth,
-      config.anchorZ
-    )
-  }
-
-  // Draw combined direction line
-  drawCombinedDirectionLine(config, worldPosition, worldRotation)
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// HELPER FUNCTIONS
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Gets the single enabled item axis.
- * @returns The item axis, or null if none or multiple are enabled.
- */
-function getItemAxis(config: DirectionalLayoutDebugConfig): Axis | null {
-  switch (config.primaryDirection) {
-    case Axis.X:
-      return Axis.X
-    case Axis.Y:
-      return Axis.Y
-    case Axis.Z:
-      return Axis.Z
-    default:
-      return null
-  }
-}
-
-/**
- * Derives row information from child positions.
- * Groups children by their wrap axis position and calculates bounds for each row.
- */
-function deriveRowsFromChildren(children: ChildData[], mainAxis: Axis, wrapAxis: Axis): RowInfo[] {
-  if (children.length === 0) return []
-
-  // Group children by wrap axis position using tolerance-based bucketing
-  const tolerance = DebugSizes.tolerance
-  const rowMap = new Map<number, ChildData[]>()
-
-  for (const child of children) {
-    const wrapPos = child.position[AXIS_TO_PROPERTY[wrapAxis]]
-    // Round to tolerance bucket for O(1) lookup
-    const bucketKey = Math.round(wrapPos / tolerance) * tolerance
-
-    const existing = rowMap.get(bucketKey)
-    if (existing !== undefined) {
-      existing.push(child)
-    } else {
-      rowMap.set(bucketKey, [child])
-    }
-  }
-
-  // Convert to array and calculate bounds for each row
-  const rows: RowInfo[] = []
-
-  for (const [wrapAxisPosition, rowChildren] of rowMap) {
-    let mainAxisMin = Infinity
-    let mainAxisMax = -Infinity
-
-    for (const child of rowChildren) {
-      const mainPos = child.position[AXIS_TO_PROPERTY[mainAxis]]
-      const mainSize = child.size[AXIS_TO_PROPERTY[mainAxis]]
-      const halfSize = mainSize / 2
-
-      mainAxisMin = Math.min(mainAxisMin, mainPos - halfSize)
-      mainAxisMax = Math.max(mainAxisMax, mainPos + halfSize)
-    }
-
-    rows.push({mainAxisMin, mainAxisMax, wrapAxisPosition})
-  }
-
-  // Sort rows by wrap axis position
-  rows.sort((a, b) => a.wrapAxisPosition - b.wrapAxisPosition)
-
-  return rows
-}
-
-/**
- * Calculates the start and end positions of items along an axis.
- *
- * @param layoutData - The layout data for this axis.
- * @param alignmentSign - The alignment sign ("-", "+", "", or "*").
- * @param isFixedSize - Whether the layout has a fixed size.
- * @param layoutSize - The fixed layout size (used when isFixedSize is true).
- * @param anchor - The anchor position (used for stretch alignment).
- * @returns Object with start and end positions along the axis.
- */
-function calculateAxisItemBounds(
-  layoutData: AxisLayoutData,
-  alignmentSign: string,
-  isFixedSize: boolean,
-  layoutSize: number,
-  anchor: Anchor
-): AxisBounds {
-  const {itemsLength, paddingStart, paddingEnd} = layoutData
-
-  // For Stretch alignment with fixed size
-  if (alignmentSign === "*" && isFixedSize) {
-    const layoutStart = calculateFlexibleStartOffset(anchor, layoutSize, 0, 0)
-    const itemStart = layoutStart + paddingStart
-    const itemEnd = itemStart + itemsLength
-    return {start: itemStart, end: itemEnd}
-  }
-
-  // For fixed-size non-stretch layouts
-  if (isFixedSize) {
-    const layoutStart = calculateFlexibleStartOffset(anchor, layoutSize, 0, 0)
-
-    switch (alignmentSign) {
-      case "-": {
-        const start = layoutStart + paddingStart
-        const end = start + itemsLength
-        return {start, end}
-      }
-      case "+": {
-        const end = layoutStart + layoutSize - paddingEnd
-        const start = end - itemsLength
-        return {start, end}
-      }
-      case "":
-      default: {
-        const layoutCenter = layoutStart + layoutSize / 2
-        const halfItems = itemsLength / 2
-        return {start: layoutCenter - halfItems, end: layoutCenter + halfItems}
-      }
-    }
-  }
-
-  // For flexible-size layouts
-  switch (alignmentSign) {
-    case "-": {
-      const start = paddingStart
-      const end = paddingStart + itemsLength
-      return {start, end}
-    }
-    case "+": {
-      const end = -paddingEnd
-      const start = -paddingEnd - itemsLength
-      return {start, end}
-    }
-    case "":
-    default: {
-      const halfItems = itemsLength / 2
-      return {start: -halfItems, end: halfItems}
-    }
-  }
-}
-
-/**
- * Checks if the alignment sign represents center or stretch alignment.
- */
-function isCenterOrStretch(alignmentSign: string): boolean {
-  return alignmentSign === "" || alignmentSign === "*"
-}
-
-/**
- * Draws alignment visualization line for a single axis.
- * - For start alignment ("-"): Single line in positive direction
- * - For end alignment ("+"): Single line in negative direction
- * - For center/stretch alignment ("" or "*"): Lines in both directions from origin
- */
-function drawAxisAlignmentLine(
-  worldPosition: vec3,
-  worldRotation: quat,
-  axisVector: vec3,
-  alignmentSign: string,
-  lineLength: number,
-  color: vec4,
-  isFixed: boolean = false,
-  anchor: Anchor = Anchor.Start
-): void {
-  if (isFixed) {
-    let startOffset = 0
-    let endOffset = 0
-
-    if (anchor === Anchor.Center) {
-      startOffset = -lineLength / 2
-      endOffset = lineLength / 2
-    } else if (anchor === Anchor.End) {
-      startOffset = -lineLength
-      endOffset = 0
-    } else {
-      startOffset = 0
-      endOffset = lineLength
-    }
-
-    const startPos = worldPosition.add(worldRotation.multiplyVec3(axisVector.uniformScale(startOffset)))
-    const endPos = worldPosition.add(worldRotation.multiplyVec3(axisVector.uniformScale(endOffset)))
-    global.debugRenderSystem.drawLine(startPos, endPos, color)
-    return
-  }
-
-  if (isCenterOrStretch(alignmentSign)) {
-    // Center/Stretch alignment: draw lines in both directions
-    const posEndPos = worldPosition.add(worldRotation.multiplyVec3(axisVector.uniformScale(lineLength)))
-    const negEndPos = worldPosition.add(worldRotation.multiplyVec3(axisVector.uniformScale(-lineLength)))
-    global.debugRenderSystem.drawLine(negEndPos, posEndPos, color)
-  } else {
-    // Start or End alignment: single line in flow direction
-    const direction = ALIGNMENT_MAP[alignmentSign].directionMultiplier
-    const endPos = worldPosition.add(worldRotation.multiplyVec3(axisVector.uniformScale(lineLength * direction)))
-    global.debugRenderSystem.drawLine(worldPosition, endPos, color)
-  }
-}
-
-/**
- * Draws the combined direction line when multiple axes are enabled.
- * Shows the actual item bounds considering alignment, anchor, and padding.
- * When wrapping is enabled, draws separate lines for each row.
- */
-function drawCombinedDirectionLine(
-  config: DirectionalLayoutDebugConfig,
-  worldPosition: vec3,
-  worldRotation: quat
-): void {
-  // Handle wrapped layout with per-row lines
-  if (config.wrapToSecondaryAxis) {
-    drawWrappedDirectionLines(config, worldPosition, worldRotation)
-    return
-  }
-
-  // Axis configuration for iteration
-  const axisConfigs = [
-    {
-      axis: Axis.X,
-      enabled: config.primaryDirection === Axis.X,
-      layoutData: config.axisLayoutData.x,
-      alignment: config.childAlignmentX,
-      isFixedSize: config.fixedWidth,
-      layoutSize: config.width,
-      anchor: config.anchorX
-    },
-    {
-      axis: Axis.Y,
-      enabled: config.primaryDirection === Axis.Y,
-      layoutData: config.axisLayoutData.y,
-      alignment: config.childAlignmentY,
-      isFixedSize: config.fixedHeight,
-      layoutSize: config.height,
-      anchor: config.anchorY
-    },
-    {
-      axis: Axis.Z,
-      enabled: config.primaryDirection === Axis.Z,
-      layoutData: config.axisLayoutData.z,
-      alignment: config.childAlignmentZ,
-      isFixedSize: config.fixedDepth,
-      layoutSize: config.depth,
-      anchor: config.anchorZ
-    }
-  ]
-
-  // Calculate start and end offsets for each enabled axis
-  let startOffset = VEC3_ZERO
-  let endOffset = VEC3_ZERO
-
-  for (const axisConfig of axisConfigs) {
-    if (!axisConfig.enabled) continue
-
-    const bounds = calculateAxisItemBounds(
-      axisConfig.layoutData,
-      axisConfig.alignment,
-      axisConfig.isFixedSize,
-      axisConfig.layoutSize,
-      axisConfig.anchor
-    )
-    const directionMultiplier = ALIGNMENT_MAP[axisConfig.alignment].directionMultiplier
-    const boundsStart = directionMultiplier < 0 ? bounds.end : bounds.start
-    const boundsEnd = directionMultiplier < 0 ? bounds.start : bounds.end
-
-    startOffset = startOffset.add(AXIS_VECTORS[axisConfig.axis].uniformScale(boundsStart))
-    endOffset = endOffset.add(AXIS_VECTORS[axisConfig.axis].uniformScale(boundsEnd))
-  }
-
-  // Draw the line from start to end of items
-  const startPos = worldPosition.add(worldRotation.multiplyVec3(startOffset))
-  const endPos = worldPosition.add(worldRotation.multiplyVec3(endOffset))
-
-  // Only draw if there's a meaningful line (start != end)
-  if (startOffset.distance(endOffset) > DebugSizes.tolerance) {
-    global.debugRenderSystem.drawLine(startPos, endPos, DebugColors.combined)
-  }
-}
-
-/**
- * Draws per-row direction lines when wrapping is enabled.
- * Each row gets its own line showing the item bounds along the main axis.
- */
-function drawWrappedDirectionLines(
-  config: DirectionalLayoutDebugConfig,
-  worldPosition: vec3,
-  worldRotation: quat
-): void {
-  const itemAxis = getItemAxis(config)
-  if (itemAxis === null) return
-
-  // Get wrap direction info
-  const wrapInfo = WRAP_DIRECTION_INFO[config.secondaryDirection]
-  if (wrapInfo === undefined) return
-
-  // Derive row information from child positions
-  const rows = deriveRowsFromChildren(config.children, itemAxis, wrapInfo.axis)
-  if (rows.length === 0) return
-
-  // Get alignment configuration for direction multiplier
-  const alignmentByAxis: Record<Axis, string> = {
-    [Axis.X]: config.childAlignmentX,
-    [Axis.Y]: config.childAlignmentY,
-    [Axis.Z]: config.childAlignmentZ
-  }
-  const alignmentSign = alignmentByAxis[itemAxis]
-  const directionMultiplier = ALIGNMENT_MAP[alignmentSign].directionMultiplier
-
-  // Draw a line for each row
-  for (const row of rows) {
-    // Set main axis bounds (swap based on direction multiplier)
-    const mainStart = directionMultiplier < 0 ? row.mainAxisMax : row.mainAxisMin
-    const mainEnd = directionMultiplier < 0 ? row.mainAxisMin : row.mainAxisMax
-
-    // Build offsets using helper
-    const wrapOffset = AXIS_VECTORS[wrapInfo.axis].uniformScale(row.wrapAxisPosition)
-    const startOffset = AXIS_VECTORS[itemAxis].uniformScale(mainStart).add(wrapOffset)
-    const endOffset = AXIS_VECTORS[itemAxis].uniformScale(mainEnd).add(wrapOffset)
-
-    // Draw the line for this row
-    const startPos = worldPosition.add(worldRotation.multiplyVec3(startOffset))
-    const endPos = worldPosition.add(worldRotation.multiplyVec3(endOffset))
-
-    if (startOffset.distance(endOffset) > DebugSizes.tolerance) {
-      global.debugRenderSystem.drawLine(startPos, endPos, DebugColors.combined)
-    }
-  }
-
-  // Draw the wrap direction line showing how far items extend along the wrap axis
-  if (rows.length > 1) {
-    const wrapStartOffset = AXIS_VECTORS[wrapInfo.axis].uniformScale(rows[0].wrapAxisPosition)
-    const wrapEndOffset = AXIS_VECTORS[wrapInfo.axis].uniformScale(rows[rows.length - 1].wrapAxisPosition)
-
-    const wrapStartPos = worldPosition.add(worldRotation.multiplyVec3(wrapStartOffset))
-    const wrapEndPos = worldPosition.add(worldRotation.multiplyVec3(wrapEndOffset))
-
-    if (wrapStartOffset.distance(wrapEndOffset) > DebugSizes.tolerance) {
-      global.debugRenderSystem.drawLine(wrapStartPos, wrapEndPos, DebugColors.wrap)
     }
   }
 }

@@ -10,7 +10,6 @@ import {
   DarkWarmGray,
   MediumDarkGray,
   MediumWarmGray,
-  SliderKnobTriggeredBorderMid,
   SwitchBorderYellowLight,
   SwitchKnobBorderGray,
   SwitchKnobBorderTransparent,
@@ -25,8 +24,9 @@ import {
   TriggeredBorderClearGray,
   TriggeredBorderYellow
 } from "../../Themes/SnapOS-2.0/Colors"
+import {SnapOS2Styles} from "../../Themes/SnapOS-2.0/SnapOS2"
 import {Callback, createCallbacks} from "../../Utility/SceneUtilities"
-import {isEqual} from "../../Utility/UIKitUtilities"
+import {HSVtoRGB, isEqual} from "../../Utility/UIKitUtilities"
 import {
   RoundedRectangleVisual,
   RoundedRectangleVisualParameters
@@ -185,7 +185,7 @@ const KnobVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       },
       stop1: {
         percent: 0.5,
-        color: SliderKnobTriggeredBorderMid
+        color: HSVtoRGB(48, 0.64, 0.35, 0.5)
       },
       stop2: {
         percent: 1,
@@ -252,16 +252,6 @@ const DEFAULT_SPRING_CONFIG: SpringConfig = {
  */
 @component
 export class Slider extends VisualElement {
-  // To add per-theme styles, add @input fields like:
-  //
-  // @input
-  // @showIf("_themeOverride", "SnapOS3")
-  // @label("Style")
-  // @widget(new ComboBoxWidget([
-  //   new ComboBoxItem("StyleName", "StyleName"),
-  // ]))
-  // protected _styleSnapOS3: string = "StyleName"
-
   @input
   @hint("The default value of the slider, should be between 0 and 1")
   @widget(new SliderWidget(0, 1, 0.01))
@@ -299,6 +289,8 @@ export class Slider extends VisualElement {
   @showIf("addCallbacks")
   @label("On Value Changed Callbacks")
   private onValueChangeCallbacks: Callback[] = []
+
+  protected _style: SnapOS2Styles = SnapOS2Styles.Custom
 
   protected _knobVisual: Visual
   protected _trackFillVisual: Visual
@@ -667,23 +659,15 @@ export class Slider extends VisualElement {
   }
 
   protected get defaultTrackStyle(): Partial<RoundedRectangleVisualParameters> {
-    const themed = this.resolveTheme()?.styles["SliderTrack"]?.["default"]
-    return themed ?? SliderVisualParameters
+    return SliderVisualParameters
   }
 
   protected get defaultKnobStyle(): Partial<RoundedRectangleVisualParameters> {
-    const themed = this.resolveTheme()?.styles["SliderKnob"]?.["default"]
-    return themed ?? KnobVisualParameters
+    return KnobVisualParameters
   }
 
   protected get defaultTrackFillStyle(): Partial<RoundedRectangleVisualParameters> {
-    const themed = this.resolveTheme()?.styles["SliderFill"]?.["default"]
-    return themed ?? TrackVisualParameters
-  }
-
-  protected get cornerRadiusFactor(): number {
-    const sliderData = this.resolveTheme()?.componentData?.["Slider"] as {cornerRadiusFactor?: number} | undefined
-    return sliderData?.cornerRadiusFactor ?? 0.5
+    return TrackVisualParameters
   }
 
   protected get knobObjectName(): string {
@@ -700,7 +684,7 @@ export class Slider extends VisualElement {
         sceneObject: this.sceneObject,
         style: this.defaultTrackStyle
       })
-      defaultVisual.cornerRadius = this.size.y * this.cornerRadiusFactor
+      defaultVisual.cornerRadius = this.size.y * 0.5
       this._visual = defaultVisual
     }
 
@@ -712,17 +696,12 @@ export class Slider extends VisualElement {
         style: this.defaultKnobStyle
       })
 
-      defaultKnobVisual.cornerRadius = (this.size.y - defaultKnobVisual.borderSize * 2) * this.cornerRadiusFactor
+      defaultKnobVisual.cornerRadius = (this.size.y - defaultKnobVisual.borderSize * 2) * 0.5
       this._knobVisual = defaultKnobVisual
       if (!this.customKnobSize) {
         this._knobSize = new vec2(this.size.y, this.size.y)
       }
       knobObject.setParent(this.sceneObject)
-
-      const knobData = this.resolveTheme()?.componentData?.["SliderKnob"] as {knobVisible?: boolean} | undefined
-      if (knobData?.knobVisible === false) {
-        defaultKnobVisual.renderMeshVisual.enabled = false
-      }
     }
 
     if (!this._trackFillVisual && this.hasTrackVisual) {
@@ -918,7 +897,7 @@ export class Slider extends VisualElement {
           this.size.z
         )
       : new vec3(this._knobSize.x, this._knobSize.y, this.size.z)
-    ;(this._knobVisual as RoundedRectangleVisual).cornerRadius = this._knobVisual.size.y * this.cornerRadiusFactor
+    ;(this._knobVisual as RoundedRectangleVisual).cornerRadius = this._knobVisual.size.y * 0.5
   }
 
   private updateFillSize() {
@@ -931,7 +910,7 @@ export class Slider extends VisualElement {
     fillSize.x = lerp(fillSize.y, this.size.x - borderSize * 2, this.knobValue)
     this._trackFillLocalPos.x = lerp((this.size.x - borderSize * 2) * -0.5 + fillSize.y * 0.5, 0, this.knobValue)
     this.trackFillVisual.transform.setLocalPosition(this._trackFillLocalPos)
-    ;(this.trackFillVisual as RoundedRectangleVisual).cornerRadius = fillSize.y * this.cornerRadiusFactor
+    ;(this.trackFillVisual as RoundedRectangleVisual).cornerRadius = fillSize.y * 0.5
     this.trackFillVisual.size = fillSize
   }
 

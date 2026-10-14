@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/804492d9-a6be-cce2-01df-60fc6169ecda>
+- !<AssetImportMetadata/a845a060-2e1f-41ad-84ad-a6256be3a965>
   ImportedAssetIds:
     TypeScriptAsset: !<reference> e88457b1-51b7-49da-a37c-63f0b378cc8b
   ImporterName: TypeScriptAssetImporter
@@ -33,9 +33,7 @@
     _playAudio: false
     _renderOrder: false
     _shadowPositionOffset: false
-    _styleSnapOS2: false
-    _styleSnapOS3: false
-    _themeOverride: false
+    _style: false
     _toggleable: false
     _width: false
     addCallbacks: false
@@ -55,9 +53,9 @@
     - _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -69,8 +67,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _width: !<float> 4.000000
   ScriptTypes:
@@ -80,9 +76,9 @@
     - // @input int _renderOrder
     - '// @input bool _inactive {"hint":"Inactive Mode: set the element to ignore inputs"}'
     - '// @input bool _playAudio {"label":"Play Audio", "hint":"Play audio on interaction"}'
+    - '// @input string _style {"widget":"combobox", "values":[{"label":"PrimaryNeutral", "value":"PrimaryNeutral"}, {"label":"Primary", "value":"Primary"}, {"label":"Secondary", "value":"Secondary"}, {"label":"Special", "value":"Special"}, {"label":"Ghost", "value":"Ghost"}]}'
     - // @input bool _hasShadow
     - '// @input vec3 _shadowPositionOffset = "{0.05,-0.05,-0.01}" {"showIf":"_hasShadow"}'
-    - '// @input string _themeOverride = "Inherited" {"label":"Theme", "widget":"combobox", "values":[{"label":"Inherited", "value":"Inherited"}, {"label":"SnapOS2", "value":"SnapOS2"}, {"label":"SnapOS3", "value":"SnapOS3"}]}'
     - // @input bool _toggleable
     - '// @input bool _defaultToOn {"hint":"The default state of the Toggle", "showIf":"_toggleable"}'
     - "// @input bool addCallbacks {\"hint\":\"Enable this to add functions from another script to this component's callbacks\"}"
@@ -97,7 +93,5 @@
     - '// @input Callback[] onValueChangeCallbacks = {} {"label":"On Value Changed Callbacks", "showIf":"_toggleable"}'
     - '// @input Callback[] onFinishedCallbacks = {} {"label":"On Finished Callbacks", "showIf":"_toggleable"}'
     - '// @ui {"widget":"group_end"}'
-    - '// @input string _styleSnapOS2 = "PrimaryNeutral" {"label":"Style", "widget":"combobox", "values":[{"label":"PrimaryNeutral", "value":"PrimaryNeutral"}, {"label":"Primary", "value":"Primary"}, {"label":"Secondary", "value":"Secondary"}, {"label":"Special", "value":"Special"}, {"label":"Ghost", "value":"Ghost"}], "showIf":"_themeOverride", "showIfValue":"SnapOS2"}'
-    - '// @input string _styleSnapOS3 = "Neutral" {"label":"Style", "widget":"combobox", "values":[{"label":"Neutral", "value":"Neutral"}, {"label":"Accent", "value":"Accent"}, {"label":"Subtle", "value":"Subtle"}, {"label":"Alert", "value":"Alert"}, {"label":"Transparent", "value":"Transparent"}], "showIf":"_themeOverride", "showIfValue":"SnapOS3"}'
     - '// @input float _opacity = 1 {"widget":"slider", "min":0, "max":1}'
     - // @input float _width = 3

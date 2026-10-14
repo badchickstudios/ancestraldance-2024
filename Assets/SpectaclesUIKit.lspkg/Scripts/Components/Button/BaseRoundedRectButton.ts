@@ -7,45 +7,6 @@ export abstract class BaseRoundedRectButton
   implements OpacityControllable
 {
   @input
-  @showIf("_themeOverride", "SnapOS2")
-  @label("Style")
-  @widget(
-    new ComboBoxWidget([
-      new ComboBoxItem("PrimaryNeutral", "PrimaryNeutral"),
-      new ComboBoxItem("Primary", "Primary"),
-      new ComboBoxItem("Secondary", "Secondary"),
-      new ComboBoxItem("Special", "Special"),
-      new ComboBoxItem("Ghost", "Ghost")
-    ])
-  )
-  protected _styleSnapOS2: string = "PrimaryNeutral"
-
-  @input
-  @showIf("_themeOverride", "SnapOS3")
-  @label("Style")
-  @widget(
-    new ComboBoxWidget([
-      new ComboBoxItem("Neutral", "Neutral"),
-      new ComboBoxItem("Accent", "Accent"),
-      new ComboBoxItem("Subtle", "Subtle"),
-      new ComboBoxItem("Alert", "Alert"),
-      new ComboBoxItem("Transparent", "Transparent")
-    ])
-  )
-  protected _styleSnapOS3: string = "Neutral"
-
-  protected get effectiveStyle(): string {
-    switch (this.normalizedThemeOverride) {
-      case "SnapOS2":
-        return this._styleSnapOS2
-      case "SnapOS3":
-        return this._styleSnapOS3
-      default:
-        return this.resolveTheme().defaultStyleName
-    }
-  }
-
-  @input
   @widget(new SliderWidget(0, 1))
   protected _opacity: number = 1.0
 
@@ -105,8 +66,7 @@ export abstract class BaseRoundedRectButton
       sceneObject: this.sceneObject,
       style: {
         visualElementType: this.typeString,
-        style: this.effectiveStyle,
-        themeName: this.normalizedThemeOverride !== "Inherited" ? this.normalizedThemeOverride : undefined
+        style: this._style
       },
       transparent: alwaysTransparent || this._opacity < 1.0
     })
@@ -116,8 +76,7 @@ export abstract class BaseRoundedRectButton
   }
 
   protected get isAlwaysTransparent(): boolean {
-    const style = this.effectiveStyle
-    return style === "Ghost" || style === "Transparent"
+    return this._style === "Ghost"
   }
 }
 

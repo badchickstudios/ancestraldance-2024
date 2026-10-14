@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/5b6c73ad-fcf1-05c0-23b7-88589a874487>
+- !<AssetImportMetadata/d44b29b4-86c9-4412-a90a-095df281b390>
   ImportedAssetIds:
     ObjectPrefab: !<reference> c6634e37-b185-4112-aecd-b47a832c89d1
   ImporterName: ObjectPrefabImporter
@@ -40,9 +40,9 @@
     _size: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -50,8 +50,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -61,9 +59,9 @@
       _size: !<Vec3> {x: 6.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -75,8 +73,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -113,8 +109,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000

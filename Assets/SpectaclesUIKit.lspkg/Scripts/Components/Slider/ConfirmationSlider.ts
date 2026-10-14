@@ -2,30 +2,8 @@ import {DragInteractorEvent} from "SpectaclesInteractionKit.lspkg/Core/Interacto
 import animate, {CancelSet} from "SpectaclesInteractionKit.lspkg/Utils/animate"
 import Event from "SpectaclesInteractionKit.lspkg/Utils/Event"
 import NativeLogger from "SpectaclesInteractionKit.lspkg/Utils/NativeLogger"
-import {
-  ConfirmationSliderFillDarkYellow,
-  ConfirmationSliderFillLightGray,
-  ConfirmationSliderFillMediumYellow,
-  ConfirmationSliderKnobBorderBottom,
-  ConfirmationSliderKnobBorderTop,
-  ConfirmationSliderKnobBright,
-  ConfirmationSliderKnobDark,
-  ConfirmationSliderKnobHoverBorderBottom,
-  ConfirmationSliderKnobHoverBorderTop,
-  ConfirmationSliderKnobHoverBright,
-  ConfirmationSliderKnobHoverDark,
-  ConfirmationSliderKnobTriggeredBorderMid,
-  ConfirmationSliderKnobTriggeredBorderYellow,
-  ConfirmationSliderKnobTriggeredBright,
-  ConfirmationSliderKnobTriggeredDark,
-  ConfirmationSliderShineColor,
-  ConfirmationSliderTrackBorderGray,
-  ConfirmationSliderTrackBorderLight,
-  ConfirmationSliderTrackBorderTransparent,
-  ConfirmationSliderTrackDarkGray,
-  ConfirmationSliderTrackGray
-} from "../../Themes/SnapOS-2.0/Colors"
 import {Callback, createCallbacks} from "../../Utility/SceneUtilities"
+import {HSVtoRGB} from "../../Utility/UIKitUtilities"
 import {GradientParameters, RoundedRectangle} from "../../Visuals/RoundedRectangle/RoundedRectangle"
 import {
   RoundedRectangleVisual,
@@ -38,39 +16,11 @@ const log = new NativeLogger("ConfirmationSlider")
 
 const TRACKFILL_Z_OFFSET: number = 0.01
 
-type FillGradientColors = Record<string, vec4>
-
-const FillGradient: FillGradientColors = {
-  stop0Color0: ConfirmationSliderFillLightGray,
-  stop0Color1: ConfirmationSliderFillDarkYellow,
-  stop1Color0: ConfirmationSliderFillMediumYellow,
-  stop1Color1: ConfirmationSliderFillMediumYellow
-}
-
-const DefaultShineColor: vec3 = ConfirmationSliderShineColor
-
-interface ConfirmationSliderThemeData {
-  fill?: FillGradientColors | StatefulFillGradient
-  shineColor?: vec3
-}
-
-type StatefulFillGradient = Record<string, FillGradientColors>
-
-const DefaultStatefulFillGradient: StatefulFillGradient = {
-  default: FillGradient,
-  hovered: FillGradient,
-  triggered: FillGradient
-}
-
-function isStatefulFill(fill: unknown): fill is StatefulFillGradient {
-  return fill !== null && typeof fill === "object" && "default" in (fill as object)
-}
-
-function normalizeStatefulFill(fill: FillGradientColors | StatefulFillGradient): StatefulFillGradient {
-  if (isStatefulFill(fill)) {
-    return fill
-  }
-  return { default: fill, hovered: fill, triggered: fill }
+const FillGradient: Record<string, vec4> = {
+  stop0Color0: HSVtoRGB(0, 0, 0.8, 1),
+  stop0Color1: HSVtoRGB(43, 0.59, 0.31, 1),
+  stop1Color0: HSVtoRGB(51, 0.49, 0.64, 1),
+  stop1Color1: HSVtoRGB(51, 0.49, 0.64, 1)
 }
 
 const FillParameters: Partial<GradientParameters> = {
@@ -86,11 +36,11 @@ const SliderVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderTrackDarkGray
+        color: HSVtoRGB(0, 0, 0.12, 1)
       },
       stop1: {
         percent: 1,
-        color: ConfirmationSliderTrackGray
+        color: HSVtoRGB(0, 0, 0.17, 1)
       }
     },
     hasBorder: true,
@@ -101,15 +51,15 @@ const SliderVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0.9, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderTrackBorderLight
+        color: HSVtoRGB(0, 0.0, 0.28, 1)
       },
       stop1: {
         percent: 0.5,
-        color: ConfirmationSliderTrackBorderTransparent
+        color: HSVtoRGB(0, 0, 0.17, 0)
       },
       stop2: {
         percent: 1,
-        color: ConfirmationSliderTrackBorderGray
+        color: HSVtoRGB(0, 0, 0.36, 1)
       }
     }
   }
@@ -123,11 +73,11 @@ const KnobVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0.8, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderKnobDark
+        color: HSVtoRGB(51, 0.18, 0.15, 1)
       },
       stop1: {
         percent: 1,
-        color: ConfirmationSliderKnobBright
+        color: HSVtoRGB(50, 0.6, 0.35, 1)
       }
     },
     hasBorder: true,
@@ -137,11 +87,11 @@ const KnobVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0.8, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderKnobBorderTop
+        color: HSVtoRGB(50, 0.5, 0.46, 1)
       },
       stop1: {
         percent: 1,
-        color: ConfirmationSliderKnobBorderBottom
+        color: HSVtoRGB(51, 0.37, 0.13, 1)
       }
     }
   },
@@ -151,11 +101,11 @@ const KnobVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0.8, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderKnobHoverDark
+        color: HSVtoRGB(50, 0.42, 0.23, 1)
       },
       stop1: {
         percent: 1,
-        color: ConfirmationSliderKnobHoverBright
+        color: HSVtoRGB(50, 0.58, 0.47, 1)
       }
     },
     borderGradient: {
@@ -163,11 +113,11 @@ const KnobVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0.8, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderKnobHoverBorderTop
+        color: HSVtoRGB(50, 0.5, 0.5, 1)
       },
       stop1: {
         percent: 1,
-        color: ConfirmationSliderKnobHoverBorderBottom
+        color: HSVtoRGB(51, 0.37, 0.15, 1)
       }
     }
   },
@@ -177,11 +127,11 @@ const KnobVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0.8, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderKnobTriggeredDark
+        color: HSVtoRGB(43, 0.59, 0.29, 1)
       },
       stop1: {
         percent: 1,
-        color: ConfirmationSliderKnobTriggeredBright
+        color: HSVtoRGB(51, 0.44, 0.68, 1)
       }
     },
     borderGradient: {
@@ -189,15 +139,15 @@ const KnobVisualParameters: Partial<RoundedRectangleVisualParameters> = {
       end: new vec2(0.8, -1),
       stop0: {
         percent: 0,
-        color: ConfirmationSliderKnobTriggeredBorderYellow
+        color: HSVtoRGB(48, 0.36, 0.94, 1)
       },
       stop1: {
         percent: 0.5,
-        color: ConfirmationSliderKnobTriggeredBorderMid
+        color: HSVtoRGB(0, 0.0, 0.16, 1)
       },
       stop2: {
         percent: 1,
-        color: ConfirmationSliderKnobTriggeredBorderYellow
+        color: HSVtoRGB(48, 0.36, 0.94, 1)
       }
     }
   }
@@ -236,8 +186,6 @@ export class ConfirmationSlider extends Slider {
 
   private customFillObject: SceneObject
   private customTrackFill: RoundedRectangle
-  private _fillColors: StatefulFillGradient = DefaultStatefulFillGradient
-  private _shineColor: vec3 = DefaultShineColor
 
   public readonly hasTrackVisual: boolean = true
   protected override _knobSize: vec2 = new vec2(3, 3)
@@ -273,23 +221,15 @@ export class ConfirmationSlider extends Slider {
   }
 
   protected createDefaultVisual(): void {
-    const theme = this.resolveTheme()
-    const themeData = theme.componentData?.["ConfirmationSlider"] as ConfirmationSliderThemeData | undefined
-    const themedTrack = theme.styles?.["ConfirmationSliderTrack"]?.["default"] ?? SliderVisualParameters
-    const themedKnob = theme.styles?.["ConfirmationSliderKnob"]?.["default"] ?? KnobVisualParameters
-    const themedFill = normalizeStatefulFill(themeData?.fill ?? FillGradient)
-    this._shineColor = themeData?.shineColor ?? DefaultShineColor
-
     if (!this._visual) {
       const defaultVisual: RoundedRectangleVisual = new RoundedRectangleVisual({
         sceneObject: this.sceneObject,
-        style: themedTrack
+        style: SliderVisualParameters
       })
       defaultVisual.renderMeshVisual.mainMaterial = requireAsset(
         "../../../Materials/ConfirmationSlider.mat"
       ) as Material
-      defaultVisual.cornerRadius = this.size.y * this.cornerRadiusFactor
-      defaultVisual.renderMeshVisual.mainPass.shineColor = this._shineColor
+      defaultVisual.cornerRadius = this.size.y * 0.5
       this._visual = defaultVisual
     }
 
@@ -298,22 +238,16 @@ export class ConfirmationSlider extends Slider {
       this.managedSceneObjects.add(knobObject)
       const defaultKnobVisual: RoundedRectangleVisual = new RoundedRectangleVisual({
         sceneObject: knobObject,
-        style: themedKnob
+        style: KnobVisualParameters
       })
 
-      defaultKnobVisual.cornerRadius = (this.size.y - defaultKnobVisual.borderSize * 2) * this.cornerRadiusFactor
+      defaultKnobVisual.cornerRadius = (this.size.y - defaultKnobVisual.borderSize * 2) * 0.5
       this._knobVisual = defaultKnobVisual
       this._knobVisual.renderMeshVisual.mainPass.blendMode = BlendMode.PremultipliedAlphaAuto
       this._knobSize = new vec2(this.size.y * 1.5, this.size.y)
       knobObject.setParent(this.sceneObject)
-
-      const knobThemeData = theme.componentData?.["ConfirmationSliderKnob"] as {knobVisible?: boolean} | undefined
-      if (knobThemeData?.knobVisible === false) {
-        defaultKnobVisual.renderMeshVisual.enabled = false
-      }
     }
 
-    this._fillColors = themedFill
     this.customFillObject = global.scene.createSceneObject("ConfirmationSliderFill")
     this.managedSceneObjects.add(this.customFillObject)
     this.customFillObject.layer = this.sceneObject.layer
@@ -334,21 +268,6 @@ export class ConfirmationSlider extends Slider {
     super.setUpEventCallbacks()
   }
 
-  protected setState(stateName: StateName) {
-    super.setState(stateName)
-    if (this.customTrackFill) {
-      this.updateCustomFillSize()
-    }
-  }
-
-  private getFillColorsForState(): FillGradientColors {
-    const stateKey =
-      this.stateName === StateName.hovered ? "hovered"
-      : this.stateName === StateName.triggered ? "triggered"
-      : "default"
-    return this._fillColors[stateKey] ?? this._fillColors.default
-  }
-
   private updateCustomFillSize() {
     const borderSize = (this._visual as RoundedRectangleVisual).borderSize
     const fillSize = this.customTrackFill.size.uniformScale(1)
@@ -356,18 +275,17 @@ export class ConfirmationSlider extends Slider {
     fillSize.x = MathUtils.lerp(fillSize.y, this.size.x - borderSize * 2, this.knobValue)
     const xPos = MathUtils.lerp((this.size.x - borderSize * 2) * -0.5 + fillSize.y * 0.5, 0, this.knobValue)
     this.customFillObject.getTransform().setLocalPosition(new vec3(xPos, 0, TRACKFILL_Z_OFFSET))
-    this.customTrackFill.cornerRadius = fillSize.y * this.cornerRadiusFactor
+    this.customTrackFill.cornerRadius = fillSize.y * 0.5
     this.customTrackFill.size = fillSize
-    const colors = this.getFillColorsForState()
     this.customTrackFill.setBackgroundGradient({
       ...FillParameters,
       stop0: {
         percent: 0,
-        color: vec4.lerp(colors.stop0Color0, colors.stop0Color1, this.knobValue)
+        color: vec4.lerp(FillGradient.stop0Color0, FillGradient.stop0Color1, this.knobValue)
       },
       stop1: {
         percent: 1,
-        color: vec4.lerp(colors.stop1Color0, colors.stop1Color1, this.knobValue)
+        color: vec4.lerp(FillGradient.stop1Color0, FillGradient.stop1Color1, this.knobValue)
       }
     })
   }

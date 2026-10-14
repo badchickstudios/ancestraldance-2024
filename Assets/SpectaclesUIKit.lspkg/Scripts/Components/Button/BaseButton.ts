@@ -17,24 +17,6 @@ const log = new NativeLogger("Button")
  * @extends VisualElement
  */
 export abstract class BaseButton extends VisualElement implements Toggleable {
-  // To add per-theme styles or shapes, add @input fields like:
-  //
-  // @input
-  // @showIf("_themeOverride", "SnapOS3")
-  // @label("Style")
-  // @widget(new ComboBoxWidget([
-  //   new ComboBoxItem("StyleName", "StyleName"),
-  // ]))
-  // protected _styleSnapOS3: string = "StyleName"
-
-  protected get effectiveStyle(): string {
-    return "PrimaryNeutral"
-  }
-
-  protected get effectiveShape(): string {
-    return "Rectangle"
-  }
-
   @input
   private _toggleable: boolean = false
   @input
@@ -108,9 +90,6 @@ export abstract class BaseButton extends VisualElement implements Toggleable {
   }
 
   public initialize(): void {
-    if (this.initialized) {
-      return
-    }
     this._isOn = this._defaultToOn
     this.stateName = this._defaultToOn ? StateName.toggledDefault : StateName.default
     super.initialize()

@@ -246,15 +246,10 @@ export class Checkbox extends RadioButton {
   }
 
   protected createDefaultVisual(): void {
-    const theme = this.resolveTheme()
-    const baseStyle = theme.styles["Checkbox"]?.["default"] ?? DEFAULT_VISUAL_PARAMETERS
-    const toggledStyle = theme.styles["CheckboxToggled"]?.["default"] ?? DEFAULT_TOGGLED_VISUAL_PARAMETERS
-    const markStyle = theme.styles["CheckboxMark"]?.["default"] ?? DEFAULT_CHECK_VISUAL_PARAMETERS
-
     if (!this._visual) {
       const defaultVisual: RoundedRectangleVisual = new RoundedRectangleVisual({
         sceneObject: this.sceneObject,
-        style: baseStyle
+        style: DEFAULT_VISUAL_PARAMETERS
       })
       defaultVisual.cornerRadius = this._width * 0.25
       this._visual = defaultVisual
@@ -267,7 +262,7 @@ export class Checkbox extends RadioButton {
       toggledVisualObject.getTransform().setLocalPosition(new vec3(0, 0, DEFAULT_TOGGLED_VISUAL_DEPTH))
       const defaultToggledVisual = new RoundedRectangleVisual({
         sceneObject: toggledVisualObject,
-        style: toggledStyle,
+        style: DEFAULT_TOGGLED_VISUAL_PARAMETERS,
         transparent: true
       })
       defaultToggledVisual.cornerRadius = this._toggledWidth * 0.25
@@ -281,7 +276,7 @@ export class Checkbox extends RadioButton {
       checkVisualObject.getTransform().setLocalPosition(new vec3(0, 0, DEFAULT_CHECK_VISUAL_DEPTH))
       const defaultCheckMarkVisual = new RoundedRectangleVisual({
         sceneObject: checkVisualObject,
-        style: markStyle,
+        style: DEFAULT_CHECK_VISUAL_PARAMETERS,
         transparent: true
       })
       defaultCheckMarkVisual.cornerRadius = this._checkMarkSize * 0.25

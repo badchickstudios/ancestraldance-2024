@@ -2,7 +2,7 @@ import {PublicApi} from "SpectaclesInteractionKit.lspkg/Utils/Event"
 
 /**
  * Interface for layouts that can be nested within a LayoutItem.
- * Allows LayoutItem to interact with different layout types (DirectionalLayout, GridLayout)
+ * Allows LayoutItem to interact with different layout types (SpatialLayout)
  * in a generic way to handle size synchronization and nesting.
  */
 export interface Layoutable {

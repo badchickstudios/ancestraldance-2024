@@ -13,7 +13,6 @@ import animate, {CancelSet, easingFunctions} from "SpectaclesInteractionKit.lspk
 import Event, {PublicApi, unsubscribe} from "SpectaclesInteractionKit.lspkg/Utils/Event"
 import {clamp, lerp} from "SpectaclesInteractionKit.lspkg/Utils/mathUtils"
 import ReplayEvent from "SpectaclesInteractionKit.lspkg/Utils/ReplayEvent"
-import {ThemeService} from "../../Themes/ThemeService"
 import {HSVtoRGB} from "../../Utility/UIKitUtilities"
 import {RoundedRectangle} from "../../Visuals/RoundedRectangle/RoundedRectangle"
 import {RoundButton} from "../Button/RoundButton"
@@ -80,36 +79,6 @@ const LERP_CURSOR_RADIUS_FACTOR = 1 - MINIMUM_CURSOR_RADIUS_FACTOR
  */
 @component
 export class Frame extends BaseScriptComponent implements Layoutable {
-  @input
-  @label("Theme")
-  @widget(
-    new ComboBoxWidget([
-      new ComboBoxItem("Inherited", "Inherited"),
-      new ComboBoxItem("SnapOS2", "SnapOS2"),
-      new ComboBoxItem("SnapOS3", "SnapOS3")
-    ])
-  )
-  private _themeOverride: string = "Inherited"
-
-  // To add per-theme styles or shapes in the future, add @input fields like:
-  //
-  // @input
-  // @showIf("_themeOverride", "SnapOS3")
-  // @label("Style")
-  // @widget(new ComboBoxWidget([
-  //   new ComboBoxItem("StyleName", "StyleName"),
-  // ]))
-  // private _styleSnapOS3: string = "StyleName"
-
-  private getFrameParams(): typeof FrameConstants {
-    const mgr = ThemeService.getInstance()
-    const override = this._themeOverride === "Default" ? "Inherited" : this._themeOverride
-    const theme = override !== "Inherited"
-      ? mgr.getTheme(override) ?? mgr.currentTheme
-      : mgr.currentTheme
-    return (theme.componentData?.["Frame"] as typeof FrameConstants) ?? FrameConstants
-  }
-
   /**
    * When enabled, the frame automatically appears when hovered and hides when
    * not being interacted with. Disable to manually control frame visibility.
@@ -841,13 +810,12 @@ precision when interacting with buttons and UI elements using hand tracking."
     this._roundedRectangle.cornerRadius = 2.25
     this._roundedRectangle.border = true
     this._roundedRectangle.borderSize = 0.25
-    const frameParams = this.getFrameParams()
-    this._roundedRectangle.borderColor = frameParams.borderColor
+    this._roundedRectangle.borderColor = FrameConstants.borderColor
     this.shader = this._roundedRectangle.renderMeshVisual.mainMaterial.mainPass
-    this.shader.highlightColorStop1 = frameParams.highlightColorStop1
-    this.shader.highlightColorStop2 = frameParams.highlightColorStop2
-    this.shader.highlightActiveColorStop1 = frameParams.highlightActiveColorStop1
-    this.shader.highlightActiveColorStop2 = frameParams.highlightActiveColorStop2
+    this.shader.highlightColorStop1 = FrameConstants.highlightColorStop1
+    this.shader.highlightColorStop2 = FrameConstants.highlightColorStop2
+    this.shader.highlightActiveColorStop1 = FrameConstants.highlightActiveColorStop1
+    this.shader.highlightActiveColorStop2 = FrameConstants.highlightActiveColorStop2
     this.shader.isActive = 0
     this.shader.grabZonesCount = 0
     this.shader.highlightSize = 40
@@ -1311,13 +1279,12 @@ precision when interacting with buttons and UI elements using hand tracking."
       this._translatingLastFrame = false
     }
 
-    const pinchParams = this.getFrameParams()
     if (this._inputState.pinching) {
       this.shader.isActive = 1
-      this.roundedRectangle.borderColor = pinchParams.borderActiveColor
+      this.roundedRectangle.borderColor = FrameConstants.borderActiveColor
     } else {
       this.shader.isActive = 0
-      this.roundedRectangle.borderColor = pinchParams.borderColor
+      this.roundedRectangle.borderColor = FrameConstants.borderColor
     }
 
     if (DEBUG_DRAW) {

@@ -82,7 +82,6 @@ export class ToolbarButton extends ToolbarItem {
 
     if (this.textComponent) {
       this.textComponent.text = value
-      this.hasText = value.length > 0
       this.updateLayout()
     }
   }

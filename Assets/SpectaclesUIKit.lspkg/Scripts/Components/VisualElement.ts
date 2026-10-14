@@ -2,14 +2,13 @@ import {InteractorEvent} from "SpectaclesInteractionKit.lspkg/Core/Interactor/In
 import {unsubscribe} from "SpectaclesInteractionKit.lspkg/Utils/Event"
 import {CancelToken, clearTimeout, setTimeout} from "SpectaclesInteractionKit.lspkg/Utils/FunctionTimingUtils"
 import {findAllComponentsInSelfOrChildren} from "SpectaclesInteractionKit.lspkg/Utils/SceneObjectUtils"
-import {DepthSettingsControllable} from "../Interfaces/DepthSettingsControllable"
-import {Theme} from "../Themes/Theme"
-import {ThemeService} from "../Themes/ThemeService"
+import {SnapOS2Styles} from "../Themes/SnapOS-2.0/SnapOS2"
 import {Tooltip} from "../Tooltip"
 import {isEqual} from "../Utility/UIKitUtilities"
 import {DropShadowVisual, DropShadowVisualParameters} from "../Visuals/DropShadowVisual"
 import {RoundedRectangleVisual} from "../Visuals/RoundedRectangle/RoundedRectangleVisual"
 import {Visual} from "../Visuals/Visual"
+import {DepthSettingsControllable} from "../Interfaces/DepthSettingsControllable"
 import {Element, StateName} from "./Element"
 
 const DEFAULT_SHADOW_STYLE: Partial<DropShadowVisualParameters> = {
@@ -52,35 +51,23 @@ const TOOLTIP_ACTIVATION_DELAY = 50 //in milliseconds
  */
 export abstract class VisualElement extends Element implements DepthSettingsControllable {
   @input
+  @widget(
+    new ComboBoxWidget([
+      new ComboBoxItem("PrimaryNeutral", "PrimaryNeutral"),
+      new ComboBoxItem("Primary", "Primary"),
+      new ComboBoxItem("Secondary", "Secondary"),
+      new ComboBoxItem("Special", "Special"),
+      new ComboBoxItem("Ghost", "Ghost")
+    ])
+  )
+  protected _style: string = SnapOS2Styles.PrimaryNeutral
+
+  @input
   private _hasShadow: boolean = false
 
   @input("vec3", "{0.05,-0.05,-0.01}")
   @showIf("_hasShadow")
   private _shadowPositionOffset: vec3 = vec3.zero()
-
-  @input
-  @label("Theme")
-  @widget(
-    new ComboBoxWidget([
-      new ComboBoxItem("Inherited", "Inherited"),
-      new ComboBoxItem("SnapOS2", "SnapOS2"),
-      new ComboBoxItem("SnapOS3", "SnapOS3")
-    ])
-  )
-  protected _themeOverride: string = "Inherited"
-
-  protected get normalizedThemeOverride(): string {
-    return this._themeOverride === "Default" ? "Inherited" : this._themeOverride
-  }
-
-  protected resolveTheme(): Theme {
-    const mgr = ThemeService.getInstance()
-    const override = this.normalizedThemeOverride
-    if (override !== "Inherited") {
-      return mgr.getTheme(override) ?? mgr.currentTheme
-    }
-    return mgr.currentTheme
-  }
 
   protected _visual: Visual
   protected visualEventHandlerUnsubscribes: unsubscribe[] = []
@@ -93,14 +80,6 @@ export abstract class VisualElement extends Element implements DepthSettingsCont
 
   private tooltip: Tooltip
   private tooltipCancelToken: CancelToken
-
-  protected get effectiveStyle(): string | undefined {
-    return undefined
-  }
-
-  public get style(): string {
-    return this.effectiveStyle ?? this.resolveTheme().defaultStyleName
-  }
 
   /**
    * Gets the type string of the visual element.
@@ -152,6 +131,15 @@ export abstract class VisualElement extends Element implements DepthSettingsCont
     if (this._visual) {
       this._visual.depthWrite = depthWrite
     }
+  }
+
+  /**
+   * Gets the style of the visual element.
+   *
+   * @returns {string} The style of the visual element.
+   */
+  public get style(): string {
+    return this._style as string
   }
 
   /**

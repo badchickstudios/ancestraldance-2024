@@ -78,9 +78,9 @@
     code: ""
   VersionMajor: 0
   VersionMinor: 1
-  VersionPatch: 7
+  VersionPatch: 6
   UpdateCheckpoint: 92
-  ExportUid: 9f3574a9-aef3-465c-a344-6a3a76eb916a
+  ExportUid: c3fba2d7-cfbe-40c7-bd16-e98ebe663cdf
   ComponentUid: 8c9a8f41-acd1-446a-b428-742bbc993c39
   PackagePolicy: CanBeUnpackedTransparent
   ReadMe: !<reference> 1cc7a177-ed25-4892-b8a7-94d325dbaa4e

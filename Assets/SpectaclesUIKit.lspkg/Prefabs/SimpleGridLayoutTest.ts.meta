@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/de891c2a-4fb0-8b0b-2fd4-2847546e9dc1>
+- !<AssetImportMetadata/e2270254-4dfc-487c-92bd-2062649f6b09>
   ImportedAssetIds:
     TypeScriptAsset: !<reference> 0396dae0-e156-4a7f-9828-0a99bea6233d
   ImporterName: TypeScriptAssetImporter
@@ -26,7 +26,7 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
-    GridLayout: false
+    SpatialLayout: false
     _fallbackStrategy: false
     layoutItemPrefab: false
   ScriptTypesHidden:
@@ -38,13 +38,13 @@
   Attachments:
     []
   DefaultScriptInputs:
-    - GridLayout: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+    - SpatialLayout: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       layoutItemPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
       _fallbackStrategy: closestAvailable
   ScriptTypes:
     -
       {}
   InputLines:
-    - // @input AssignableType_1 GridLayout
+    - // @input AssignableType_1 SpatialLayout
     - // @input Asset.ObjectPrefab layoutItemPrefab
     - '// @input string _fallbackStrategy {"widget":"combobox", "values":[{"label":"Closest Available", "value":"closestAvailable"}, {"label":"Push", "value":"push"}]}'

@@ -21,22 +21,18 @@ import {
   isAnyAxisLayoutDriven,
   isLayoutable,
   isNestableLayout,
-  LayoutAxis,
   measureVisualComponents,
   resizeTextsToFit,
   restoreLayoutableSettings,
   restoreNestableLayoutSettings,
   SCREEN_TRANSFORM_CENTER_ANCHOR,
   syncLayoutableSize,
-  updateCachedAxisSettings,
   updateLayoutableAxisSettings,
   updateNestableLayoutAxisSettings
 } from "../../Utility/LayoutItemUtilities"
 import {vec3ApproximatelyEqual} from "../../Utility/UIKitUtilities"
-import {DirectionalLayout} from "./DirectionalLayout"
 import {Layoutable} from "./Layoutable"
 import {
-  Axis,
   Bounds3D,
   DepthAlignment,
   HorizontalAlignment,
@@ -53,7 +49,7 @@ const log = new NativeLogger("LayoutItem")
  * LayoutItem manages the sizing and positioning of various item types within a scene object.
  *
  * This component automatically detects and applies dimensions to:
- * - Layoutable components (Element, Shape, Frame, ScrollWindow, DirectionalLayout, GridLayout)
+ * - Layoutable components (Element, Shape, Frame, ScrollWindow, SpatialLayout)
  * - Lens Studio components (RenderMeshVisual, Image, Text, ScreenTransform)
  *
  * ## Sizing Drivers
@@ -72,15 +68,8 @@ const log = new NativeLogger("LayoutItem")
  *
  * ### `SizeDriver.LayoutAndLayoutItem` (default)
  * The parent Layout controls the size (size flows downward).
- * - Size comes from the parent layout system (e.g. `layoutWidth` assigned by a GridLayout)
+ * - Size comes from the parent layout system (e.g. `layoutWidth` assigned by a SpatialLayout)
  * - If no parent layout is present, falls back to `LayoutItem` behavior
- *
- * ## DirectionalLayout Nesting
- *
- * When a DirectionalLayout is nested inside another layout via LayoutItem:
- * - `SizeDriver.LayoutAndLayoutItem`: Parent layout controls nested layout's size via `fixedLayout*` properties
- * - `SizeDriver.Component`: Nested layout determines its own size based on its children
- * - Original DirectionalLayout settings are cached and restored when LayoutItem is destroyed
  *
  */
 @component
@@ -617,7 +606,7 @@ export class LayoutItem extends BaseScriptComponent {
    * World position and scale are preserved during reparenting.
    * This method is idempotent - if already parented to the layout, it does nothing.
    *
-   * @param layout - The layout to parent to (SingleAxisLayout, DirectionalLayout, or GridLayout).
+   * @param layout - The layout to parent to (SingleAxisLayout or SpatialLayout).
    */
   public parentToLayout(layout: {sceneObject: SceneObject}): void {
     // Only save and reparent if not already parented to this layout
@@ -652,7 +641,7 @@ export class LayoutItem extends BaseScriptComponent {
    *
    * @remarks
    * - Requires size driver = Component (size must be component-driven)
-   * - Only applies to non-Layoutable components (has no effect for Element, Shape, Frame, ScrollWindow, DirectionalLayout, GridLayout)
+   * - Only applies to non-Layoutable components (has no effect for Element, Shape, Frame, ScrollWindow, SpatialLayout)
    * - Layoutable components already track size changes automatically via `onSizeChanged`
    * - Fires `onSizeUpdated` event if the size changed, which notifies parent layouts to refresh
    *
@@ -746,13 +735,6 @@ export class LayoutItem extends BaseScriptComponent {
   // PRIVATE GETTERS/SETTERS
   // ═══════════════════════════════════════════════════════════════════════════
 
-  /**
-   * Gets whether the underlying Layoutable component is a DirectionalLayout.
-   */
-  private get isComponentDirectionalLayout(): boolean {
-    return this._layoutable instanceof DirectionalLayout
-  }
-
   private get isComponentLayoutable(): boolean {
     return isLayoutable(this._layoutable)
   }
@@ -809,10 +791,6 @@ export class LayoutItem extends BaseScriptComponent {
       if (isComponentDriven) {
         this.readSizeFromNonLayoutable()
       }
-    }
-
-    if (this.isComponentDirectionalLayout && (this._layoutable as DirectionalLayout).initialized && isLayoutDriven) {
-      this.subscribeToDirectionalLayoutDirectionEvents(this._layoutable as DirectionalLayout)
     }
 
     this.updateSize()
@@ -890,7 +868,7 @@ export class LayoutItem extends BaseScriptComponent {
   }
 
   /**
-   * Attempts to initialize Layoutable components (DirectionalLayout, Element, or Shape).
+   * Attempts to initialize Layoutable components (Element, Shape, or Layout).
    * @returns true if a Layoutable component was found and initialized, false otherwise.
    */
   private tryInitializeLayoutable(onComplete: () => void): boolean {
@@ -960,10 +938,6 @@ export class LayoutItem extends BaseScriptComponent {
           {width: this.width, height: this.height, depth: this.depth},
           currentMask
         )
-        // Subscribe to direction enable/disable events to update cached settings
-        if (layoutable instanceof DirectionalLayout) {
-          this.subscribeToDirectionalLayoutDirectionEvents(layoutable)
-        }
       }
 
       // Handle VisualElement/Shape material caching if applicable
@@ -980,20 +954,6 @@ export class LayoutItem extends BaseScriptComponent {
     } else {
       this._pendingInitUnsubscribe = layoutable.onInitialized.add(completeLayoutableInit)
     }
-  }
-
-  /**
-   * Subscribes to DirectionalLayout direction change events.
-   * Updates cached settings when direction changes.
-   */
-  private subscribeToDirectionalLayoutDirectionEvents(directionalLayout: DirectionalLayout): void {
-    this._unsubscribeCallbacks.push(
-      directionalLayout.onDirectionChanged.add((newDirection: Axis) => {
-        this.updateCachedSettings(newDirection === Axis.X, "horizontal")
-        this.updateCachedSettings(newDirection === Axis.Y, "vertical")
-        this.updateCachedSettings(newDirection === Axis.Z, "depth")
-      })
-    )
   }
 
   private subscribeToLayoutableSizeChangedEvent(): void {
@@ -1054,23 +1014,6 @@ export class LayoutItem extends BaseScriptComponent {
       this._texts,
       {width: this.width, height: this.height}
     )
-  }
-
-  /**
-   * Updates cached direction settings for a specific axis when the direction is enabled.
-   * When disabled, LayoutItem config stays applied (it's unused anyway) - restoration happens only on destroy.
-   */
-  private updateCachedSettings(enabled: boolean, axis: LayoutAxis): void {
-    if (!this.isComponentDirectionalLayout || !this._originalLayoutableSettings) return
-
-    if (enabled) {
-      this._originalLayoutableSettings = updateCachedAxisSettings(
-        this._layoutable,
-        this._originalLayoutableSettings,
-        {width: this.width, height: this.height, depth: this.depth},
-        axis
-      )
-    }
   }
 
   /**

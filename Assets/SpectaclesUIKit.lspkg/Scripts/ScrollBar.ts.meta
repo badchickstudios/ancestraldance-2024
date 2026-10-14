@@ -1,4 +1,4 @@
-- !<AssetImportMetadata/dc76952f-5df6-c3db-b5b9-f521d45276a8>
+- !<AssetImportMetadata/99d185d5-543b-4f56-be99-045c55319dfc>
   ImportedAssetIds:
     TypeScriptAsset: !<reference> 3a0acfde-55a9-47c6-911b-4a6f87490a05
   ImporterName: TypeScriptAssetImporter
@@ -28,9 +28,9 @@
   ScriptInputsHidden:
     _playAudio: false
     _renderOrder: false
-    _size: false
     orientation: false
     scrollWindow: false
+    size: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -41,7 +41,7 @@
     []
   DefaultScriptInputs:
     - _renderOrder: 0
-      _size: !<Vec2> {x: 20.000000, y: 1.800000}
+      size: !<Vec2> {x: 20.000000, y: 1.800000}
       orientation: Vertical
       scrollWindow: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       _playAudio: false
@@ -50,7 +50,7 @@
       {}
   InputLines:
     - '// @input int _renderOrder = "0"'
-    - "// @input vec2 _size = {20,1.8}"
+    - "// @input vec2 size = {20,1.8}"
     - '// @input string orientation = "Vertical" {"widget":"combobox", "values":[{"label":"Horizontal", "value":"Horizontal"}, {"label":"Vertical", "value":"Vertical"}]}'
     - // @input AssignableType_1 scrollWindow
     - // @input bool _playAudio

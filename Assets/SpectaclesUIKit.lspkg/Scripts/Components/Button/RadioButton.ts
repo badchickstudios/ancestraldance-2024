@@ -97,18 +97,6 @@ const TOGGLED_WIDTH_RATIO = 0.6666
  */
 @component
 export class RadioButton extends BaseButton {
-  /**
-   *  add per-theme styles, add @input fields like:
-   *
-   * @input
-   * @showIf("_themeOverride", "SnapOS3")
-   * @label("Style")
-   * @widget(new ComboBoxWidget([
-   *   new ComboBoxItem("StyleName", "StyleName"),
-   * ]))
-   * protected _styleSnapOS3: string = "StyleName"
-   */
-
   @input
   protected _width: number = 1
 
@@ -233,14 +221,10 @@ export class RadioButton extends BaseButton {
   }
 
   protected createDefaultVisual(): void {
-    const theme = this.resolveTheme()
-    const baseStyle = theme.styles["RadioButton"]?.["default"] ?? DEFAULT_VISUAL_PARAMETERS
-    const toggledStyle = theme.styles["RadioButtonToggled"]?.["default"] ?? DEFAULT_TOGGLED_VISUAL_PARAMETERS
-
     if (!this._visual) {
       const defaultVisual: RoundedRectangleVisual = new RoundedRectangleVisual({
         sceneObject: this.sceneObject,
-        style: baseStyle
+        style: DEFAULT_VISUAL_PARAMETERS
       })
       defaultVisual.cornerRadius = this._width * 0.5
       this._visual = defaultVisual
@@ -253,7 +237,7 @@ export class RadioButton extends BaseButton {
       toggledVisualObject.getTransform().setLocalPosition(new vec3(0, 0, DEFAULT_TOGGLED_VISUAL_DEPTH))
       const defaultToggledVisual = new RoundedRectangleVisual({
         sceneObject: toggledVisualObject,
-        style: toggledStyle,
+        style: DEFAULT_TOGGLED_VISUAL_PARAMETERS,
         transparent: true
       })
       defaultToggledVisual.cornerRadius = this._toggledWidth * 0.5

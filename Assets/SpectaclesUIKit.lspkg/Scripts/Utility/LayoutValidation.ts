@@ -3,8 +3,8 @@ import {
   Alignment,
   Anchor,
   Axis,
-  GridBoundsConstraints,
-  GridPlacement,
+  SpatialBoundsConstraints,
+  SpatialPlacement,
   Overflow,
   WrapDirection
 } from "../Components/Layout/LayoutConfigurationTypes"
@@ -153,147 +153,10 @@ export function validateSingleAxisConfiguration(
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// DIRECTIONAL LAYOUT CONFIGURATION VALIDATION
+// SPATIAL LAYOUT VALIDATION
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Validates stretch configuration for the primary axis in DirectionalLayout.
- * Throws an error if Stretch alignment is enabled without Fixed Size.
- *
- * @param alignment - The alignment value for the primary axis.
- * @param fixedSize - Whether the primary axis has a fixed size.
- * @throws Error if Stretch alignment is enabled without Fixed Size.
- */
-export function validateAxisStretchConfiguration(alignment: string, fixedSize: boolean): void {
-  // Check if alignment is Stretch ("*")
-  if (alignment !== "*") {
-    return
-  }
-
-  // Error if Stretch is enabled but fixed size is not set
-  if (!fixedSize) {
-    throw new Error(
-      `Stretch alignment requires Fixed Size to be enabled. ` + `Enable Fixed Size or choose a different alignment.`
-    )
-  }
-}
-
-/**
- * Validates normalized child size configuration in DirectionalLayout.
- * normalizedChildSize requires the primary layout axis size to be fixed.
- * When normalized, child sizes must be <= 1 for the primary axis.
- *
- * @param normalizedChildSize - Whether normalized child sizing is enabled.
- * @param primarySizeFixed - Whether the primary layout axis has a fixed size.
- * @param primaryAxis - The primary layout axis ("x", "y", or "z").
- * @param childWidth - The child width value.
- * @param childHeight - The child height value.
- * @param childDepth - The child depth value.
- * @throws Error if configuration is invalid.
- */
-export function validateNormalizedChildSizes(
-  normalizedChildSize: boolean,
-  primarySizeFixed: boolean,
-  primaryAxis: string,
-  childWidth: number,
-  childHeight: number,
-  childDepth: number
-): void {
-  if (!normalizedChildSize) {
-    return
-  }
-
-  // Primary axis size must be fixed for normalizedChildSize
-  if (!primarySizeFixed) {
-    throw new Error(
-      "Normalized child size requires the primary layout axis size to be fixed. Enable fixed size for the selected direction."
-    )
-  }
-
-  // Child size on primary axis must be <= 1 when normalized
-  let relevantChildSize = 0
-  let sizeName = ""
-
-  if (primaryAxis === "x") {
-    relevantChildSize = childWidth
-    sizeName = "childWidth"
-  } else if (primaryAxis === "y") {
-    relevantChildSize = childHeight
-    sizeName = "childHeight"
-  } else {
-    relevantChildSize = childDepth
-    sizeName = "childDepth"
-  }
-
-  if (relevantChildSize > 1) {
-    throw new Error(
-      `When normalizedChildSize is enabled, child size on the primary axis must be between 0 and 1. ` +
-        `Invalid value for ${sizeName}: ${relevantChildSize}`
-    )
-  }
-}
-
-/**
- * Validates wrap settings in DirectionalLayout.
- * Checks that wrap configuration is valid for the primary direction.
- *
- * @param primaryDirection - The primary layout direction.
- * @param fixedSize - Whether the primary axis has a fixed size.
- * @param wrapToSecondaryAxis - Whether secondary wrapping is enabled.
- * @param wrapDirection - The secondary wrap direction.
- * @param secondaryFixedSize - Whether the secondary axis has a fixed size.
- * @param wrapToTertiaryAxis - Whether tertiary wrapping is enabled.
- * @param tertiaryDirection - The tertiary wrap direction (required if wrapToTertiaryAxis is true).
- * @throws Error if wrap configuration is invalid.
- */
-export function validateDirectionalWrapSettings(
-  primaryDirection: Axis,
-  fixedSize: boolean,
-  wrapToSecondaryAxis: boolean,
-  wrapDirection: WrapDirection,
-  secondaryFixedSize: boolean,
-  wrapToTertiaryAxis: boolean = false,
-  tertiaryDirection?: WrapDirection
-): void {
-  if (!wrapToSecondaryAxis) {
-    return
-  }
-
-  // Wrap direction must be perpendicular to the item direction
-  if (!isWrapDirectionPerpendicularToAxis(wrapDirection, primaryDirection)) {
-    throw new Error(
-      `Wrap direction "${wrapDirection}" is parallel to item axis "${primaryDirection}". ` +
-        `Wrap direction must be perpendicular. Allowed directions for ${primaryDirection} axis: ${getAllowedWrapDirectionsForAxis(primaryDirection)}`
-    )
-  }
-
-  // Item axis must have fixed size for wrap to determine wrap boundary
-  if (!fixedSize) {
-    throw new Error(
-      `Wrap requires a fixed size on the item axis. ` + `Enable Fixed Size to use wrap on the ${primaryDirection} axis.`
-    )
-  }
-
-  // Validate tertiary wrap settings
-  if (wrapToTertiaryAxis && tertiaryDirection !== undefined) {
-    const secondaryAxis = WRAP_DIRECTION_INFO[wrapDirection].axis
-    const tertiaryAxis = WRAP_DIRECTION_INFO[tertiaryDirection].axis
-
-    if (tertiaryAxis === primaryDirection || tertiaryAxis === secondaryAxis) {
-      throw new Error("Tertiary wrap direction must be perpendicular to both primary and secondary directions")
-    }
-
-    if (!secondaryFixedSize) {
-      throw new Error("Wrapping to tertiary axis requires secondary axis to have a fixed size")
-    }
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// GRID LAYOUT VALIDATION
-// ═══════════════════════════════════════════════════════════════════════════
-
-interface GridValidationConfig {
+interface SpatialValidationConfig {
   maxColumns: number
   maxRows: number
   maxLayers: number
@@ -312,11 +175,11 @@ interface GridValidationConfig {
 }
 
 /**
- * Validates the complete configuration for a GridLayout.
+ * Validates the complete configuration for a SpatialLayout.
  * @param config - The grid configuration object.
  * @throws Error if any value is invalid.
  */
-export function validateGridConfiguration(config: GridValidationConfig): void {
+export function validateSpatialConfiguration(config: SpatialValidationConfig): void {
   validatePositive(config.maxColumns, "Max columns")
   validatePositive(config.maxRows, "Max rows")
   validatePositive(config.maxLayers, "Max layers")
@@ -346,7 +209,7 @@ export function validateGridConfiguration(config: GridValidationConfig): void {
  * @param context - Context string for logging (e.g. "getItemAtCell").
  * @returns True if coordinates are valid.
  */
-export function isValidGridCoordinate(col: number, row: number, layer: number, context: string): boolean {
+export function isValidSpatialCoordinate(col: number, row: number, layer: number, context: string): boolean {
   if (!Number.isFinite(col) || !Number.isFinite(row) || !Number.isFinite(layer)) {
     log.w(`${context} received non-finite indices: col=${col}, row=${row}, layer=${layer}`)
     return false
@@ -363,11 +226,11 @@ export function isValidGridCoordinate(col: number, row: number, layer: number, c
  * If a dimension is fixed, the coordinate must be between 0 and max-1.
  * If a dimension is not fixed, any coordinate is considered valid (grid expands).
  */
-export function isCellWithinGridBounds(
+export function isCellWithinSpatialBounds(
   col: number,
   row: number,
   layer: number,
-  constraints: GridBoundsConstraints
+  constraints: SpatialBoundsConstraints
 ): boolean {
   if (constraints.fixedColumns && (col < 0 || col >= constraints.maxColumns)) return false
   if (constraints.fixedRows && (row < 0 || row >= constraints.maxRows)) return false
@@ -378,7 +241,7 @@ export function isCellWithinGridBounds(
 /**
  * Validates that a placement (start and end cells) is within the grid bounds.
  */
-export function isPlacementWithinGridBounds(placement: GridPlacement, constraints: GridBoundsConstraints): boolean {
+export function isPlacementWithinSpatialBounds(placement: SpatialPlacement, constraints: SpatialBoundsConstraints): boolean {
   const startCol = Math.floor(placement.col)
   const startRow = Math.floor(placement.row)
   const startLayer = Math.floor(placement.layer)
@@ -386,12 +249,12 @@ export function isPlacementWithinGridBounds(placement: GridPlacement, constraint
   const endRow = startRow + placement.rowSpan
   const endLayer = startLayer + placement.layerSpan
 
-  if (!isCellWithinGridBounds(startCol, startRow, startLayer, constraints)) {
+  if (!isCellWithinSpatialBounds(startCol, startRow, startLayer, constraints)) {
     return false
   }
 
   // Check end bound (exclusive index, so check end-1)
-  if (!isCellWithinGridBounds(endCol - 1, endRow - 1, endLayer - 1, constraints)) {
+  if (!isCellWithinSpatialBounds(endCol - 1, endRow - 1, endLayer - 1, constraints)) {
     return false
   }
 

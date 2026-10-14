@@ -84,7 +84,7 @@ export class ScrollBar extends BaseScriptComponent {
   private _renderOrder: number = 0
 
   @input
-  private _size: vec2 = new vec2(20, 1.8)
+  private size: vec2 = new vec2(20, 1.8)
 
   @input
   @widget(new ComboBoxWidget([new ComboBoxItem("Horizontal", "Horizontal"), new ComboBoxItem("Vertical", "Vertical")]))
@@ -100,16 +100,8 @@ export class ScrollBar extends BaseScriptComponent {
   private _trackVisual: RoundedRectangleVisual | undefined
   private _knobVisual: RoundedRectangleVisual | undefined
 
+  private windowSize: number = 0
   private contentLength: number = 0
-
-  private get windowSize(): number {
-    if (!this.scrollWindow) return 0
-    if (this.orientation === ScrollOrientation.Horizontal) {
-      return this.scrollWindow.windowSize.x
-    } else {
-      return this.scrollWindow.windowSize.y
-    }
-  }
 
   private _inactive: boolean = false
 
@@ -121,31 +113,6 @@ export class ScrollBar extends BaseScriptComponent {
   private unsubscribes: unsubscribe[] = []
 
   private onScrolledEvent: Event<number> = new Event()
-
-  /**
-   * Sets the size of the scrollbar track.
-   *
-   * @param sz - The new size as a vec2 (x = length along scroll axis, y = thickness).
-   */
-  public set size(sz: vec2) {
-    this._size = sz
-    if (this.initialized) {
-      this.slider.size = new vec3(sz.x, sz.y, 1)
-      if (this._trackVisual) {
-        this._trackVisual.cornerRadius = sz.y * 0.5
-      }
-      this.updateSliderKnobSize()
-    }
-  }
-
-  /**
-   * Gets the size of the scrollbar track.
-   *
-   * @returns {vec2} The current size (x = length, y = thickness).
-   */
-  public get size(): vec2 {
-    return this._size
-  }
 
   /**
    * Event that is invoked when the scrollbar value changes.
@@ -321,12 +288,16 @@ export class ScrollBar extends BaseScriptComponent {
           throw new Error(
             "Error setting up scrollbar: ScrollWindow orientation is not compatible with horizontal scrollbar"
           )
+        } else {
+          this.windowSize = this.scrollWindow.windowSize.x
         }
       } else if (this.orientation === ScrollOrientation.Vertical) {
         if (!this.scrollWindow.vertical) {
           throw new Error(
             "Error setting up scrollbar: ScrollWindow orientation is not compatible with vertical scrollbar"
           )
+        } else {
+          this.windowSize = this.scrollWindow.windowSize.y
         }
       }
 
@@ -340,6 +311,7 @@ export class ScrollBar extends BaseScriptComponent {
           this.setupScrollWindowEventHandlers()
           this.setupSliderEventHandlers()
         }
+        this.updateWindowSize()
         this.updateSliderKnobPosition()
         this.updateSliderKnobSize()
         this.updateSliderVisibility()
@@ -397,7 +369,7 @@ export class ScrollBar extends BaseScriptComponent {
       this._trackVisual.renderMeshVisual.mainPass.blendMode = BlendMode.PremultipliedAlphaAuto
       this._trackVisual.renderMeshVisual.mainPass.colorMask = new vec4b(true, true, true, true)
       this._trackVisual.shouldColorChange = true
-      this._trackVisual.cornerRadius = this._size.y * 0.5
+      this._trackVisual.cornerRadius = this.size.y * 0.5
       this._trackVisual.initialize()
     }
     if (this._knobVisual === undefined) {
@@ -435,13 +407,7 @@ export class ScrollBar extends BaseScriptComponent {
     this.unsubscribes.push(
       this.scrollWindow.onScrollDimensionsUpdated.add(() => {
         this.updateContentLength()
-        this.updateSliderKnobPosition()
-        this.updateSliderKnobSize()
-        this.updateSliderVisibility()
-      })
-    )
-    this.unsubscribes.push(
-      this.scrollWindow.onSizeChanged.add(() => {
+        this.updateWindowSize()
         this.updateSliderKnobPosition()
         this.updateSliderKnobSize()
         this.updateSliderVisibility()
@@ -523,6 +489,16 @@ export class ScrollBar extends BaseScriptComponent {
         } else {
           this.contentLength = scrollDimensions.y
         }
+      }
+    }
+  }
+
+  private updateWindowSize() {
+    if (this.scrollWindow) {
+      if (this.orientation === ScrollOrientation.Horizontal) {
+        this.windowSize = this.scrollWindow.windowSize.x
+      } else if (this.orientation === ScrollOrientation.Vertical) {
+        this.windowSize = this.scrollWindow.windowSize.y
       }
     }
   }

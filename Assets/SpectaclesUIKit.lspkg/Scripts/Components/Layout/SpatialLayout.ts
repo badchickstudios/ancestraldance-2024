@@ -5,33 +5,33 @@ import {findAllComponentsInChildren} from "SpectaclesInteractionKit.lspkg/Utils/
 import {vec3ApproximatelyEqual} from "../../../Scripts/Utility/UIKitUtilities"
 import {
   calculateAxisAnchorOffset,
-  calculateGridItemLocalPosition,
-  calculateGridSize,
+  calculateSpatialItemLocalPosition,
+  calculateSpatialSize,
   calculateItemSpans,
   calculateOccupiedBoundsFromPlacements,
   calculatePlacementFromWorldPosition,
-  calculatePusherGridCenter,
+  calculatePusherSpatialCenter,
   calculateRepackedPlacements,
-  checkGridRegionAvailability,
-  clampGridPlacement,
+  checkSpatialRegionAvailability,
+  clampSpatialPlacement,
   compareVolumes,
-  findClosestAvailableGridPlacement,
-  floorGridPlacement,
+  findClosestAvailableSpatialPlacement,
+  floorSpatialPlacement,
   getCellKey,
-  GridSearchContext,
-  haveGridPlacementsChanged,
+  SpatialSearchContext,
+  haveSpatialPlacementsChanged,
   setPlacementOccupancyInMap,
-  simulateOmniGridPush,
+  simulateOmniSpatialPush,
   updateOccupiedBounds,
   waitForItemsInitialized
-} from "../../Utility/GridLayoutUtilities"
-import {renderGridLayoutDebug} from "../../Utility/LayoutDebugDrawer"
+} from "../../Utility/SpatialLayoutUtilities"
+import {renderSpatialLayoutDebug} from "../../Utility/LayoutDebugDrawer"
 import {PendingLayoutItemTracker} from "../../Utility/LayoutUtilities"
 import {
-  isCellWithinGridBounds,
-  isPlacementWithinGridBounds,
-  isValidGridCoordinate,
-  validateGridConfiguration,
+  isCellWithinSpatialBounds,
+  isPlacementWithinSpatialBounds,
+  isValidSpatialCoordinate,
+  validateSpatialConfiguration,
   validateInteger,
   validateNonNegative,
   validatePositive
@@ -41,20 +41,20 @@ import {
   AddOrder,
   Anchor,
   Axis,
-  GridBoundsConstraints,
-  GridCoordinate,
-  GridMetrics,
-  GridPlacement
+  SpatialBoundsConstraints,
+  SpatialCoordinate,
+  SpatialMetrics,
+  SpatialPlacement
 } from "./LayoutConfigurationTypes"
 import {LayoutItem} from "./LayoutItem"
 import {NestableLayout} from "./NestableLayout"
 
-const log = new NativeLogger("GridLayout")
+const log = new NativeLogger("SpatialLayout")
 
 /**
  * A flexible 3D grid layout component that arranges child elements in a structured grid along X, Y, and Z axes.
  *
- * GridLayout provides a powerful system for positioning children in cells with support for:
+ * SpatialLayout provides a powerful system for positioning children in cells with support for:
  * - **3D Grid Structure**: Organize items into Rows (Y), Columns (X), and Layers (Z)
  * - **Constraints**: Configure fixed or flexible limits for grid dimensions via Max Columns/Rows/Layers
  * - **Anchoring**: Control how the grid is positioned relative to its origin (e.g., Center, Top-Left)
@@ -67,7 +67,7 @@ const log = new NativeLogger("GridLayout")
  * @example
  * ```typescript
  * // Create a 3x3 grid centered at the origin
- * const gridLayout = sceneObject.getComponent(GridLayout.getTypeName());
+ * const gridLayout = sceneObject.getComponent(SpatialLayout.getTypeName());
  * gridLayout.fixedColumns = true;
  * gridLayout.maxColumns = 3;
  * gridLayout.cellWidth = 10;
@@ -87,7 +87,7 @@ const log = new NativeLogger("GridLayout")
  * @see {@link LayoutItem} - The wrapper component for layout children
  */
 @component
-export class GridLayout extends BaseScriptComponent implements NestableLayout {
+export class SpatialLayout extends BaseScriptComponent implements NestableLayout {
   // ═══════════════════════════════════════════════════════════════════════════
   // INPUT PROPERTIES
   // ═══════════════════════════════════════════════════════════════════════════
@@ -230,18 +230,18 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   // Map of grid cell key "col,row,layer" to LayoutItem
   private gridCells: Map<number, LayoutItem> = new Map()
   // Map of LayoutItem to its grid placement
-  private itemPlacements: Map<LayoutItem, GridPlacement> = new Map()
+  private itemPlacements: Map<LayoutItem, SpatialPlacement> = new Map()
 
   // Initialization state
   private _initialized: boolean = false
 
   // Track occupied bounds (inclusive)
-  private _occupiedMin: GridCoordinate = {
+  private _occupiedMin: SpatialCoordinate = {
     col: Infinity,
     row: Infinity,
     layer: Infinity
   }
-  private _occupiedMax: GridCoordinate = {
+  private _occupiedMax: SpatialCoordinate = {
     col: -Infinity,
     row: -Infinity,
     layer: -Infinity
@@ -254,7 +254,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   private _pendingAdditions:
     | {
         item: LayoutItem
-        coordinate?: GridCoordinate
+        coordinate?: SpatialCoordinate
         fallbackStrategy?: AddLayoutItemFallbackStrategy
       }[]
     | null = []
@@ -287,7 +287,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   // Events
   private readonly onInitializedEvent = new ReplayEvent<void>()
   /**
-   * Event fired when the GridLayout has finished initialization.
+   * Event fired when the SpatialLayout has finished initialization.
    * Safe to access all properties and methods after this event fires.
    */
   public readonly onInitialized = this.onInitializedEvent.publicApi()
@@ -306,7 +306,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   public readonly onLayoutItemRemoved = this.onLayoutItemRemovedEvent.publicApi()
 
-  private readonly onItemPlacementChangedEvent = new Event<{item: LayoutItem; placement: GridPlacement}>()
+  private readonly onItemPlacementChangedEvent = new Event<{item: LayoutItem; placement: SpatialPlacement}>()
   /**
    * Event fired when an item's placement changes.
    */
@@ -323,7 +323,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   private debugUpdateEvent: SceneEvent
 
   // Reusable BFS buffers to reduce GC
-  private _searchContext = new GridSearchContext()
+  private _searchContext = new SpatialSearchContext()
 
   // Cache for anchor offsets
   private _cachedAnchorOffset: vec3 = new vec3(0, 0, 0)
@@ -488,10 +488,10 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Sets the layout width.
    * @param value - The width in local space centimeters.
-   * @remarks Setting width directly is not supported in GridLayout as it is determined by cell size and column count.
+   * @remarks Setting width directly is not supported in SpatialLayout as it is determined by cell size and column count.
    */
   public set width(value: number) {
-    log.w("GridLayout width is determined by cell size and column count. Setting width directly is not supported.")
+    log.w("SpatialLayout width is determined by cell size and column count. Setting width directly is not supported.")
   }
 
   /**
@@ -505,10 +505,10 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Sets the layout height.
    * @param value - The height in local space centimeters.
-   * @remarks Setting height directly is not supported in GridLayout as it is determined by cell size and row count.
+   * @remarks Setting height directly is not supported in SpatialLayout as it is determined by cell size and row count.
    */
   public set height(value: number) {
-    log.w("GridLayout height is determined by cell size and row count. Setting height directly is not supported.")
+    log.w("SpatialLayout height is determined by cell size and row count. Setting height directly is not supported.")
   }
 
   /**
@@ -522,10 +522,10 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Sets the layout depth.
    * @param value - The depth in local space centimeters.
-   * @remarks Setting depth directly is not supported in GridLayout as it is determined by cell size and layer count.
+   * @remarks Setting depth directly is not supported in SpatialLayout as it is determined by cell size and layer count.
    */
   public set depth(value: number) {
-    log.w("GridLayout depth is determined by cell size and layer count. Setting depth directly is not supported.")
+    log.w("SpatialLayout depth is determined by cell size and layer count. Setting depth directly is not supported.")
   }
 
   /**
@@ -929,7 +929,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
       this.ensureBoundsUpToDate()
     }
 
-    return calculateGridSize(
+    return calculateSpatialSize(
       this.gridConstraints,
       this._occupiedMin,
       this._occupiedMax,
@@ -947,7 +947,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   }
 
   /**
-   * Gets whether the GridLayout has been initialized.
+   * Gets whether the SpatialLayout has been initialized.
    * @returns True if initialized, false otherwise.
    */
   public get initialized(): boolean {
@@ -955,7 +955,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   }
 
   /**
-   * Gets the number of layout items in the GridLayout.
+   * Gets the number of layout items in the SpatialLayout.
    * @returns The count of items currently in the grid.
    */
   public get layoutItemCount(): number {
@@ -1018,11 +1018,11 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   public addLayoutItem(
     item: LayoutItem,
-    coordinate?: GridCoordinate,
+    coordinate?: SpatialCoordinate,
     fallbackStrategy: AddLayoutItemFallbackStrategy = AddLayoutItemFallbackStrategy.None
   ): boolean {
     if (coordinate) {
-      if (!isValidGridCoordinate(coordinate.col, coordinate.row, coordinate.layer, "addLayoutItem")) {
+      if (!isValidSpatialCoordinate(coordinate.col, coordinate.row, coordinate.layer, "addLayoutItem")) {
         return false
       }
     }
@@ -1099,10 +1099,10 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   public moveLayoutItemInGrid(
     item: LayoutItem,
-    coordinate: GridCoordinate,
+    coordinate: SpatialCoordinate,
     fallbackStrategy: AddLayoutItemFallbackStrategy = AddLayoutItemFallbackStrategy.None
   ): boolean {
-    if (!isValidGridCoordinate(coordinate.col, coordinate.row, coordinate.layer, "moveLayoutItemInGrid")) {
+    if (!isValidSpatialCoordinate(coordinate.col, coordinate.row, coordinate.layer, "moveLayoutItemInGrid")) {
       return false
     }
 
@@ -1143,7 +1143,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
       if (
         oldPlacement &&
         storedNewPlacement &&
-        haveGridPlacementsChanged(oldPlacement, storedNewPlacement) &&
+        haveSpatialPlacementsChanged(oldPlacement, storedNewPlacement) &&
         !this._pendingAddedTracker.has(item)
       ) {
         // Defensive copy: listeners must not be able to mutate internal placement objects.
@@ -1160,9 +1160,9 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    * Gets the placement for an item.
    *
    * @param item - The LayoutItem to get placement for.
-   * @returns The GridPlacement, or undefined if item is not in grid.
+   * @returns The SpatialPlacement, or undefined if item is not in grid.
    */
-  public getPlacement(item: LayoutItem): GridPlacement | undefined {
+  public getPlacement(item: LayoutItem): SpatialPlacement | undefined {
     const placement = this.itemPlacements.get(item)
     return placement ? {...placement} : undefined
   }
@@ -1176,10 +1176,10 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    * @returns The item at the specified cell, or undefined if no item is at that cell.
    */
   public getItemAtCell(col: number, row: number, layer: number): LayoutItem | undefined {
-    if (!isValidGridCoordinate(col, row, layer, "getItemAtCell")) {
+    if (!isValidSpatialCoordinate(col, row, layer, "getItemAtCell")) {
       return undefined
     }
-    if (!isCellWithinGridBounds(col, row, layer, this)) {
+    if (!isCellWithinSpatialBounds(col, row, layer, this)) {
       return undefined
     }
     return this.gridCells.get(getCellKey(col, row, layer))
@@ -1214,7 +1214,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
 
   private onStart(): void {
     // Validate inputs
-    validateGridConfiguration({
+    validateSpatialConfiguration({
       maxColumns: this._maxColumns,
       maxRows: this._maxRows,
       maxLayers: this._maxLayers,
@@ -1252,7 +1252,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
 
         const processItem = (
           item: LayoutItem,
-          coordinate?: GridCoordinate,
+          coordinate?: SpatialCoordinate,
           fallbackStrategy?: AddLayoutItemFallbackStrategy
         ) => {
           if (this.addLayoutItemToGrid(item, coordinate, fallbackStrategy)) {
@@ -1336,7 +1336,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   // Private Getters
   // ───────────────────────────────────────────────────────────────────────────
 
-  private get gridConstraints(): GridBoundsConstraints {
+  private get gridConstraints(): SpatialBoundsConstraints {
     return {
       maxColumns: this._maxColumns,
       maxRows: this._maxRows,
@@ -1352,7 +1352,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
     return Math.max(1000, cellCount * 2, this.itemPlacements.size * 5)
   }
 
-  private getGridMetrics(): GridMetrics {
+  private getSpatialMetrics(): SpatialMetrics {
     return {
       cellSize: new vec3(this._cellWidth, this._cellHeight, this._cellDepth),
       spacing: new vec3(this._spacingX, this._spacingY, this._spacingZ),
@@ -1365,7 +1365,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   // ───────────────────────────────────────────────────────────────────────────
 
   /**
-   * Finds all LayoutItem components in direct children of this GridLayout.
+   * Finds all LayoutItem components in direct children of this SpatialLayout.
    */
   private findLayoutItemsInChildren(): LayoutItem[] {
     return findAllComponentsInChildren(this.sceneObject, LayoutItem.getTypeName(), 1) as LayoutItem[]
@@ -1385,7 +1385,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   private assignInitialPlacements(items: LayoutItem[]): void {
     if (items.length > 0) {
-      log.d(`Found ${items.length} LayoutItem children in GridLayout`)
+      log.d(`Found ${items.length} LayoutItem children in SpatialLayout`)
 
       this.sortItemsByOrder(items)
 
@@ -1418,9 +1418,9 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   private executePlacementStrategy(
     item: LayoutItem,
-    coordinate: GridCoordinate | undefined,
+    coordinate: SpatialCoordinate | undefined,
     fallbackStrategy: AddLayoutItemFallbackStrategy
-  ): GridPlacement | undefined {
+  ): SpatialPlacement | undefined {
     // 1. Try direct placement
     const placement = this.addLayoutItemToCell(item, coordinate)
     if (placement) return placement
@@ -1441,7 +1441,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   private addLayoutItemToGrid(
     item: LayoutItem,
-    coordinate?: GridCoordinate,
+    coordinate?: SpatialCoordinate,
     fallbackStrategy: AddLayoutItemFallbackStrategy = AddLayoutItemFallbackStrategy.None
   ): boolean {
     if (this.itemPlacements.has(item)) {
@@ -1464,11 +1464,11 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Attempts to add an item to a specific cell (or automatically calculated one).
    */
-  private addLayoutItemToCell(item: LayoutItem, coordinate?: GridCoordinate): GridPlacement | undefined {
+  private addLayoutItemToCell(item: LayoutItem, coordinate?: SpatialCoordinate): SpatialPlacement | undefined {
     const placement = this.getPlacementFromItemOrCoord(item, coordinate)
-    const flooredPlacement = floorGridPlacement(placement)
+    const flooredPlacement = floorSpatialPlacement(placement)
     if (
-      checkGridRegionAvailability(
+      checkSpatialRegionAvailability(
         flooredPlacement.col,
         flooredPlacement.row,
         flooredPlacement.layer,
@@ -1493,8 +1493,8 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   private addLayoutItemToClosestAvailableCell(
     item: LayoutItem,
-    coordinate?: GridCoordinate
-  ): GridPlacement | undefined {
+    coordinate?: SpatialCoordinate
+  ): SpatialPlacement | undefined {
     const placement = this.findClosestAvailablePlacement(item, coordinate)
     if (placement) {
       if (this.placeItemInCell(item, placement)) {
@@ -1511,18 +1511,18 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Tries to push other items to make space for the new item.
    */
-  private tryPushAndPlace(item: LayoutItem, coordinate?: GridCoordinate): GridPlacement | undefined {
+  private tryPushAndPlace(item: LayoutItem, coordinate?: SpatialCoordinate): SpatialPlacement | undefined {
     const targetPlacement = this.getPlacementFromItemOrCoord(item, coordinate)
-    let targetCellPlacement: GridPlacement
+    let targetCellPlacement: SpatialPlacement
 
     if (coordinate) {
-      targetCellPlacement = floorGridPlacement(targetPlacement)
+      targetCellPlacement = floorSpatialPlacement(targetPlacement)
     } else {
-      targetCellPlacement = clampGridPlacement(targetPlacement, this.gridConstraints)
+      targetCellPlacement = clampSpatialPlacement(targetPlacement, this.gridConstraints)
     }
 
     // Verify target bounds (min 0 check is only active if fixed)
-    if (!isPlacementWithinGridBounds(targetCellPlacement, this)) {
+    if (!isPlacementWithinSpatialBounds(targetCellPlacement, this)) {
       return undefined
     }
 
@@ -1541,13 +1541,13 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   private applyPushMoves(
     itemToPlace: LayoutItem,
-    targetPlacement: GridPlacement,
-    moves: Map<LayoutItem, GridPlacement>
+    targetPlacement: SpatialPlacement,
+    moves: Map<LayoutItem, SpatialPlacement>
   ): void {
     log.d(`Pushing ${moves.size} items to place ${itemToPlace.sceneObject.name}`)
     // Capture + clear old placements for moved items, then apply new placements.
     // Emit placement-changed events for moved items (not for the item being placed) after the move.
-    const movedItemsOldPlacements = new Map<LayoutItem, GridPlacement>()
+    const movedItemsOldPlacements = new Map<LayoutItem, SpatialPlacement>()
 
     for (const [movedItem] of moves) {
       const oldPlacement = this.itemPlacements.get(movedItem)
@@ -1568,7 +1568,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
         if (
           oldPlacement &&
           newPlacement &&
-          haveGridPlacementsChanged(oldPlacement, newPlacement) &&
+          haveSpatialPlacementsChanged(oldPlacement, newPlacement) &&
           !this._pendingAddedTracker.has(movedItem)
         ) {
           // Defensive copy: listeners must not be able to mutate internal placement objects.
@@ -1586,15 +1586,15 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    */
   private simulateOmniPush(
     itemToPlace: LayoutItem,
-    targetPlacement: GridPlacement
-  ): Map<LayoutItem, GridPlacement> | undefined {
+    targetPlacement: SpatialPlacement
+  ): Map<LayoutItem, SpatialPlacement> | undefined {
     const gridTransform = this.sceneObject.getTransform()
     const pusherWorldPos = itemToPlace.sceneObject.getTransform().getWorldPosition()
 
-    const metrics = this.getGridMetrics()
+    const metrics = this.getSpatialMetrics()
 
     // Calculate pusher center index (approximate relative to target)
-    const pusherGridCenter = calculatePusherGridCenter(
+    const pusherGridCenter = calculatePusherSpatialCenter(
       pusherWorldPos,
       gridTransform.getInvertedWorldTransform(),
       metrics,
@@ -1603,7 +1603,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
       targetPlacement
     )
 
-    return simulateOmniGridPush(
+    return simulateOmniSpatialPush(
       itemToPlace,
       targetPlacement,
       pusherGridCenter,
@@ -1619,8 +1619,8 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Records the item's placement in internal state maps.
    */
-  private placeItemInCell(item: LayoutItem, placement: GridPlacement): boolean {
-    const flooredPlacement = floorGridPlacement(placement)
+  private placeItemInCell(item: LayoutItem, placement: SpatialPlacement): boolean {
+    const flooredPlacement = floorSpatialPlacement(placement)
 
     // Mark cells as occupied in the grid
     if (this.setCellsOccupied(item, flooredPlacement)) {
@@ -1654,11 +1654,11 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Helper to determine placement either from an explicit coordinate or from the item's current position.
    */
-  private getPlacementFromItemOrCoord(item: LayoutItem, coordinate?: GridCoordinate): GridPlacement {
+  private getPlacementFromItemOrCoord(item: LayoutItem, coordinate?: SpatialCoordinate): SpatialPlacement {
     if (coordinate) {
       const spans = calculateItemSpans(
         {width: item.width, height: item.height, depth: item.depth},
-        this.getGridMetrics()
+        this.getSpatialMetrics()
       )
       return {
         col: coordinate.col,
@@ -1675,20 +1675,20 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Calculates placement grid coordinates from the item's world position.
    */
-  private calculatePlacementFromItem(item: LayoutItem): GridPlacement {
+  private calculatePlacementFromItem(item: LayoutItem): SpatialPlacement {
     return calculatePlacementFromWorldPosition(
       item.sceneObject.getTransform().getWorldPosition(),
       this.sceneObject.getTransform().getInvertedWorldTransform(),
       {width: item.width, height: item.height, depth: item.depth},
       {x: item.alignmentX, y: item.alignmentY, z: item.alignmentZ},
-      this.getGridMetrics()
+      this.getSpatialMetrics()
     )
   }
 
   /**
    * Finds the closest available placement for an item.
    */
-  private findClosestAvailablePlacement(item: LayoutItem, coordinate?: GridCoordinate): GridPlacement | undefined {
+  private findClosestAvailablePlacement(item: LayoutItem, coordinate?: SpatialCoordinate): SpatialPlacement | undefined {
     const itemPlacement = this.getPlacementFromItemOrCoord(item, coordinate)
 
     const bestPlacement = this.findClosestAvailablePlacementBFS(
@@ -1719,7 +1719,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
    * @param colSpan - Number of columns the item spans
    * @param rowSpan - Number of rows the item spans
    * @param layerSpan - Number of layers the item spans
-   * @returns GridPlacement if found, undefined otherwise
+   * @returns SpatialPlacement if found, undefined otherwise
    */
   private findClosestAvailablePlacementBFS(
     startCol: number,
@@ -1728,8 +1728,8 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
     colSpan: number,
     rowSpan: number,
     layerSpan: number
-  ): GridPlacement | undefined {
-    const placement = findClosestAvailableGridPlacement(
+  ): SpatialPlacement | undefined {
+    const placement = findClosestAvailableSpatialPlacement(
       startCol,
       startRow,
       startLayer,
@@ -1803,10 +1803,10 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
     this._isUpdatingLayout = true
 
     try {
-      const metrics = this.getGridMetrics()
+      const metrics = this.getSpatialMetrics()
 
       for (const [item, placement] of this.itemPlacements) {
-        const localPosition = calculateGridItemLocalPosition(
+        const localPosition = calculateSpatialItemLocalPosition(
           placement,
           {width: item.width, height: item.height, depth: item.depth},
           {x: item.alignmentX, y: item.alignmentY, z: item.alignmentZ},
@@ -1836,7 +1836,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
     this._occupiedMin = {col: Infinity, row: Infinity, layer: Infinity}
     this._occupiedMax = {col: -Infinity, row: -Infinity, layer: -Infinity}
 
-    const metrics = this.getGridMetrics()
+    const metrics = this.getSpatialMetrics()
     const newPlacements = calculateRepackedPlacements(
       items,
       oldPlacements,
@@ -1857,7 +1857,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
       if (
         oldPlacement &&
         placement &&
-        haveGridPlacementsChanged(oldPlacement, placement) &&
+        haveSpatialPlacementsChanged(oldPlacement, placement) &&
         !this._pendingAddedTracker.has(item)
       ) {
         // Defensive copy: listeners must not be able to mutate internal placement objects.
@@ -1960,10 +1960,10 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   /**
    * Marks all cells covered by an item as occupied in gridCells.
    * @param item - The LayoutItem occupying the cells.
-   * @param placement - The GridPlacement of the item.
+   * @param placement - The SpatialPlacement of the item.
    */
-  private setCellsOccupied(item: LayoutItem, placement: GridPlacement): boolean {
-    if (!isPlacementWithinGridBounds(placement, this)) {
+  private setCellsOccupied(item: LayoutItem, placement: SpatialPlacement): boolean {
+    if (!isPlacementWithinSpatialBounds(placement, this)) {
       log.w(`setCellsOccupied out of bounds for "${item.sceneObject.name}"`)
       return false
     }
@@ -1976,8 +1976,8 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
     return true
   }
 
-  private clearCellsOccupied(placement: GridPlacement): boolean {
-    if (!isPlacementWithinGridBounds(placement, this)) {
+  private clearCellsOccupied(placement: SpatialPlacement): boolean {
+    if (!isPlacementWithinSpatialBounds(placement, this)) {
       log.w("clearCellsOccupied out of bounds")
       return false
     }
@@ -2042,7 +2042,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
     }
 
     // Calculate new spans
-    const spans = calculateItemSpans({width: item.width, height: item.height, depth: item.depth}, this.getGridMetrics())
+    const spans = calculateItemSpans({width: item.width, height: item.height, depth: item.depth}, this.getSpatialMetrics())
     const newColSpan = spans.colSpan
     const newRowSpan = spans.rowSpan
     const newLayerSpan = spans.layerSpan
@@ -2078,7 +2078,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
       if (
         currentPlacement &&
         result &&
-        haveGridPlacementsChanged(currentPlacement, result) &&
+        haveSpatialPlacementsChanged(currentPlacement, result) &&
         !this._pendingAddedTracker.has(item)
       ) {
         // Defensive copy: listeners must not be able to mutate internal placement objects.
@@ -2117,7 +2117,7 @@ export class GridLayout extends BaseScriptComponent implements NestableLayout {
   private renderDebugBounds = (): void => {
     this.ensureBoundsUpToDate()
 
-    renderGridLayoutDebug({
+    renderSpatialLayoutDebug({
       transform: this.sceneObject.getTransform(),
       cellWidth: this._cellWidth,
       cellHeight: this._cellHeight,

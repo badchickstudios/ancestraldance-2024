@@ -54,8 +54,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -128,17 +130,15 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -148,9 +148,9 @@
       _size: !<Vec3> {x: 8.000000, y: 3.000000, z: 1.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -162,8 +162,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":

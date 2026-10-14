@@ -2,7 +2,7 @@
 // Flexbox2D.ts — Pure 2D Flexbox layout engine.
 // Zero Lens Studio imports. Depends only on FlexTypes.
 //
-// Implements CSS Flexbox Level 1 spec (https://www.w3.org/TR/css-flexbox-1/)
+// Implements CSS Flexbox spec sections 9.1–9.6:
 //   Sort → hypothetical sizes → line breaking → grow/shrink →
 //   main-axis justify → cross-axis line sizes → align-content →
 //   align-items/align-self → map to x/y
@@ -146,9 +146,8 @@ function crossMarginTotal(item: FlexItemInput, dir: FlexDirection): number {
 interface SortedItem {
   originalIndex: number
   input: FlexItemInput
-  flexBaseSize: number // unclamped flex base size
-  clampedMain: number // hypothetical main size = clamp(flexBaseSize, min, max)
-  resolvedMain: number // target main size after grow/shrink
+  clampedMain: number // after basis + clamp
+  resolvedMain: number // after grow/shrink
   resolvedCross: number
   mainPos: number
   crossPos: number
@@ -163,7 +162,7 @@ interface FlexLine {
 // ─── Main Entry Point ────────────────────────────────────────────────────
 
 /**
- * Runs the CSS Flexbox layout algorithm and returns
+ * Runs the CSS Flexbox layout algorithm (spec sections 9.1-9.6) and returns
  * the computed position and size for each item plus the resolved container dimensions.
  *
  * This is a pure function with zero Lens Studio dependencies — all inputs and
@@ -186,7 +185,6 @@ export function computeFlexLayout(container: FlexContainerInput, items: readonly
   const sorted: SortedItem[] = items.map((input, i) => ({
     originalIndex: i,
     input,
-    flexBaseSize: 0,
     clampedMain: 0,
     resolvedMain: 0,
     resolvedCross: 0,
@@ -200,14 +198,13 @@ export function computeFlexLayout(container: FlexContainerInput, items: readonly
     return a.originalIndex - b.originalIndex
   })
 
-  // ── Step 1: Flex base size + hypothetical main sizes ────────
+  // ── Step 1: Hypothetical main sizes ─────────────────────────────────
   for (const item of sorted) {
     const basis = item.input.flexBasis >= 0 ? item.input.flexBasis : mainSize(item.input, dir)
-    item.flexBaseSize = basis
     item.clampedMain = clamp(basis, mainMin(item.input, dir), mainMax(item.input, dir))
   }
 
-  // ── Step 2: Collect into flex lines ─────────────────────────
+  // ── Step 2: Collect into flex lines ─────────────────────────────────
   const lines: FlexLine[] = []
   const mPadStart = mainPaddingStart(container)
   const mPadEnd = mainPaddingEnd(container)
@@ -248,17 +245,17 @@ export function computeFlexLayout(container: FlexContainerInput, items: readonly
     lines.reverse()
   }
 
-  // ── Step 3: Resolve flexible sizes per line ─────────────────
+  // ── Step 3: Resolve flexible sizes (grow/shrink) per line ───────────
   for (const line of lines) {
-    resolveFlexibleLengths(line.items, innerMain, mGap, dir)
+    resolveFlexibleSizes(line.items, innerMain, mGap, dir)
   }
 
-  // ── Step 4: Main-axis positioning per line (justify-content) ─
+  // ── Step 4: Main-axis positioning per line (justify-content) ────────
   for (const line of lines) {
     positionMainAxis(line.items, container, innerMain, mGap, mPadStart)
   }
 
-  // ── Step 5: Cross-axis line sizes ───────────────────────────
+  // ── Step 5: Cross-axis line sizes ───────────────────────────────────
   for (const line of lines) {
     let maxCross = 0
     for (const item of line.items) {
@@ -284,17 +281,17 @@ export function computeFlexLayout(container: FlexContainerInput, items: readonly
   const isAutoCross = requestedCross < 0
   const innerCross = isAutoCross ? naturalCrossSum : requestedCross - cPadStart - cPadEnd
 
-  // single-line container with definite cross size →
+  // CSS spec 9.4.8: single-line container with definite cross size →
   // the line's cross extent equals the container's inner cross size.
   // This ensures align-items centers items within the full container height.
   if (lines.length === 1 && !isAutoCross) {
     lines[0].crossExtent = innerCross
   }
 
-  // ── Step 7: Align-content (multi-line) ───────────────────────
+  // ── Step 7: Align-content (multi-line) ──────────────────────────────
   distributeLines(lines, container.alignContent, innerCross, cGap, cPadStart)
 
-  // ── Step 8: Align-items / align-self per item ───────────────
+  // ── Step 8: Align-items / align-self per item ───────────────────────
   for (const line of lines) {
     for (const item of line.items) {
       const effAlign = resolveAlignSelf(item.input.alignSelf, container.alignItems)
@@ -416,209 +413,139 @@ export function computeFlexLayout(container: FlexContainerInput, items: readonly
   }
 }
 
-// ─── Resolving Flexible Lengths ───────────────────────────────────
-//
-// Implements the full algorithm from CSS Flexbox Level 1:
-//   1. Determine whether growing or shrinking
-//   2. Freeze inflexible items + items on wrong side of hypothetical size
-//   3. Calculate initial free space
-//   4. Loop: distribute free space → clamp → freeze by total violation sign
-//
-// Key spec details handled:
-//   - Uses unclamped flex base size (not hypothetical) for distribution
-//   - Scaled flex shrink factor = flexShrink × flexBaseSize
-//   - Fractional flex factors (sum < 1): caps distributed space
-//   - Total violation approach for freeze decisions (not per-item)
+// ─── Step 3 Helper: Grow/Shrink ──────────────────────────────────────────
 
-function resolveFlexibleLengths(items: SortedItem[], innerMain: number, gap: number, dir: FlexDirection): void {
+function resolveFlexibleSizes(items: SortedItem[], innerMain: number, gap: number, dir: FlexDirection): void {
+  const totalGaps = items.length > 1 ? (items.length - 1) * gap : 0
+  const totalClamped = items.reduce((s, it) => s + it.clampedMain, 0)
+  const totalMargins = items.reduce((s, it) => s + mainMarginTotal(it.input, dir), 0)
+  const freeSpace = innerMain - totalGaps - totalClamped - totalMargins
+
   if (!isFinite(innerMain)) {
-    // Auto main size: no grow/shrink, use hypothetical main size
+    // Auto main size: no grow/shrink
     for (const item of items) {
       item.resolvedMain = item.clampedMain
     }
     return
   }
 
-  const totalGaps = items.length > 1 ? (items.length - 1) * gap : 0
-  const totalMargins = items.reduce((s, it) => s + mainMarginTotal(it.input, dir), 0)
-
-  // step 1: Determine used flex factor (grow vs shrink)
-  const totalOuterHypothetical = items.reduce((s, it) => s + it.clampedMain + mainMarginTotal(it.input, dir), 0) + totalGaps
-  const growing = totalOuterHypothetical < innerMain
-
-  // Per-item state for the freeze loop
-  const n = items.length
-  const frozen: boolean[] = new Array(n).fill(false)
-  const targetMain: number[] = new Array(n)
-
-  // step 2: Size inflexible items, freeze items on wrong side
-  for (let i = 0; i < n; i++) {
-    const it = items[i]
-    const flexFactor = growing ? it.input.flexGrow : it.input.flexShrink
-
-    if (flexFactor === 0) {
-      // Flex factor is zero → freeze at hypothetical main size
-      targetMain[i] = it.clampedMain
-      frozen[i] = true
-    } else if (growing && it.flexBaseSize > it.clampedMain) {
-      // Growing but base > hypothetical (already clamped down) → inflexible, freeze
-      targetMain[i] = it.clampedMain
-      frozen[i] = true
-    } else if (!growing && it.flexBaseSize < it.clampedMain) {
-      // Shrinking but base < hypothetical (already clamped up) → inflexible, freeze
-      targetMain[i] = it.clampedMain
-      frozen[i] = true
-    } else {
-      targetMain[i] = it.flexBaseSize
+  if (freeSpace > 0) {
+    // Grow
+    distributeFlexGrow(items, freeSpace, dir)
+  } else if (freeSpace < 0) {
+    // Shrink
+    distributeFlexShrink(items, -freeSpace, dir)
+  } else {
+    for (const item of items) {
+      item.resolvedMain = item.clampedMain
     }
-  }
-
-  // step 3: Calculate initial free space
-  let initialFreeSpace = innerMain - totalGaps - totalMargins
-  for (let i = 0; i < n; i++) {
-    if (frozen[i]) {
-      initialFreeSpace -= targetMain[i]
-    } else {
-      initialFreeSpace -= items[i].flexBaseSize
-    }
-  }
-
-  // step 4: Loop
-  for (let iteration = 0; iteration <= n; iteration++) {
-    // 4a: Check for unfrozen items
-    let hasUnfrozen = false
-    for (let i = 0; i < n; i++) {
-      if (!frozen[i]) {
-        hasUnfrozen = true
-        break
-      }
-    }
-    if (!hasUnfrozen) break
-
-    // 4b: Calculate remaining free space
-    let remainingFreeSpace = innerMain - totalGaps - totalMargins
-    for (let i = 0; i < n; i++) {
-      if (frozen[i]) {
-        remainingFreeSpace -= targetMain[i]
-      } else {
-        remainingFreeSpace -= items[i].flexBaseSize
-      }
-    }
-
-    // Fractional flex factors: if sum of unfrozen flex factors < 1,
-    // multiply initial free space by that sum and use as remaining if smaller in magnitude
-    if (growing) {
-      let sumFlexFactors = 0
-      for (let i = 0; i < n; i++) {
-        if (!frozen[i]) sumFlexFactors += items[i].input.flexGrow
-      }
-      if (sumFlexFactors > 0 && sumFlexFactors < 1) {
-        const scaledInitial = initialFreeSpace * sumFlexFactors
-        if (Math.abs(scaledInitial) < Math.abs(remainingFreeSpace)) {
-          remainingFreeSpace = scaledInitial
-        }
-      }
-    } else {
-      let sumFlexFactors = 0
-      for (let i = 0; i < n; i++) {
-        if (!frozen[i]) sumFlexFactors += items[i].input.flexShrink
-      }
-      if (sumFlexFactors > 0 && sumFlexFactors < 1) {
-        const scaledInitial = initialFreeSpace * sumFlexFactors
-        if (Math.abs(scaledInitial) < Math.abs(remainingFreeSpace)) {
-          remainingFreeSpace = scaledInitial
-        }
-      }
-    }
-
-    // 4c: Distribute free space
-    if (growing) {
-      let totalGrowFactor = 0
-      for (let i = 0; i < n; i++) {
-        if (!frozen[i]) totalGrowFactor += items[i].input.flexGrow
-      }
-
-      for (let i = 0; i < n; i++) {
-        if (frozen[i]) continue
-        if (totalGrowFactor > 0) {
-          const ratio = items[i].input.flexGrow / totalGrowFactor
-          targetMain[i] = items[i].flexBaseSize + ratio * remainingFreeSpace
-        } else {
-          targetMain[i] = items[i].flexBaseSize
-        }
-      }
-    } else {
-      // Shrink: weighted by scaled flex shrink factor (flexShrink × flexBaseSize)
-      let totalWeightedShrink = 0
-      for (let i = 0; i < n; i++) {
-        if (!frozen[i]) {
-          totalWeightedShrink += items[i].input.flexShrink * items[i].flexBaseSize
-        }
-      }
-
-      for (let i = 0; i < n; i++) {
-        if (frozen[i]) continue
-        if (totalWeightedShrink > 0) {
-          const scaledShrink = items[i].input.flexShrink * items[i].flexBaseSize
-          const ratio = scaledShrink / totalWeightedShrink
-          // remainingFreeSpace is negative when shrinking
-          targetMain[i] = items[i].flexBaseSize + ratio * remainingFreeSpace
-        } else {
-          targetMain[i] = items[i].flexBaseSize
-        }
-      }
-    }
-
-    // 4d: Fix min/max violations, compute total violation
-    let totalViolation = 0
-    const minViolation: boolean[] = new Array(n).fill(false)
-    const maxViolation: boolean[] = new Array(n).fill(false)
-
-    for (let i = 0; i < n; i++) {
-      if (frozen[i]) continue
-      const min = mainMin(items[i].input, dir)
-      const max = mainMax(items[i].input, dir)
-      const clamped = clamp(targetMain[i], min, max)
-      const adjustment = clamped - targetMain[i]
-      if (adjustment > 0) {
-        minViolation[i] = true
-      } else if (adjustment < 0) {
-        maxViolation[i] = true
-      }
-      totalViolation += adjustment
-      targetMain[i] = clamped
-    }
-
-    // 4e: Freeze based on total violation
-    if (Math.abs(totalViolation) < 0.001) {
-      // Zero total violation: freeze all unfrozen items
-      for (let i = 0; i < n; i++) {
-        frozen[i] = true
-      }
-    } else if (totalViolation > 0) {
-      // Positive: freeze items with min violations
-      for (let i = 0; i < n; i++) {
-        if (!frozen[i] && minViolation[i]) {
-          frozen[i] = true
-        }
-      }
-    } else {
-      // Negative: freeze items with max violations
-      for (let i = 0; i < n; i++) {
-        if (!frozen[i] && maxViolation[i]) {
-          frozen[i] = true
-        }
-      }
-    }
-  }
-
-  // Write final resolved sizes
-  for (let i = 0; i < n; i++) {
-    items[i].resolvedMain = targetMain[i]
   }
 }
 
-// ─── Step 4 Helper: Main-axis Positioning (justify-content) ─
+function distributeFlexGrow(items: SortedItem[], freeSpace: number, dir: FlexDirection): void {
+  // Initialize all resolved sizes
+  for (const item of items) {
+    item.resolvedMain = item.clampedMain
+  }
+
+  const totalGrow = items.reduce((s, it) => s + it.input.flexGrow, 0)
+  if (totalGrow <= 0) return
+
+  // Multi-pass freeze-and-redistribute (up to items.length passes,
+  // as in the worst case exactly one item freezes per pass)
+  const frozen = new Set<number>()
+  let remaining = freeSpace
+
+  for (let pass = 0; pass < items.length && remaining > 0.001; pass++) {
+    const activeGrow = items.reduce((s, it, i) => s + (frozen.has(i) ? 0 : it.input.flexGrow), 0)
+    if (activeGrow <= 0) break
+
+    let frozeAny = false
+
+    for (let i = 0; i < items.length; i++) {
+      if (frozen.has(i) || items[i].input.flexGrow <= 0) continue
+
+      const share = (items[i].input.flexGrow / activeGrow) * remaining
+      const proposed = items[i].clampedMain + share
+      const max = mainMax(items[i].input, dir)
+
+      if (proposed > max) {
+        items[i].resolvedMain = max
+        frozen.add(i)
+        remaining -= max - items[i].clampedMain
+        frozeAny = true
+      }
+    }
+
+    if (!frozeAny) {
+      // Distribute remaining to all unfrozen
+      const finalActiveGrow = items.reduce((s, it, i) => s + (frozen.has(i) ? 0 : it.input.flexGrow), 0)
+      if (finalActiveGrow <= 0) break
+
+      for (let i = 0; i < items.length; i++) {
+        if (frozen.has(i) || items[i].input.flexGrow <= 0) continue
+        const share = (items[i].input.flexGrow / finalActiveGrow) * remaining
+        items[i].resolvedMain = items[i].clampedMain + share
+      }
+      remaining = 0
+    }
+  }
+}
+
+function distributeFlexShrink(items: SortedItem[], overflow: number, dir: FlexDirection): void {
+  // Initialize all resolved sizes
+  for (const item of items) {
+    item.resolvedMain = item.clampedMain
+  }
+
+  // Weighted shrink factor = flexShrink * baseSize
+  const totalWeightedShrink = items.reduce((s, it) => s + it.input.flexShrink * it.clampedMain, 0)
+  if (totalWeightedShrink <= 0) return
+
+  const frozen = new Set<number>()
+  let remaining = overflow
+
+  for (let pass = 0; pass < items.length && remaining > 0.001; pass++) {
+    const activeWeighted = items.reduce((s, it, i) => s + (frozen.has(i) ? 0 : it.input.flexShrink * it.clampedMain), 0)
+    if (activeWeighted <= 0) break
+
+    let frozeAny = false
+
+    for (let i = 0; i < items.length; i++) {
+      if (frozen.has(i) || items[i].input.flexShrink <= 0) continue
+
+      const weight = items[i].input.flexShrink * items[i].clampedMain
+      const shrinkAmount = (weight / activeWeighted) * remaining
+      const proposed = items[i].clampedMain - shrinkAmount
+      const min = mainMin(items[i].input, dir)
+
+      if (proposed < min) {
+        items[i].resolvedMain = min
+        frozen.add(i)
+        remaining -= items[i].clampedMain - min
+        frozeAny = true
+      }
+    }
+
+    if (!frozeAny) {
+      const finalActiveWeighted = items.reduce(
+        (s, it, i) => s + (frozen.has(i) ? 0 : it.input.flexShrink * it.clampedMain),
+        0
+      )
+      if (finalActiveWeighted <= 0) break
+
+      for (let i = 0; i < items.length; i++) {
+        if (frozen.has(i) || items[i].input.flexShrink <= 0) continue
+        const weight = items[i].input.flexShrink * items[i].clampedMain
+        const shrinkAmount = (weight / finalActiveWeighted) * remaining
+        items[i].resolvedMain = items[i].clampedMain - shrinkAmount
+      }
+      remaining = 0
+    }
+  }
+}
+
+// ─── Step 4 Helper: Main-axis Positioning (justify-content) ──────────────
 
 function positionMainAxis(
   items: SortedItem[],
@@ -636,7 +563,7 @@ function positionMainAxis(
 
   const isAutoMain = !isFinite(innerMain) || containerMainSize(container) < 0
   const effectiveInner = isAutoMain ? usedMain : innerMain
-  const freeSpace = effectiveInner - usedMain
+  const freeSpace = Math.max(0, effectiveInner - usedMain)
 
   const reversed = isReversed(dir)
 
@@ -657,40 +584,16 @@ function positionMainAxis(
       spacing = gap
       break
     case FlexJustify.SpaceBetween:
-      if (freeSpace < 0 || n <= 1) {
-        // overflow → pack at start; single item → start
-        startOffset = 0
-        spacing = gap
-      } else {
-        startOffset = 0
-        spacing = (freeSpace + totalGaps) / (n - 1)
-      }
+      startOffset = 0
+      spacing = n > 1 ? (freeSpace + totalGaps) / (n - 1) : gap
       break
     case FlexJustify.SpaceAround:
-      if (freeSpace < 0) {
-        // overflow → fallback to center
-        startOffset = freeSpace * 0.5
-        spacing = gap
-      } else if (n > 0) {
-        spacing = (freeSpace + totalGaps) / n
-        startOffset = spacing * 0.5
-      } else {
-        startOffset = 0
-        spacing = gap
-      }
+      spacing = n > 0 ? (freeSpace + totalGaps) / n : gap
+      startOffset = spacing * 0.5
       break
     case FlexJustify.SpaceEvenly:
-      if (freeSpace < 0) {
-        // overflow → fallback to center
-        startOffset = freeSpace * 0.5
-        spacing = gap
-      } else if (n > 0) {
-        spacing = (freeSpace + totalGaps) / (n + 1)
-        startOffset = spacing
-      } else {
-        startOffset = 0
-        spacing = gap
-      }
+      spacing = n > 0 ? (freeSpace + totalGaps) / (n + 1) : gap
+      startOffset = spacing
       break
     default:
       startOffset = 0
@@ -719,7 +622,7 @@ function positionMainAxis(
   }
 }
 
-// ─── Step 7 Helper: Distribute Lines (align-content) ────────
+// ─── Step 7 Helper: Distribute Lines (align-content) ─────────────────────
 
 function distributeLines(
   lines: FlexLine[],
@@ -734,7 +637,7 @@ function distributeLines(
   const totalLineCross = lines.reduce((s, l) => s + l.crossExtent, 0)
   const totalGaps = n > 1 ? (n - 1) * gap : 0
   const usedCross = totalLineCross + totalGaps
-  const freeCross = innerCross - usedCross
+  const freeCross = Math.max(0, innerCross - usedCross)
 
   let startOffset: number
   let spacing: number
@@ -753,44 +656,20 @@ function distributeLines(
       spacing = gap
       break
     case FlexAlignContent.SpaceBetween:
-      if (freeCross < 0 || n <= 1) {
-        // overflow → pack at start; single line → start
-        startOffset = 0
-        spacing = gap
-      } else {
-        startOffset = 0
-        spacing = (freeCross + totalGaps) / (n - 1)
-      }
+      startOffset = 0
+      spacing = n > 1 ? (freeCross + totalGaps) / (n - 1) : gap
       break
     case FlexAlignContent.SpaceAround:
-      if (freeCross < 0) {
-        // overflow → fallback to center
-        startOffset = freeCross * 0.5
-        spacing = gap
-      } else if (n > 0) {
-        spacing = (freeCross + totalGaps) / n
-        startOffset = spacing * 0.5
-      } else {
-        startOffset = 0
-        spacing = gap
-      }
+      spacing = n > 0 ? (freeCross + totalGaps) / n : gap
+      startOffset = spacing * 0.5
       break
     case FlexAlignContent.SpaceEvenly:
-      if (freeCross < 0) {
-        // overflow → fallback to center
-        startOffset = freeCross * 0.5
-        spacing = gap
-      } else if (n > 0) {
-        spacing = (freeCross + totalGaps) / (n + 1)
-        startOffset = spacing
-      } else {
-        startOffset = 0
-        spacing = gap
-      }
+      spacing = n > 0 ? (freeCross + totalGaps) / (n + 1) : gap
+      startOffset = spacing
       break
     case FlexAlignContent.Stretch: {
-      // Distribute extra cross space equally to each line
-      const extraPerLine = n > 0 && freeCross > 0 ? freeCross / n : 0
+      // Distribute extra cross space proportionally to each line
+      const extraPerLine = n > 0 ? freeCross / n : 0
       let pos = padStart
       for (const line of lines) {
         line.crossExtent += extraPerLine

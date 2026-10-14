@@ -2,15 +2,15 @@ import {
   AddOrder,
   Anchor,
   Axis,
-  GridBoundsConstraints,
-  GridCoordinate,
-  GridMetrics,
-  GridPlacement,
+  SpatialBoundsConstraints,
+  SpatialCoordinate,
+  SpatialMetrics,
+  SpatialPlacement,
   InitializableItem,
   Size3D
 } from "../Components/Layout/LayoutConfigurationTypes"
 import {LayoutItemInitializationTracker} from "./LayoutItemInitializationTracker"
-import {isCellWithinGridBounds} from "./LayoutValidation"
+import {isCellWithinSpatialBounds} from "./LayoutValidation"
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONSTANTS & CONTEXT
@@ -28,7 +28,7 @@ const BFS_DIRECTIONS_ORDER: {x: number; y: number; z: number}[] = [
 /**
  * Context object for BFS search to reuse buffers and avoid GC.
  */
-export class GridSearchContext {
+export class SpatialSearchContext {
   public visited: Set<number> = new Set()
   public queue: Int32Array | null = null
   public candidates: number[] = []
@@ -132,7 +132,7 @@ function calculateCellSpan(itemSize: number, cellSize: number, spacing: number):
  */
 export function calculateItemSpans(
   itemSize: Size3D,
-  metrics: GridMetrics
+  metrics: SpatialMetrics
 ): {colSpan: number; rowSpan: number; layerSpan: number} {
   return {
     colSpan: calculateCellSpan(itemSize.width, metrics.cellSize.x, metrics.spacing.x),
@@ -150,7 +150,7 @@ export function calculateItemSpans(
  * @param paddingEnd - The padding at the end of this axis.
  * @returns The total size along this axis.
  */
-function calculateTotalGridSizeAlongAxis(
+function calculateTotalSpatialSizeAlongAxis(
   numCells: number,
   cellSize: number,
   spacing: number,
@@ -173,7 +173,7 @@ function calculateTotalGridSizeAlongAxis(
  * @param occupiedMax - The maximum occupied index.
  * @returns An object containing `count` (number of cells) and `start` (start index).
  */
-function calculateEffectiveGridAxisDimension(
+function calculateEffectiveSpatialAxisDimension(
   isFixed: boolean,
   maxCells: number,
   occupiedMin: number,
@@ -204,40 +204,40 @@ function calculateEffectiveGridAxisDimension(
  * @param padding - The padding on each side.
  * @returns The total grid size as a vec3 (width, height, depth).
  */
-export function calculateGridSize(
-  constraints: GridBoundsConstraints,
-  occupiedMin: GridCoordinate,
-  occupiedMax: GridCoordinate,
+export function calculateSpatialSize(
+  constraints: SpatialBoundsConstraints,
+  occupiedMin: SpatialCoordinate,
+  occupiedMax: SpatialCoordinate,
   cellSize: {x: number; y: number; z: number},
   spacing: {x: number; y: number; z: number},
   padding: {left: number; right: number; bottom: number; top: number; back: number; front: number}
 ): vec3 {
-  const numColumns = calculateEffectiveGridAxisDimension(
+  const numColumns = calculateEffectiveSpatialAxisDimension(
     constraints.fixedColumns,
     constraints.maxColumns,
     occupiedMin.col,
     occupiedMax.col
   ).count
 
-  const numRows = calculateEffectiveGridAxisDimension(
+  const numRows = calculateEffectiveSpatialAxisDimension(
     constraints.fixedRows,
     constraints.maxRows,
     occupiedMin.row,
     occupiedMax.row
   ).count
 
-  const numLayers = calculateEffectiveGridAxisDimension(
+  const numLayers = calculateEffectiveSpatialAxisDimension(
     constraints.fixedLayers,
     constraints.maxLayers,
     occupiedMin.layer,
     occupiedMax.layer
   ).count
 
-  const width = calculateTotalGridSizeAlongAxis(numColumns, cellSize.x, spacing.x, padding.left, padding.right)
+  const width = calculateTotalSpatialSizeAlongAxis(numColumns, cellSize.x, spacing.x, padding.left, padding.right)
 
-  const height = calculateTotalGridSizeAlongAxis(numRows, cellSize.y, spacing.y, padding.bottom, padding.top)
+  const height = calculateTotalSpatialSizeAlongAxis(numRows, cellSize.y, spacing.y, padding.bottom, padding.top)
 
-  const depth = calculateTotalGridSizeAlongAxis(numLayers, cellSize.z, spacing.z, padding.back, padding.front)
+  const depth = calculateTotalSpatialSizeAlongAxis(numLayers, cellSize.z, spacing.z, padding.back, padding.front)
 
   return new vec3(width, height, depth)
 }
@@ -250,16 +250,16 @@ export function calculateGridSize(
  * Calculates the min/max occupied bounds from a collection of grid placements.
  * Returns the bounding box that contains all placements.
  *
- * @param placements - Iterable of GridPlacement objects to calculate bounds from.
- * @returns An object with `min` and `max` GridCoordinate representing the occupied bounds.
+ * @param placements - Iterable of SpatialPlacement objects to calculate bounds from.
+ * @returns An object with `min` and `max` SpatialCoordinate representing the occupied bounds.
  *          If no placements are provided, returns Infinity/-Infinity bounds indicating empty.
  */
-export function calculateOccupiedBoundsFromPlacements(placements: Iterable<GridPlacement>): {
-  min: GridCoordinate
-  max: GridCoordinate
+export function calculateOccupiedBoundsFromPlacements(placements: Iterable<SpatialPlacement>): {
+  min: SpatialCoordinate
+  max: SpatialCoordinate
 } {
-  const min: GridCoordinate = {col: Infinity, row: Infinity, layer: Infinity}
-  const max: GridCoordinate = {col: -Infinity, row: -Infinity, layer: -Infinity}
+  const min: SpatialCoordinate = {col: Infinity, row: Infinity, layer: Infinity}
+  const max: SpatialCoordinate = {col: -Infinity, row: -Infinity, layer: -Infinity}
 
   for (const placement of placements) {
     const startCol = Math.floor(placement.col)
@@ -289,9 +289,9 @@ export function calculateOccupiedBoundsFromPlacements(placements: Iterable<GridP
  * @param placement - The new placement to include in the bounds.
  */
 export function updateOccupiedBounds(
-  currentMin: GridCoordinate,
-  currentMax: GridCoordinate,
-  placement: GridPlacement
+  currentMin: SpatialCoordinate,
+  currentMax: SpatialCoordinate,
+  placement: SpatialPlacement
 ): void {
   const startCol = Math.floor(placement.col)
   const startRow = Math.floor(placement.row)
@@ -351,7 +351,7 @@ class DeltaOccupancyMap<T> {
  *                       If not provided, clears unconditionally.
  */
 export function setPlacementOccupancyInMap<T>(
-  placement: GridPlacement,
+  placement: SpatialPlacement,
   item: T | null,
   occupancyMap: Map<number, T> | DeltaOccupancyMap<T>,
   originalItem?: T
@@ -379,9 +379,9 @@ export function setPlacementOccupancyInMap<T>(
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Normalizes a GridPlacement by flooring its coordinates to ensure integer cell indices.
+ * Normalizes a SpatialPlacement by flooring its coordinates to ensure integer cell indices.
  */
-export function floorGridPlacement(placement: GridPlacement): GridPlacement {
+export function floorSpatialPlacement(placement: SpatialPlacement): SpatialPlacement {
   return {
     col: Math.floor(placement.col),
     row: Math.floor(placement.row),
@@ -396,7 +396,7 @@ export function floorGridPlacement(placement: GridPlacement): GridPlacement {
  * Clamps a placement to the grid bounds if dimensions are fixed.
  * Rounds coordinates to the nearest integer.
  */
-export function clampGridPlacement(placement: GridPlacement, constraints: GridBoundsConstraints): GridPlacement {
+export function clampSpatialPlacement(placement: SpatialPlacement, constraints: SpatialBoundsConstraints): SpatialPlacement {
   let col = Math.round(placement.col)
   let row = Math.round(placement.row)
   let layer = Math.round(placement.layer)
@@ -424,7 +424,7 @@ export function clampGridPlacement(placement: GridPlacement, constraints: GridBo
 /**
  * Checks if two grid placements intersect.
  */
-function doGridPlacementsIntersect(a: GridPlacement, b: GridPlacement): boolean {
+function doSpatialPlacementsIntersect(a: SpatialPlacement, b: SpatialPlacement): boolean {
   return (
     a.col < b.col + b.colSpan &&
     a.col + a.colSpan > b.col &&
@@ -443,10 +443,10 @@ function doGridPlacementsIntersect(a: GridPlacement, b: GridPlacement): boolean 
  * @param placements - Map of items to their placements.
  * @returns Set of items whose placements intersect the region.
  */
-function findItemsIntersectingRegion<K>(region: GridPlacement, placements: Map<K, GridPlacement>): Set<K> {
+function findItemsIntersectingRegion<K>(region: SpatialPlacement, placements: Map<K, SpatialPlacement>): Set<K> {
   const result = new Set<K>()
   for (const [item, placement] of placements) {
-    if (doGridPlacementsIntersect(region, placement)) {
+    if (doSpatialPlacementsIntersect(region, placement)) {
       result.add(item)
     }
   }
@@ -461,9 +461,9 @@ function findItemsIntersectingRegion<K>(region: GridPlacement, placements: Map<K
  * @param placements - Iterable of placements to check against.
  * @returns True if any placement intersects the region, false otherwise.
  */
-function hasAnyPlacementIntersectingRegion(region: GridPlacement, placements: Iterable<GridPlacement>): boolean {
+function hasAnyPlacementIntersectingRegion(region: SpatialPlacement, placements: Iterable<SpatialPlacement>): boolean {
   for (const placement of placements) {
-    if (doGridPlacementsIntersect(region, placement)) {
+    if (doSpatialPlacementsIntersect(region, placement)) {
       return true
     }
   }
@@ -485,16 +485,16 @@ function hasAnyPlacementIntersectingRegion(region: GridPlacement, placements: It
  * @param constraints - Grid constraints (fixed/max dimensions).
  * @returns True if all cells in the range are available (empty and within bounds).
  */
-export function checkGridRegionAvailability<T>(
+export function checkSpatialRegionAvailability<T>(
   startCol: number,
   startRow: number,
   startLayer: number,
   colSpan: number,
   rowSpan: number,
   layerSpan: number,
-  placements: Map<T, GridPlacement>,
+  placements: Map<T, SpatialPlacement>,
   gridCells: Map<number, T>,
-  constraints: GridBoundsConstraints
+  constraints: SpatialBoundsConstraints
 ): boolean {
   const startX = Math.floor(startCol)
   const startY = Math.floor(startRow)
@@ -503,15 +503,15 @@ export function checkGridRegionAvailability<T>(
   const endY = Math.floor(startRow + rowSpan)
   const endZ = Math.floor(startLayer + layerSpan)
 
-  if (!isCellWithinGridBounds(startX, startY, startZ, constraints)) return false
+  if (!isCellWithinSpatialBounds(startX, startY, startZ, constraints)) return false
   // Check end bound (exclusive index, so check end-1)
-  if (!isCellWithinGridBounds(endX - 1, endY - 1, endZ - 1, constraints)) return false
+  if (!isCellWithinSpatialBounds(endX - 1, endY - 1, endZ - 1, constraints)) return false
 
   // Optimization: If searching a large volume relative to the number of items,
   // it's faster to check intersections against existing items than to query the map for every cell.
   const volume = (endX - startX) * (endY - startY) * (endZ - startZ)
   if (placements.size > 0 && volume > placements.size * 2) {
-    const region: GridPlacement = {
+    const region: SpatialPlacement = {
       col: startX,
       row: startY,
       layer: startZ,
@@ -562,11 +562,11 @@ function queryGridRegion<T>(
   colSpan: number,
   rowSpan: number,
   layerSpan: number,
-  placements: Map<T, GridPlacement>,
+  placements: Map<T, SpatialPlacement>,
   gridCells: Map<number, T>,
-  occupiedMin: GridCoordinate,
-  occupiedMax: GridCoordinate,
-  constraints: GridBoundsConstraints
+  occupiedMin: SpatialCoordinate,
+  occupiedMax: SpatialCoordinate,
+  constraints: SpatialBoundsConstraints
 ): Set<T> {
   const items = new Set<T>()
   const startX = Math.floor(startCol)
@@ -579,7 +579,7 @@ function queryGridRegion<T>(
   // If searching a large empty area, iterate items instead of cells
   const volume = (endX - startX) * (endY - startY) * (endZ - startZ)
   if (placements.size > 0 && volume > placements.size * 2) {
-    const region: GridPlacement = {
+    const region: SpatialPlacement = {
       col: startX,
       row: startY,
       layer: startZ,
@@ -641,13 +641,13 @@ function queryGridRegion<T>(
  * @param targetPlacement - The target placement of the item being placed (used for spans).
  * @returns The calculated center grid coordinates (x=col, y=row, z=layer).
  */
-export function calculatePusherGridCenter(
+export function calculatePusherSpatialCenter(
   worldPos: vec3,
   gridInverseTransform: mat4,
-  metrics: GridMetrics,
+  metrics: SpatialMetrics,
   itemSize: Size3D,
   alignment: {x: string; y: string; z: string},
-  targetPlacement: GridPlacement
+  targetPlacement: SpatialPlacement
 ): {x: number; y: number; z: number} {
   const localPos = gridInverseTransform.multiplyPoint(worldPos)
 
@@ -674,13 +674,13 @@ export function calculatePusherGridCenter(
  * @param pusherPlacement - The placement of the item doing the pushing.
  * @param victimPlacement - The placement of the item being pushed.
  * @param direction - The direction to push in (x, y, z components -1, 0, 1).
- * @returns The new GridPlacement for the victim.
+ * @returns The new SpatialPlacement for the victim.
  */
 function calculatePushPlacement(
-  pusherPlacement: GridPlacement,
-  victimPlacement: GridPlacement,
+  pusherPlacement: SpatialPlacement,
+  victimPlacement: SpatialPlacement,
   direction: {x: number; y: number; z: number}
-): GridPlacement {
+): SpatialPlacement {
   const newPlacement = {...victimPlacement}
 
   if (direction.x !== 0) {
@@ -733,15 +733,15 @@ function sortDirectionsByTargetAlignment(
  * @returns True if a valid push chain was found, false otherwise.
  */
 function propagateGridPush<T>(
-  startStack: Array<{item: T; placement: GridPlacement; dir: {x: number; y: number; z: number}}>,
-  moves: Map<T, GridPlacement>,
+  startStack: Array<{item: T; placement: SpatialPlacement; dir: {x: number; y: number; z: number}}>,
+  moves: Map<T, SpatialPlacement>,
   occupiedCells: DeltaOccupancyMap<T>,
   gridCells: Map<number, T>,
-  placements: Map<T, GridPlacement>,
-  constraints: GridBoundsConstraints,
+  placements: Map<T, SpatialPlacement>,
+  constraints: SpatialBoundsConstraints,
   maxIterations: number,
   itemToPlace?: T,
-  targetPlacement?: GridPlacement
+  targetPlacement?: SpatialPlacement
 ): boolean {
   let iterations = 0
   const stack = [...startStack]
@@ -781,11 +781,11 @@ function propagateGridPush<T>(
       }
     }
 
-    const validVictims = new Map<T, GridPlacement>()
+    const validVictims = new Map<T, SpatialPlacement>()
 
     for (const victim of collisions) {
       if (itemToPlace && victim === itemToPlace) {
-        if (targetPlacement && doGridPlacementsIntersect(pusherPlacement, targetPlacement)) {
+        if (targetPlacement && doSpatialPlacementsIntersect(pusherPlacement, targetPlacement)) {
           return false
         }
         continue
@@ -796,16 +796,16 @@ function propagateGridPush<T>(
       const victimCurrentPlacement = moves.get(victim) || placements.get(victim)
       if (!victimCurrentPlacement) continue
 
-      if (!doGridPlacementsIntersect(pusherPlacement, victimCurrentPlacement)) continue
+      if (!doSpatialPlacementsIntersect(pusherPlacement, victimCurrentPlacement)) continue
 
       // Propagate push in the SAME direction as the pusher
       const newPlacement = calculatePushPlacement(pusherPlacement, victimCurrentPlacement, dir)
 
       // Check bounds
-      if (!isCellWithinGridBounds(newPlacement.col, newPlacement.row, newPlacement.layer, constraints)) return false
+      if (!isCellWithinSpatialBounds(newPlacement.col, newPlacement.row, newPlacement.layer, constraints)) return false
       // Check max bounds (width/height/depth)
       if (
-        !isCellWithinGridBounds(
+        !isCellWithinSpatialBounds(
           newPlacement.col + newPlacement.colSpan - 1,
           newPlacement.row + newPlacement.rowSpan - 1,
           newPlacement.layer + newPlacement.layerSpan - 1,
@@ -815,7 +815,7 @@ function propagateGridPush<T>(
         return false
 
       // Check against target placement - prevent pushing items INTO the reserved spot
-      if (targetPlacement && doGridPlacementsIntersect(newPlacement, targetPlacement)) {
+      if (targetPlacement && doSpatialPlacementsIntersect(newPlacement, targetPlacement)) {
         return false
       }
 
@@ -849,8 +849,8 @@ function propagateGridPush<T>(
         const ownerNewPlacement = calculatePushPlacement(newPlacement, ownerCurrentPlacement, dir)
 
         if (
-          !isCellWithinGridBounds(ownerNewPlacement.col, ownerNewPlacement.row, ownerNewPlacement.layer, constraints) ||
-          !isCellWithinGridBounds(
+          !isCellWithinSpatialBounds(ownerNewPlacement.col, ownerNewPlacement.row, ownerNewPlacement.layer, constraints) ||
+          !isCellWithinSpatialBounds(
             ownerNewPlacement.col + ownerNewPlacement.colSpan - 1,
             ownerNewPlacement.row + ownerNewPlacement.rowSpan - 1,
             ownerNewPlacement.layer + ownerNewPlacement.layerSpan - 1,
@@ -861,7 +861,7 @@ function propagateGridPush<T>(
         }
 
         // Check against target placement
-        if (targetPlacement && doGridPlacementsIntersect(ownerNewPlacement, targetPlacement)) {
+        if (targetPlacement && doSpatialPlacementsIntersect(ownerNewPlacement, targetPlacement)) {
           return false
         }
 
@@ -915,8 +915,8 @@ function propagateGridPush<T>(
     if (sortedVictims.length > 1) {
       sortedVictims.sort((a, b) => {
         const axis = dir.x !== 0 ? Axis.X : dir.y !== 0 ? Axis.Y : Axis.Z
-        const centerA = getGridPlacementCenter(a.placement, axis)
-        const centerB = getGridPlacementCenter(b.placement, axis)
+        const centerA = getSpatialPlacementCenter(a.placement, axis)
+        const centerB = getSpatialPlacementCenter(b.placement, axis)
         const sign = dir.x !== 0 ? dir.x : dir.y !== 0 ? dir.y : dir.z
         return (centerA - centerB) * sign
       })
@@ -945,18 +945,18 @@ function propagateGridPush<T>(
 function simulateGridPushInDirection<T>(
   victim: T,
   direction: {x: number; y: number; z: number},
-  targetPlacement: GridPlacement,
-  currentMoves: Map<T, GridPlacement>,
+  targetPlacement: SpatialPlacement,
+  currentMoves: Map<T, SpatialPlacement>,
   parentOccupancy: DeltaOccupancyMap<T>,
   gridCells: Map<number, T>,
-  placements: Map<T, GridPlacement>,
-  constraints: GridBoundsConstraints,
+  placements: Map<T, SpatialPlacement>,
+  constraints: SpatialBoundsConstraints,
   maxIterations: number,
   itemToPlace?: T,
   probeOccupancy?: DeltaOccupancyMap<T>
-): {valid: boolean; moves: Map<T, GridPlacement>; movedCount: number; movedVolume: number} {
+): {valid: boolean; moves: Map<T, SpatialPlacement>; movedCount: number; movedVolume: number} {
   // Create copies to avoid side effects on the parent simulation until valid
-  const simMoves = new Map<T, GridPlacement>(currentMoves)
+  const simMoves = new Map<T, SpatialPlacement>(currentMoves)
 
   let simOccupied: DeltaOccupancyMap<T>
   if (probeOccupancy) {
@@ -976,10 +976,10 @@ function simulateGridPushInDirection<T>(
   const newPlacement = calculatePushPlacement(targetPlacement, victimPlacement, direction)
 
   // Check bounds
-  if (!isCellWithinGridBounds(newPlacement.col, newPlacement.row, newPlacement.layer, constraints))
+  if (!isCellWithinSpatialBounds(newPlacement.col, newPlacement.row, newPlacement.layer, constraints))
     return {valid: false, moves: simMoves, movedCount: 0, movedVolume: 0}
   if (
-    !isCellWithinGridBounds(
+    !isCellWithinSpatialBounds(
       newPlacement.col + newPlacement.colSpan - 1,
       newPlacement.row + newPlacement.rowSpan - 1,
       newPlacement.layer + newPlacement.layerSpan - 1,
@@ -1035,25 +1035,25 @@ function simulateGridPushInDirection<T>(
  * @param maxIterations - Max iterations for push propagation.
  * @returns Map of moves if successful, undefined otherwise.
  */
-export function simulateOmniGridPush<T>(
+export function simulateOmniSpatialPush<T>(
   itemToPlace: T,
-  targetPlacement: GridPlacement,
+  targetPlacement: SpatialPlacement,
   pusherGridCenter: {x: number; y: number; z: number},
-  placements: Map<T, GridPlacement>,
+  placements: Map<T, SpatialPlacement>,
   gridCells: Map<number, T>,
-  occupiedMin: GridCoordinate,
-  occupiedMax: GridCoordinate,
-  constraints: GridBoundsConstraints,
+  occupiedMin: SpatialCoordinate,
+  occupiedMax: SpatialCoordinate,
+  constraints: SpatialBoundsConstraints,
   maxIterations: number
-): Map<T, GridPlacement> | undefined {
-  const moves = new Map<T, GridPlacement>()
+): Map<T, SpatialPlacement> | undefined {
+  const moves = new Map<T, SpatialPlacement>()
   // Spatial lookup to optimize conflict checks
   const occupiedCells = new DeltaOccupancyMap<T>(gridCells)
   const probeOccupancy = new DeltaOccupancyMap<T>(occupiedCells)
 
-  const targetCenterX = getGridPlacementCenter(targetPlacement, Axis.X)
-  const targetCenterY = getGridPlacementCenter(targetPlacement, Axis.Y)
-  const targetCenterZ = getGridPlacementCenter(targetPlacement, Axis.Z)
+  const targetCenterX = getSpatialPlacementCenter(targetPlacement, Axis.X)
+  const targetCenterY = getSpatialPlacementCenter(targetPlacement, Axis.Y)
+  const targetCenterZ = getSpatialPlacementCenter(targetPlacement, Axis.Z)
 
   // 1. Identify immediate collisions with the target placement
   const initialCollisions = queryGridRegion(
@@ -1087,14 +1087,14 @@ export function simulateOmniGridPush<T>(
 
     // If already moved, check if it still conflicts. If not, we can skip.
     if (moves.has(victim)) {
-      if (!doGridPlacementsIntersect(victimPlacement, targetPlacement)) {
+      if (!doSpatialPlacementsIntersect(victimPlacement, targetPlacement)) {
         continue
       }
     }
 
-    const victimCenterX = getGridPlacementCenter(victimPlacement, Axis.X)
-    const victimCenterY = getGridPlacementCenter(victimPlacement, Axis.Y)
-    const victimCenterZ = getGridPlacementCenter(victimPlacement, Axis.Z)
+    const victimCenterX = getSpatialPlacementCenter(victimPlacement, Axis.X)
+    const victimCenterY = getSpatialPlacementCenter(victimPlacement, Axis.Y)
+    const victimCenterZ = getSpatialPlacementCenter(victimPlacement, Axis.Z)
 
     // Calculate vector from target to victim
     const dx = victimCenterX - targetCenterX
@@ -1119,7 +1119,7 @@ export function simulateOmniGridPush<T>(
       let bestResult: {
         dir: {x: number; y: number; z: number}
         valid: boolean
-        moves: Map<T, GridPlacement>
+        moves: Map<T, SpatialPlacement>
         movedCount: number
         movedVolume: number
       } | null = null
@@ -1196,7 +1196,7 @@ export function simulateOmniGridPush<T>(
       candidatesBuffer.sort((a, b) => b.val - a.val)
 
       let bestResult: {
-        moves: Map<T, GridPlacement>
+        moves: Map<T, SpatialPlacement>
         movedCount: number
         movedVolume: number
         val: number
@@ -1332,11 +1332,11 @@ function convertGridIndexToLocalPosition(
  * @param metrics - The grid configuration metrics (cell size, spacing, padding, anchor offsets).
  * @returns The calculated local position (vec3).
  */
-export function calculateGridItemLocalPosition(
-  placement: GridPlacement,
+export function calculateSpatialItemLocalPosition(
+  placement: SpatialPlacement,
   itemSize: Size3D,
   alignment: {x: string; y: string; z: string},
-  metrics: GridMetrics
+  metrics: SpatialMetrics
 ): vec3 {
   return new vec3(
     convertGridIndexToLocalPosition(
@@ -1375,7 +1375,7 @@ export function calculateGridItemLocalPosition(
 /**
  * Gets the center coordinate of a placement along a specific axis.
  */
-function getGridPlacementCenter(placement: GridPlacement, axis: Axis): number {
+function getSpatialPlacementCenter(placement: SpatialPlacement, axis: Axis): number {
   switch (axis) {
     case Axis.X:
       return placement.col + placement.colSpan / 2
@@ -1438,7 +1438,7 @@ function convertLocalPositionToGridIndex(
 function calculateAxisGridIndex(
   axis: Axis,
   localPosOnAxis: number,
-  metrics: GridMetrics,
+  metrics: SpatialMetrics,
   itemSizeOnAxis: number,
   span: number,
   alignment: string
@@ -1472,20 +1472,20 @@ function calculateAxisGridIndex(
 
 /**
  * Calculates a grid placement (indices and spans) from a local position and item size.
- * This is the inverse of calculateGridItemLocalPosition.
+ * This is the inverse of calculateSpatialItemLocalPosition.
  *
  * @param localPos - The local position of the item.
  * @param itemSize - The size of the item.
  * @param alignment - The alignment settings for the item.
  * @param metrics - The grid configuration metrics.
- * @returns The calculated GridPlacement.
+ * @returns The calculated SpatialPlacement.
  */
-function calculateGridPlacementFromLocalPosition(
+function calculateSpatialPlacementFromLocalPosition(
   localPos: vec3,
   itemSize: Size3D,
   alignment: {x: string; y: string; z: string},
-  metrics: GridMetrics
-): GridPlacement {
+  metrics: SpatialMetrics
+): SpatialPlacement {
   // Calculate spans
   const {colSpan, rowSpan, layerSpan} = calculateItemSpans(itemSize, metrics)
 
@@ -1508,18 +1508,18 @@ function calculateGridPlacementFromLocalPosition(
  * @param itemSize - The size of the item.
  * @param alignment - The alignment settings for the item.
  * @param metrics - The grid configuration metrics.
- * @returns The calculated GridPlacement.
+ * @returns The calculated SpatialPlacement.
  */
 export function calculatePlacementFromWorldPosition(
   worldPos: vec3,
   gridInverseTransform: mat4,
   itemSize: Size3D,
   alignment: {x: string; y: string; z: string},
-  metrics: GridMetrics
-): GridPlacement {
+  metrics: SpatialMetrics
+): SpatialPlacement {
   const localPos = gridInverseTransform.multiplyPoint(worldPos)
 
-  return calculateGridPlacementFromLocalPosition(localPos, itemSize, alignment, metrics)
+  return calculateSpatialPlacementFromLocalPosition(localPos, itemSize, alignment, metrics)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1535,7 +1535,7 @@ function pickBestBFSPlacement(
   colSpan: number,
   rowSpan: number,
   layerSpan: number
-): GridPlacement | undefined {
+): SpatialPlacement | undefined {
   if (candidates.length === 0) return undefined
 
   let bestCol = candidates[0]
@@ -1574,19 +1574,19 @@ function pickBestBFSPlacement(
 /**
  * Finds the closest available placement using BFS.
  */
-export function findClosestAvailableGridPlacement<T>(
+export function findClosestAvailableSpatialPlacement<T>(
   startCol: number,
   startRow: number,
   startLayer: number,
   colSpan: number,
   rowSpan: number,
   layerSpan: number,
-  placements: Map<T, GridPlacement>,
+  placements: Map<T, SpatialPlacement>,
   gridCells: Map<number, T>,
-  constraints: GridBoundsConstraints,
+  constraints: SpatialBoundsConstraints,
   maxIterations: number,
-  context?: GridSearchContext
-): GridPlacement | undefined {
+  context?: SpatialSearchContext
+): SpatialPlacement | undefined {
   // Determine start cell
   let startCellCol = Math.round(startCol)
   let startCellRow = Math.round(startRow)
@@ -1663,7 +1663,7 @@ export function findClosestAvailableGridPlacement<T>(
     }
 
     // Check if this position is within bounds and available
-    if (checkGridRegionAvailability(col, row, layer, colSpan, rowSpan, layerSpan, placements, gridCells, constraints)) {
+    if (checkSpatialRegionAvailability(col, row, layer, colSpan, rowSpan, layerSpan, placements, gridCells, constraints)) {
       candidates.push(col, row, layer)
     }
 
@@ -1674,7 +1674,7 @@ export function findClosestAvailableGridPlacement<T>(
       const newLayer = layer + z
 
       // Skip if out of bounds
-      if (!isCellWithinGridBounds(newCol, newRow, newLayer, constraints)) continue
+      if (!isCellWithinSpatialBounds(newCol, newRow, newLayer, constraints)) continue
 
       const key = getCellKey(newCol, newRow, newLayer)
 
@@ -1702,7 +1702,7 @@ export function findClosestAvailableGridPlacement<T>(
 /**
  * Helper to check if two placements are different.
  */
-export function haveGridPlacementsChanged(a: GridPlacement, b: GridPlacement): boolean {
+export function haveSpatialPlacementsChanged(a: SpatialPlacement, b: SpatialPlacement): boolean {
   return (
     a.col !== b.col ||
     a.row !== b.row ||
@@ -1728,14 +1728,14 @@ export function haveGridPlacementsChanged(a: GridPlacement, b: GridPlacement): b
  */
 export function calculateRepackedPlacements<T extends Size3D>(
   items: T[],
-  oldPlacements: Map<T, GridPlacement>,
-  metrics: GridMetrics,
-  constraints: GridBoundsConstraints,
+  oldPlacements: Map<T, SpatialPlacement>,
+  metrics: SpatialMetrics,
+  constraints: SpatialBoundsConstraints,
   addOrder: AddOrder,
   maxIterations: number,
-  getPreferredPlacement: (item: T) => GridPlacement
-): Map<T, GridPlacement> {
-  const newPlacements = new Map<T, GridPlacement>()
+  getPreferredPlacement: (item: T) => SpatialPlacement
+): Map<T, SpatialPlacement> {
+  const newPlacements = new Map<T, SpatialPlacement>()
   const gridCells = new Map<number, T>()
 
   // Sort items
@@ -1755,7 +1755,7 @@ export function calculateRepackedPlacements<T extends Size3D>(
       const {colSpan, rowSpan, layerSpan} = calculateItemSpans(item, metrics)
 
       if (
-        checkGridRegionAvailability(
+        checkSpatialRegionAvailability(
           oldPlacement.col,
           oldPlacement.row,
           oldPlacement.layer,
@@ -1784,9 +1784,9 @@ export function calculateRepackedPlacements<T extends Size3D>(
     // 2. Try preferred placement (calculated from item's transform)
     if (!placed) {
       const preferred = getPreferredPlacement(item)
-      const floored = floorGridPlacement(preferred)
+      const floored = floorSpatialPlacement(preferred)
       if (
-        checkGridRegionAvailability(
+        checkSpatialRegionAvailability(
           floored.col,
           floored.row,
           floored.layer,
@@ -1810,7 +1810,7 @@ export function calculateRepackedPlacements<T extends Size3D>(
   }
 
   // 3. Find closest available for remaining items
-  const searchContext = new GridSearchContext()
+  const searchContext = new SpatialSearchContext()
   for (const item of itemsWithoutPlacement) {
     const oldPlacement = oldPlacements.get(item)
     // If we had an old placement, try to find closest to THAT.
@@ -1820,7 +1820,7 @@ export function calculateRepackedPlacements<T extends Size3D>(
     // Recalculate spans for current config
     const {colSpan, rowSpan, layerSpan} = calculateItemSpans(item, metrics)
 
-    const bestPlacement = findClosestAvailableGridPlacement(
+    const bestPlacement = findClosestAvailableSpatialPlacement(
       startPlacement.col,
       startPlacement.row,
       startPlacement.layer,
@@ -1863,7 +1863,7 @@ function calculateGridAnchorOffset(
   if (!isFixed) return 0
   if (anchor === Anchor.Start) return 0
 
-  const totalSize = calculateTotalGridSizeAlongAxis(maxCells, cellSize, spacing, paddingStart, paddingEnd)
+  const totalSize = calculateTotalSpatialSizeAlongAxis(maxCells, cellSize, spacing, paddingStart, paddingEnd)
 
   if (anchor === Anchor.Center) return totalSize / 2
   if (anchor === Anchor.End) return totalSize
@@ -1897,7 +1897,7 @@ export function calculateAxisAnchorOffset(
   paddingEnd: number,
   anchor: Anchor | string
 ): number {
-  const dim = calculateEffectiveGridAxisDimension(isFixed, maxCells, occupiedMin, occupiedMax)
+  const dim = calculateEffectiveSpatialAxisDimension(isFixed, maxCells, occupiedMin, occupiedMax)
 
   const anchorOffset = calculateGridAnchorOffset(
     true, // Always treat as fixed for the purpose of calculating alignment within the effective bounds

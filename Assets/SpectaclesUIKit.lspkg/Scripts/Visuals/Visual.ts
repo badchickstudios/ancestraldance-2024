@@ -1,11 +1,10 @@
 import animate, {CancelSet} from "SpectaclesInteractionKit.lspkg/Utils/animate"
 import {HSLToRGB, withAlpha} from "SpectaclesInteractionKit.lspkg/Utils/color"
 import Event from "SpectaclesInteractionKit.lspkg/Utils/Event"
-import NativeLogger from "SpectaclesInteractionKit.lspkg/Utils/NativeLogger"
 import {StateName} from "../Components/Element"
-import {DepthSettingsControllable} from "../Interfaces/DepthSettingsControllable"
-import {ThemeService} from "../Themes/ThemeService"
+import {SnapOS2} from "../Themes/SnapOS-2.0/SnapOS2"
 import {colorDistance, colorLerp, isEqual} from "../Utility/UIKitUtilities"
+import {DepthSettingsControllable} from "../Interfaces/DepthSettingsControllable";
 
 export const COLORS: {[key: string]: vec4} = {
   gray: withAlpha(HSLToRGB(new vec3(0, 0, 0.4)), 1),
@@ -18,8 +17,6 @@ export const COLORS: {[key: string]: vec4} = {
 // mesh
 export const ERROR_COLOR = new vec4(0.8, 0.2, 0.2, 1)
 export const INACTIVE_COLOR = new vec4(0.2, 0.2, 0.2, 0.2)
-
-const log = new NativeLogger("Visual")
 
 const DEFAULT_FADE_DURATION: number = 0.2
 
@@ -43,13 +40,13 @@ export type VisualParameters = {
 export type VisualStyleKey = {
   visualElementType: string
   style: string
-  themeName?: string
 }
 
 export interface VisualDepthSettings {
-  depthWrite: boolean
-  depthTest: boolean
+  depthWrite: boolean;
+  depthTest: boolean;
 }
+
 
 export type VisualArgs = {
   sceneObject: SceneObject
@@ -179,7 +176,7 @@ export abstract class Visual implements DepthSettingsControllable {
 
   /**
    * Controls whether this visual participates in depth testing.
-   *
+   * 
    * @param depthTest - Whether depth testing is enabled for this visual.
    * @see depthTest
    */
@@ -196,7 +193,7 @@ export abstract class Visual implements DepthSettingsControllable {
 
   /**
    * Controls whether this visual writes to the depth buffer.
-   *
+   * 
    * @param depthWrite - Whether depth writing is enabled for this visual.
    * @see depthWrite
    */
@@ -1343,45 +1340,14 @@ export abstract class Visual implements DepthSettingsControllable {
     if (this.initialized) return
     if (this.visualArgs.style) {
       if (this.isVisualStyleKey(this.visualArgs.style)) {
-        const mgr = ThemeService.getInstance()
-        const styleKey = this.visualArgs.style
-        const requestedThemeName = styleKey.themeName
-        const resolvedTheme = requestedThemeName ? mgr.getTheme(requestedThemeName) : undefined
-        if (requestedThemeName && !resolvedTheme) {
-          log.d(
-            `[Visual] Unknown theme '${requestedThemeName}' for ${styleKey.visualElementType}; falling back to ${mgr.currentTheme.name}`
-          )
-        }
-        const theme = resolvedTheme ?? mgr.currentTheme
-        const componentStyles = theme.styles[styleKey.visualElementType]
-        let style = componentStyles?.[styleKey.style] ?? componentStyles?.[theme.defaultStyleName]
-
-        if (!style) {
-          log.d(
-            `[Visual] Missing style '${styleKey.style}' for ${styleKey.visualElementType} in theme '${theme.name}'. Falling back to SnapOS2.`
-          )
-          const fallbackTheme = mgr.getTheme("SnapOS2")
-          if (fallbackTheme) {
-            const fallbackComponentStyles = fallbackTheme.styles[styleKey.visualElementType]
-            style =
-              fallbackComponentStyles?.[styleKey.style] ?? fallbackComponentStyles?.[fallbackTheme.defaultStyleName]
-          }
-        }
-
-        if (style) {
-          this.applyStyleParameters(style)
-        } else {
-          log.d(
-            `[Visual] Failed to find any fallback style for ${styleKey.visualElementType}. Visual will be unstyled.`
-          )
-        }
+        this.applyStyleParameters(SnapOS2.styles[this.visualArgs.style.visualElementType][this.visualArgs.style.style])
       } else {
         this.applyStyleParameters(this.visualArgs.style)
       }
     }
-    if (this.visualArgs.depthSettings) {
-      this.depthTest = this.visualArgs.depthSettings.depthTest
-      this.depthWrite = this.visualArgs.depthSettings.depthWrite
+    if (this.visualArgs.depthSettings){
+      this.depthTest = this.visualArgs.depthSettings.depthTest;
+      this.depthWrite = this.visualArgs.depthSettings.depthWrite;
     }
     this.updateVisualStates()
 
@@ -1638,7 +1604,7 @@ export abstract class Visual implements DepthSettingsControllable {
   private verifyStates(): void {
     for (const stateName of Object.values(StateName)) {
       if (!this.visualStates.has(stateName)) {
-        log.d(`WARNING, missing state: ${stateName}, replaced with default state`)
+        print(`WARNING, missing state: ${stateName}, replaced with default state`)
         const isToggleState = stateName === StateName.toggledDefault || stateName === StateName.toggledHovered
         this.visualStates.set(
           stateName,

@@ -1,6 +1,6 @@
 /**
  * Shared layout type definitions.
- * This file contains enums used by SingleAxisLayout, DirectionalLayout, and LayoutItem.
+ * This file contains enums used by SingleAxisLayout and LayoutItem.
  * Extracted to a separate file to avoid circular dependencies.
  */
 
@@ -76,7 +76,7 @@ export class SizeDriverInput {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// DirectionalLayout Types
+// Alignment Types
 // ═══════════════════════════════════════════════════════════════════════════
 
 export enum AlignmentConstants {
@@ -108,7 +108,7 @@ export enum DepthAlignment {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// GridLayout Types
+// SpatialLayout Types
 // ═══════════════════════════════════════════════════════════════════════════
 
 export enum AddOrder {
@@ -126,7 +126,7 @@ export enum AddLayoutItemFallbackStrategy {
 /**
  * Represents a coordinate in the grid (col, row, layer).
  */
-export interface GridCoordinate {
+export interface SpatialCoordinate {
   /** Column index (X-axis) */
   col: number
   /** Row index (Y-axis) */
@@ -136,10 +136,10 @@ export interface GridCoordinate {
 }
 
 /**
- * Represents the placement of an item within a GridLayout.
+ * Represents the placement of an item within a SpatialLayout.
  * Includes the cell coordinates and how many cells the item spans.
  */
-export interface GridPlacement extends GridCoordinate {
+export interface SpatialPlacement extends SpatialCoordinate {
   /** Number of columns the item spans (default: 1, or auto-calculated from item width) */
   colSpan: number
   /** Number of rows the item spans (default: 1, or auto-calculated from item height) */
@@ -264,60 +264,6 @@ export type WrapPositionResult<T> = {
 }
 
 /**
- * Configuration mapping for DirectionalLayout alignment signs to layout properties.
- * Maps alignment sign strings ('+', '-', '*', '') to their corresponding layout configuration.
- */
-export type AlignmentMappingEntry = {
-  /** The alignment mode for SingleAxisLayout */
-  alignment: Alignment
-  /** The anchor point for the layout */
-  anchor: Anchor
-  /** Whether to reverse the layout by default for this alignment */
-  defaultReverse: boolean
-  /** Direction multiplier: +1 for positive direction, -1 for negative */
-  directionMultiplier: number
-}
-
-/**
- * Configuration for DirectionalLayout axis-specific property keys.
- * Maps axis enum values to their corresponding internal property names.
- */
-export type AxisLayoutConfig = {
-  /** Property key for the SingleAxisLayout instance */
-  layoutKey: "_layoutX" | "_layoutY" | "_layoutZ"
-  /** Property key for child alignment */
-  alignmentKey: "_childAlignmentX" | "_childAlignmentY" | "_childAlignmentZ"
-  /** Property key for stretch mode */
-  stretchModeKey: "_stretchModeX" | "_stretchModeY" | "_stretchModeZ"
-  /** Property key for anchor */
-  anchorKey: "_anchorX" | "_anchorY" | "_anchorZ"
-  /** Property key for spacing distribution */
-  spacingDistributionKey: "_spacingDistributionX" | "_spacingDistributionY" | "_spacingDistributionZ"
-  /** Property key for whether this axis has fixed size */
-  fixedSizeKey: "_fixedWidth" | "_fixedHeight" | "_fixedDepth"
-  /** Property key for the fixed size value */
-  sizeKey: "_width" | "_height" | "_depth"
-  /** Property key for padding at the start of this axis */
-  paddingStartKey: "_paddingLeft" | "_paddingBottom" | "_paddingBack"
-  /** Property key for padding at the end of this axis */
-  paddingEndKey: "_paddingRight" | "_paddingTop" | "_paddingFront"
-}
-
-/**
- * Interface for a layout that can be configured by DirectionalLayout.
- * Matches SingleAxisLayout properties.
- */
-export interface ConfigurableSingleAxisLayout {
-  autoAlignment: boolean
-  reverse: boolean
-  anchor: Anchor
-  alignment: Alignment
-  spacingDistribution: SpacingDistribution
-  flexibleSize: boolean
-  size: number
-}
-
-/**
  * Cached original Layoutable settings for restoration when overrideLayoutSizing changes.
  */
 export type LayoutableOriginalSettings = {
@@ -343,7 +289,7 @@ export interface InitializableItem {
 /**
  * Interface defining the constraints for grid boundaries.
  */
-export interface GridBoundsConstraints {
+export interface SpatialBoundsConstraints {
   /** Whether columns are fixed */
   fixedColumns: boolean
   /** Maximum columns if fixed */
@@ -362,7 +308,7 @@ export interface GridBoundsConstraints {
  * Metrics used for calculating grid item positions.
  * Aggregates cell size, spacing, padding, and anchor offsets.
  */
-export interface GridMetrics {
+export interface SpatialMetrics {
   /** Size of each cell (width, height, depth) */
   cellSize: vec3
   /** Spacing between cells (x, y, z) */

@@ -146,22 +146,6 @@ function findElement(sceneObject: SceneObject): any | null {
   return null
 }
 
-/** Finds a standalone ElementContent component (has _text + _sizeOverride). */
-function findStandaloneContent(sceneObject: SceneObject): any | null {
-  for (const c of sceneObject.getComponents("ScriptComponent")) {
-    const comp = c as any
-    if (
-      comp &&
-      "_text" in comp &&
-      "_sizeOverride" in comp &&
-      comp._sizeOverride
-    ) {
-      return comp
-    }
-  }
-  return null
-}
-
 /** Finds a shape component (has _size vec2 + renderMeshVisual). */
 function findShape(sceneObject: SceneObject): any | null {
   for (const c of sceneObject.getComponents("ScriptComponent")) {
@@ -236,34 +220,6 @@ const ElementHandler: ItemHandler = {
       comp.width = width
       comp.height = height
     }
-    setLocalXY(sceneObject, x, y)
-  },
-}
-
-// Priority 95: Standalone ElementContent (has _text + _sizeOverride)
-// Below Element (100) so companion-mode buttons use ElementHandler.
-// Above Shape (90) so standalone content labels measure correctly.
-const StandaloneContentHandler: ItemHandler = {
-  name: "StandaloneContentHandler",
-
-  canHandle(sceneObject: SceneObject): boolean {
-    return findStandaloneContent(sceneObject) !== null
-  },
-
-  measure(sceneObject: SceneObject): {width: number; height: number} {
-    const comp = findStandaloneContent(sceneObject)
-    if (!comp) return {width: 1, height: 1}
-    return {width: comp._sizeOverride.x, height: comp._sizeOverride.y}
-  },
-
-  apply(
-    sceneObject: SceneObject,
-    x: number,
-    y: number,
-    _width: number,
-    _height: number
-  ): void {
-    // Position only — ElementContent manages its own internal layout.
     setLocalXY(sceneObject, x, y)
   },
 }
@@ -430,7 +386,6 @@ const RenderMeshVisualHandler: ItemHandler = {
 
 ItemHandlerRegistry.register(LayoutContainerHandler, 110)
 ItemHandlerRegistry.register(ElementHandler, 100)
-ItemHandlerRegistry.register(StandaloneContentHandler, 95)
 ItemHandlerRegistry.register(ShapeHandler, 90)
 ItemHandlerRegistry.register(TextHandler, 70)
 ItemHandlerRegistry.register(ImageHandler, 60)

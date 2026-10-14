@@ -1,10 +1,6 @@
 import {RoundedRectangleVisual} from "../../Visuals/RoundedRectangle/RoundedRectangleVisual"
 import {BaseRoundedRectButton} from "./BaseRoundedRectButton"
 
-/**
- * @deprecated buttons with specified shapes will be removed
- * use Button.ts instead and select your specified shape from the Shape dropdown
- */
 @component
 export class CapsuleButton extends BaseRoundedRectButton {
   @input

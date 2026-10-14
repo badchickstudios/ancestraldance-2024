@@ -43,16 +43,8 @@ const log = new NativeLogger("SingleAxisLayout")
  * A low-level 1D layout component that arranges child {@link LayoutItem} elements along a single axis.
  *
  * @remarks
- * ## Internal Component - Use DirectionalLayout Instead
+ * A low-level building block for arranging children along a single axis.
  *
- * `SingleAxisLayout` is designed as a low-level building block for {@link DirectionalLayout} and is not intended
- * for direct use. For most layout needs, use **{@link DirectionalLayout}** which provides a simpler, more intuitive
- * API for arranging children along one or more axes with features like multi-axis support, named alignment options
- * (Left/Center/Right, Top/Bottom, Front/Back), and stretch modes.
- *
- * Only use `SingleAxisLayout` directly if you have very specific requirements that `DirectionalLayout` cannot fulfill.
- *
- * @see {@link DirectionalLayout} - The recommended layout component for most use cases.
  * @see {@link LayoutItem} - The component required on child elements.
  */
 @component
@@ -907,7 +899,7 @@ export class SingleAxisLayout extends BaseScriptComponent {
 
   /**
    * Calculates the dimensions of the wrapped layout items.
-   * Used by DirectionalLayout to determine total items size when wrapping is enabled.
+   * Determines total items size when wrapping is enabled.
    *
    * @param includePadding - Whether to include padding in the calculation.
    * @returns An object containing the size along the main axis and the cross axis (wrap axis).

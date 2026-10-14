@@ -1,4 +1,4 @@
-- !<ObjectPrefab/be28450b-9eda-4f04-ac93-fd128995ed53>
+- !<ObjectPrefab/3e2dd725-6eb4-4c97-a806-74f3f23fd149>
   PackagePath: ""
   objects:
     - !<own> 94e00120-7636-4e56-91bb-13d7c9310c4b
@@ -14,9 +14,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -32,9 +32,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: ""
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.000500}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -92,8 +92,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -101,8 +101,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -111,9 +109,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -125,8 +123,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
   ScriptTypes:
@@ -142,16 +138,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -161,9 +155,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -175,8 +169,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -206,16 +198,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -225,9 +215,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -239,8 +229,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -257,7 +245,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -275,7 +262,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -365,8 +351,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -439,8 +427,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -448,8 +436,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -458,9 +444,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -472,8 +458,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _width: !<float> 3.000000
   ScriptTypes:
@@ -518,20 +502,17 @@
   ScriptInputsDefault:
     _inactive: true
     _playAudio: true
-    _themeOverride: true
-    _fontSize: true
-    _fontFamily: true
+    inputType: true
+    formatType: true
+    fontFamily: true
+    useIcon: true
+    icon: true
+    changeIconOnFocus: true
+    alternateIcon: true
+    contentRequiredOnDeactivate: true
     addCallbacks: true
     onTextChangedCallbacks: true
     onKeyboardStateChangedCallbacks: true
-    _placeholderText: true
-    inputType: true
-    formatType: true
-    useIcon: true
-    icon: true
-    contentRequiredOnDeactivate: true
-    changeIconOnFocus: true
-    alternateIcon: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -542,22 +523,20 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
-      _fontSize: 0
-      _fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      inputType: default
+      formatType: date
+      placeholderText: Text Input
+      fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      useIcon: false
+      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      changeIconOnFocus: false
+      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      contentRequiredOnDeactivate: false
       addCallbacks: false
       onTextChangedCallbacks:
         []
       onKeyboardStateChangedCallbacks:
         []
-      _placeholderText: ""
-      inputType: default
-      formatType: date
-      useIcon: false
-      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
-      contentRequiredOnDeactivate: false
-      changeIconOnFocus: false
-      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}
@@ -601,8 +580,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -610,8 +589,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -621,9 +598,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -635,8 +612,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -658,8 +633,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -747,9 +724,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -765,9 +742,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: ""
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -800,8 +777,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -874,16 +853,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -893,9 +870,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -907,8 +884,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -940,7 +915,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -957,7 +931,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -982,7 +955,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -1000,7 +972,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -1068,16 +1039,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -1086,9 +1055,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -1100,8 +1069,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
   ScriptTypes:
@@ -1134,7 +1101,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -1151,7 +1117,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -1232,16 +1197,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -1250,9 +1213,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -1264,8 +1227,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
   ScriptTypes:
@@ -1296,16 +1257,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -1315,9 +1274,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: -0.050000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -1329,8 +1288,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -1397,8 +1354,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -1516,9 +1475,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -1534,9 +1493,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: ""
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -1577,16 +1536,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -1596,9 +1553,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -1610,8 +1567,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -1641,16 +1596,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -1660,9 +1613,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -1674,8 +1627,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -1697,8 +1648,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -1833,8 +1786,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -1939,8 +1894,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -1948,8 +1903,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -1958,9 +1911,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -1972,8 +1925,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
   ScriptTypes:
@@ -2021,8 +1972,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -2030,8 +1981,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -2041,9 +1990,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -2055,8 +2004,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -2088,16 +2035,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -2106,9 +2051,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -2120,8 +2065,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _width: !<float> 3.000000
   ScriptTypes:
@@ -2156,7 +2099,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -2174,7 +2116,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -2275,9 +2216,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -2293,9 +2234,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: ""
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.000500}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -2353,16 +2294,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -2371,9 +2310,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -2385,8 +2324,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
   ScriptTypes:
@@ -2442,7 +2379,6 @@
     _inactive: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _defaultValue: true
     _segmented: true
     _numberOfSegments: true
@@ -2460,7 +2396,6 @@
       _playAudio: true
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Default
       _defaultValue: !<float> 0.000000
       snapToTriggerPosition: true
       _segmented: false
@@ -2484,8 +2419,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -2493,8 +2428,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -2504,9 +2437,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -2518,8 +2451,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -2535,7 +2466,6 @@
     _inactive: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _defaultValue: true
     _segmented: true
     _numberOfSegments: true
@@ -2553,7 +2483,6 @@
       _playAudio: true
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Default
       _defaultValue: !<float> 0.000000
       snapToTriggerPosition: true
       _segmented: false
@@ -2614,8 +2543,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -2695,8 +2626,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -2767,7 +2700,7 @@
   ScriptAsset: !<reference> 3a0acfde-55a9-47c6-911b-4a6f87490a05
   ScriptInputsDefault:
     _renderOrder: true
-    _size: true
+    size: true
     orientation: true
     _playAudio: true
   ScriptTypesDefault:
@@ -2775,7 +2708,7 @@
   ScriptInputs:
     "":
       _renderOrder: 0
-      _size: !<Vec2> {x: 20.000000, y: 1.800000}
+      size: !<Vec2> {x: 20.000000, y: 1.800000}
       orientation: Vertical
       scrollWindow: !<MappingBased.AssignableType_1> 369c1cb7-d4f0-480a-9668-eb7ef5d7581c
       _playAudio: false
@@ -2792,16 +2725,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -2810,9 +2741,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -2824,8 +2755,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _width: !<float> 3.000000
   ScriptTypes:
@@ -2840,20 +2769,17 @@
   ScriptInputsDefault:
     _inactive: true
     _playAudio: true
-    _themeOverride: true
-    _fontSize: true
-    _fontFamily: true
+    inputType: true
+    formatType: true
+    fontFamily: true
+    useIcon: true
+    icon: true
+    changeIconOnFocus: true
+    alternateIcon: true
+    contentRequiredOnDeactivate: true
     addCallbacks: true
     onTextChangedCallbacks: true
     onKeyboardStateChangedCallbacks: true
-    _placeholderText: true
-    inputType: true
-    formatType: true
-    useIcon: true
-    icon: true
-    contentRequiredOnDeactivate: true
-    changeIconOnFocus: true
-    alternateIcon: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -2864,22 +2790,20 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
-      _fontSize: 0
-      _fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      inputType: default
+      formatType: date
+      placeholderText: Text Input
+      fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      useIcon: false
+      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      changeIconOnFocus: false
+      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      contentRequiredOnDeactivate: false
       addCallbacks: false
       onTextChangedCallbacks:
         []
       onKeyboardStateChangedCallbacks:
         []
-      _placeholderText: ""
-      inputType: default
-      formatType: date
-      useIcon: false
-      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
-      contentRequiredOnDeactivate: false
-      changeIconOnFocus: false
-      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}
@@ -2935,7 +2859,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -2953,7 +2876,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -2998,8 +2920,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -3071,20 +2995,17 @@
   ScriptInputsDefault:
     _inactive: true
     _playAudio: true
-    _themeOverride: true
-    _fontSize: true
-    _fontFamily: true
+    inputType: true
+    formatType: true
+    fontFamily: true
+    useIcon: true
+    icon: true
+    changeIconOnFocus: true
+    alternateIcon: true
+    contentRequiredOnDeactivate: true
     addCallbacks: true
     onTextChangedCallbacks: true
     onKeyboardStateChangedCallbacks: true
-    _placeholderText: true
-    inputType: true
-    formatType: true
-    useIcon: true
-    icon: true
-    contentRequiredOnDeactivate: true
-    changeIconOnFocus: true
-    alternateIcon: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -3095,22 +3016,20 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
-      _fontSize: 0
-      _fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      inputType: default
+      formatType: date
+      placeholderText: Text Input
+      fontFamily: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      useIcon: false
+      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      changeIconOnFocus: false
+      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      contentRequiredOnDeactivate: false
       addCallbacks: false
       onTextChangedCallbacks:
         []
       onKeyboardStateChangedCallbacks:
         []
-      _placeholderText: ""
-      inputType: default
-      formatType: date
-      useIcon: false
-      icon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
-      contentRequiredOnDeactivate: false
-      changeIconOnFocus: false
-      alternateIcon: !<reference.Texture> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}
@@ -3201,8 +3120,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -3210,8 +3129,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -3220,9 +3137,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -3234,8 +3151,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _width: !<float> 3.000000
   ScriptTypes:
@@ -3251,9 +3166,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -3269,9 +3184,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: ""
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.000500}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -3491,16 +3406,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -3509,9 +3422,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -3523,8 +3436,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _width: !<float> 3.000000
   ScriptTypes:
@@ -3562,8 +3473,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -3674,9 +3587,9 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -3692,9 +3605,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: ""
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -3736,7 +3649,6 @@
     _inactive: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     _defaultValue: true
     _segmented: true
     _numberOfSegments: true
@@ -3754,7 +3666,6 @@
       _playAudio: true
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Default
       _defaultValue: !<float> 0.000000
       snapToTriggerPosition: true
       _segmented: false
@@ -3780,7 +3691,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -3798,7 +3708,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -3851,16 +3760,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -3870,9 +3777,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -3884,8 +3791,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -3932,8 +3837,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4061,7 +3968,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -4079,7 +3985,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -4154,8 +4059,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4258,8 +4165,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -4267,8 +4174,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -4277,9 +4182,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -4291,8 +4196,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 1.000000}
   ScriptTypes:
@@ -4305,7 +4208,6 @@
   Enabled: true
   ScriptAsset: !<reference> 3b46d829-f6db-432a-914c-3551904d3994
   ScriptInputsDefault:
-    _themeOverride: true
     autoShowHide: true
     _appearance: true
     _padding: true
@@ -4340,7 +4242,6 @@
     {}
   ScriptInputs:
     "":
-      _themeOverride: Inherited
       autoShowHide: true
       _appearance: Large
       _innerSize: !<Vec2> {x: 33.000000, y: 18.000000}
@@ -4452,8 +4353,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4526,8 +4429,8 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _toggleable: true
     _defaultToOn: true
     addCallbacks: true
@@ -4535,8 +4438,6 @@
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -4545,9 +4446,9 @@
       _renderOrder: 0
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: false
       _defaultToOn: false
       addCallbacks: false
@@ -4559,8 +4460,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
       _width: !<float> 3.000000
   ScriptTypes:
@@ -4591,16 +4490,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -4610,9 +4507,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -4624,8 +4521,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -4670,8 +4565,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4766,8 +4663,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4862,8 +4761,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -4953,7 +4854,6 @@
     _playAudio: true
     _hasShadow: true
     _shadowPositionOffset: true
-    _themeOverride: true
     hasTrackVisual: true
     customKnobSize: true
     _knobSize: true
@@ -4970,7 +4870,6 @@
       _playAudio: false
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       hasTrackVisual: true
       customKnobSize: false
       _knobSize: !<Vec2> {x: 3.000000, y: 3.000000}
@@ -4993,16 +4892,14 @@
     _renderOrder: true
     _inactive: true
     _playAudio: true
+    _style: true
     _hasShadow: true
-    _themeOverride: true
     _defaultToOn: true
     addCallbacks: true
     triggerUpCallbacks: true
     triggerDownCallbacks: true
     onValueChangeCallbacks: true
     onFinishedCallbacks: true
-    _styleSnapOS2: true
-    _styleSnapOS3: true
     _opacity: true
   ScriptTypesDefault:
     {}
@@ -5012,9 +4909,9 @@
       _size: !<Vec3> {x: 7.000000, y: 3.000000, z: 3.000000}
       _inactive: false
       _playAudio: false
+      _style: PrimaryNeutral
       _hasShadow: false
       _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
-      _themeOverride: Inherited
       _toggleable: true
       _defaultToOn: false
       addCallbacks: false
@@ -5026,8 +4923,6 @@
         []
       onFinishedCallbacks:
         []
-      _styleSnapOS2: PrimaryNeutral
-      _styleSnapOS3: Neutral
       _opacity: !<float> 1.000000
   ScriptTypes:
     "":
@@ -5049,8 +4944,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000
@@ -5145,8 +5042,10 @@
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 48
+  FontSize: 48.000000
   Font: !<reference> 00000000-0000-0000-0000-000000000000
+  FontWeight: 400
+  Italic: false
   LayoutRect:
     left: -7.500000
     bottom: -2.250000

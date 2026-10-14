@@ -6,7 +6,7 @@ import {SecondaryGradients} from "../Gradients/SecondaryGradients"
 import {SpecialGradients} from "../Gradients/SpecialGradients"
 import {SnapOS2Styles} from "../SnapOS2"
 
-export const ButtonParameters: Partial<Record<SnapOS2Styles, Style>> = {
+export const RectangleButtonParameters: Partial<Record<SnapOS2Styles, Style>> = {
   PrimaryNeutral: {
     default: {
       baseType: "Gradient",

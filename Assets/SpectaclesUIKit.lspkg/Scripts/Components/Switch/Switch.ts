@@ -387,18 +387,15 @@ export class Switch extends Slider implements Toggleable {
   }
 
   protected get defaultTrackStyle(): Partial<RoundedRectangleVisualParameters> {
-    const themed = this.resolveTheme()?.styles["SwitchTrack"]?.["default"]
-    return themed ?? trackStyle
+    return trackStyle
   }
 
   protected get defaultKnobStyle(): Partial<RoundedRectangleVisualParameters> {
-    const themed = this.resolveTheme()?.styles["SwitchKnob"]?.["default"]
-    return themed ?? knobStyle
+    return knobStyle
   }
 
   protected get defaultTrackFillStyle(): Partial<RoundedRectangleVisualParameters> {
-    const themed = this.resolveTheme()?.styles["SwitchFill"]?.["default"]
-    return themed ?? trackFillStyle
+    return trackFillStyle
   }
 
   protected get knobObjectName(): string {

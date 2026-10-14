@@ -1,0 +1,84 @@
+- !<ObjectPrefab/7e3b61a2-2cac-454b-b3c6-f0f84fb13033>
+  PackagePath: ""
+  objects:
+    - !<own> f25e16b4-9ae8-4f1e-988f-4318002a4317
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/0abb1929-28c2-4c98-b267-95aa97f6dc2c>
+  PrefabRemaps: []
+  Name: Scene
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> da93af9e-5a98-472b-afa2-f116e93fcd8e
+  Components:
+    - !<own> 237404a8-faf2-466a-90bb-10d63cd67216
+- !<AnimationPlayer/237404a8-faf2-466a-90bb-10d63cd67216>
+  PrefabRemaps: []
+  Name: component_1
+  Enabled: true
+  Autoplay: true
+  ClipRangeType: Frames
+  AnimationClips: []
+- !<RenderMeshVisual/79879bed-ab2a-4db3-b717-2e27827ec7e5>
+  PrefabRemaps: []
+  Name: Object_0.001
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 37dbf3d7-3210-4887-a262-e9202b5cb1bf
+  Mesh: !<reference> f0b8854c-8b9b-4af8-a5c7-56c305de493d
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes: {}
+- !<SceneObject/d3103d0b-4b00-4798-9a1a-6ebee0f2946e>
+  PrefabRemaps: []
+  Name: Scenes
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 0abb1929-28c2-4c98-b267-95aa97f6dc2c
+  Components: []
+- !<SceneObject/da93af9e-5a98-472b-afa2-f116e93fcd8e>
+  PrefabRemaps: []
+  Name: Object_2.001
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: -90.000023, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> 79879bed-ab2a-4db3-b717-2e27827ec7e5
+- !<SceneObject/f25e16b4-9ae8-4f1e-988f-4318002a4317>
+  PrefabRemaps: []
+  Name: dodecahedron3
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Scale: {x: 100.000000, y: 100.000000, z: 100.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> d3103d0b-4b00-4798-9a1a-6ebee0f2946e
+  Components: []

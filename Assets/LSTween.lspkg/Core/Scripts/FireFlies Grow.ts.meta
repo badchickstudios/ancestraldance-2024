@@ -1,0 +1,54 @@
+- !<AssetImportMetadata/fbfa173c-61cb-4378-9c84-c7acb56219b1>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> b9bbef92-6838-4fea-b7c9-b9c54ac4e38f
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> b9bbef92-6838-4fea-b7c9-b9c54ac4e38f
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData: {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 42f29fcf-5f36-48f3-8c59-e23f590fec44
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/42f29fcf-5f36-48f3-8c59-e23f590fec44>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: a985b45c-ad0d-4c61-87f3-955f7b389065
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    ff1: false
+    ff2: false
+    ff3: false
+    ffGlow: false
+    glow1: false
+    glow2: false
+    glow3: false
+  ScriptTypesHidden: {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - ff1: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      ff2: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      ff3: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      ffGlow: !<reference.MaterialMeshVisual> 00000000-0000-0000-0000-000000000000
+      glow1: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      glow2: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      glow3: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    - {}
+  InputLines:
+    - // @input SceneObject ff1
+    - // @input SceneObject ff2
+    - // @input SceneObject ff3
+    - // @input Component.MaterialMeshVisual ffGlow
+    - // @input SceneObject glow1
+    - // @input SceneObject glow2
+    - // @input SceneObject glow3

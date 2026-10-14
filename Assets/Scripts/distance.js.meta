@@ -1,0 +1,38 @@
+- !<AssetImportMetadata/d4a69573-a73d-4cad-a79e-c8e6ee933d34>
+  ImportedAssetIds:
+    JavaScriptAsset: !<reference> 8452d483-bb35-4e71-8854-9f0338ae2d03
+  ImporterName: JavaScriptAssetImporter
+  PrimaryAsset: !<reference> 8452d483-bb35-4e71-8854-9f0338ae2d03
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData: {}
+  AssetDataMap:
+    JavaScriptAsset: !<own> 5cc67873-3b16-4ec3-8f11-981a3862691c
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ScriptAssetData/5cc67873-3b16-4ec3-8f11-981a3862691c>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: cbfe11df-98e5-45f3-a006-95dd5ff4acbf
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    distanceText: false
+    handObject: false
+    targetObject: false
+  ScriptTypesHidden: {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - distanceText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      handObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      targetObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    - {}

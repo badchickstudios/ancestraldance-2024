@@ -1,0 +1,169 @@
+- !<AssetImportMetadata/7e456c9b-58ef-809b-a188-10a9569ec4b3>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> d4602a11-8c14-4494-992e-1247cac44fe1
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> d4602a11-8c14-4494-992e-1247cac44fe1
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData:
+    AssetLibraryId: 7K9R1jzj0KHUkW4KFJ2ZzW
+  AssetDataMap:
+    ObjectPrefab: !<own> be391b56-1423-4e32-8889-51f73d8e2a03
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<SceneObject/10d66d0c-01a0-413a-82e7-28b2b65a2a1b>
+  PrefabRemaps: []
+  Name: Wrist Occluder__PLACE_UNDER_WRIST_BINDING
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 40.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 10.000000, y: 5.000000, z: 10.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 4cfbfdde-7aeb-4281-9055-acf1267f74d1
+    - !<own> 5f034283-3d8b-4109-b847-de2a99740729
+  Components:
+    - !<own> 7ee20fc8-b4e6-40f7-9fc8-2e9d773e4f4f
+- !<ObjectPrefab/2ef6ea43-e51b-4b3f-bd3e-cf735348aee2>
+  PackagePath: ""
+  objects:
+    - !<own> 10d66d0c-01a0-413a-82e7-28b2b65a2a1b
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/4cfbfdde-7aeb-4281-9055-acf1267f74d1>
+  PrefabRemaps: []
+  Name: Wrist Occluder
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: -90.000000, y: 0.000000, z: -0.000000}
+    Scale: {x: 2.540000, y: 2.539999, z: 2.540000}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> fc9ce4fb-1409-43db-aa3e-6ed196cbf368
+- !<SceneObject/5f034283-3d8b-4109-b847-de2a99740729>
+  PrefabRemaps: []
+  Name: Wrist Occluder Shadow
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: -90.000000, y: 0.000000, z: -0.000000}
+    Scale: {x: 2.540001, y: 2.540000, z: 2.540001}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> 80547739-b33d-45d3-938a-2ab0dab7a4c4
+- !<ScriptComponent/7ee20fc8-b4e6-40f7-9fc8-2e9d773e4f4f>
+  PrefabRemaps: []
+  Name: WristOccluderController
+  Enabled: true
+  ScriptAsset: !<reference> 91990d48-88e8-46bb-8f3c-5d3d9bd96996
+  ScriptInputsDefault: {}
+  ScriptTypesDefault: {}
+  ScriptInputs:
+    "":
+      wristOccluder: !<reference.RenderMeshVisual> fc9ce4fb-1409-43db-aa3e-6ed196cbf368
+      wristOccluderShadow: !<reference.RenderMeshVisual> 80547739-b33d-45d3-938a-2ab0dab7a4c4
+      blendShape: 0.300000
+  ScriptTypes:
+    "": {}
+- !<RenderMeshVisual/80547739-b33d-45d3-938a-2ab0dab7a4c4>
+  PrefabRemaps: []
+  Name: component_0
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 356fe643-757d-4a44-b3ac-c2a43c8271b8
+  Mesh: !<reference> b7574cd7-e5aa-48e7-b02a-2e11cec90de3
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    Thickness: 0.500000
+  RayTracing: !<RayTracingVisualSettings>
+    Reflections:
+      caster: false
+      receiver: false
+      receiverLayers: 1
+      planar:
+        enabled: true
+        roughHarden: 0.500000
+        roughCurve: 2.000000
+    AmbientOcclusion:
+      caster: false
+      receiver: false
+      receiverLayers: 1
+    Shadows:
+      caster: false
+      receiver: false
+      receiverLayers: 1
+    Material: !<reference> 00000000-0000-0000-0000-000000000000
+    HideFromCamera: false
+    GlobalIllumination:
+      caster: false
+      receiver: false
+      receiverLayers: 1
+- !<ObjectPrefabAssetData/be391b56-1423-4e32-8889-51f73d8e2a03>
+  SourceRemaps:
+    - 06c6c847-f381-4831-8240-3d6c087c78ab: 10d66d0c-01a0-413a-82e7-28b2b65a2a1b
+    - 45c45bd5-7ae1-47e8-b4d1-6e08b8e614c5: 80547739-b33d-45d3-938a-2ab0dab7a4c4
+    - 4db268c4-b317-4399-9dd3-5b9738e5532e: 5f034283-3d8b-4109-b847-de2a99740729
+    - c34d0d00-6e50-43bc-8be4-f99cbee6fc3e: 4cfbfdde-7aeb-4281-9055-acf1267f74d1
+    - d4602a11-8c14-4494-992e-1247cac44fe1: 2ef6ea43-e51b-4b3f-bd3e-cf735348aee2
+    - d7ac1a3e-ee37-4c63-b6a9-eaf843615a9d: fc9ce4fb-1409-43db-aa3e-6ed196cbf368
+    - f525b632-6e0a-4381-a5a4-7931dec13eb3: 7ee20fc8-b4e6-40f7-9fc8-2e9d773e4f4f
+  SourceState: !<own> 2ef6ea43-e51b-4b3f-bd3e-cf735348aee2
+- !<RenderMeshVisual/fc9ce4fb-1409-43db-aa3e-6ed196cbf368>
+  PrefabRemaps: []
+  Name: component_0
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> c7e8b9bb-77fc-45b6-9414-f773f5b8cd94
+  Mesh: !<reference> b6d9f6e6-4053-44af-936c-31b3e15f8988
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    Thickness: 0.500000
+  RayTracing: !<RayTracingVisualSettings>
+    Reflections:
+      caster: false
+      receiver: false
+      receiverLayers: 1
+      planar:
+        enabled: true
+        roughHarden: 0.500000
+        roughCurve: 2.000000
+    AmbientOcclusion:
+      caster: false
+      receiver: false
+      receiverLayers: 1
+    Shadows:
+      caster: false
+      receiver: false
+      receiverLayers: 1
+    Material: !<reference> 00000000-0000-0000-0000-000000000000
+    HideFromCamera: false
+    GlobalIllumination:
+      caster: false
+      receiver: false
+      receiverLayers: 1

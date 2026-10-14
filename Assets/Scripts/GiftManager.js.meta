@@ -1,0 +1,42 @@
+- !<AssetImportMetadata/ac3c194a-be98-4784-a8a2-4b075cb47d08>
+  ImportedAssetIds:
+    JavaScriptAsset: !<reference> 8dafe4a6-1721-4311-a3a2-c2679eff30be
+  ImporterName: JavaScriptAssetImporter
+  PrimaryAsset: !<reference> 8dafe4a6-1721-4311-a3a2-c2679eff30be
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData: {}
+  AssetDataMap:
+    JavaScriptAsset: !<own> 9848796c-235f-4f35-be92-999012633fcc
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ScriptAssetData/9848796c-235f-4f35-be92-999012633fcc>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 4c001b0b-1993-43f6-ab09-6494598b051f
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    Gifts: false
+    GiftsShrink: false
+    HaloLines2: false
+    leftWristGifts: false
+    rightWristGifts: false
+  ScriptTypesHidden: {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - Gifts: !<reference.SceneObject[]> []
+      GiftsShrink: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      leftWristGifts: !<reference.SceneObject[]> []
+      rightWristGifts: !<reference.SceneObject[]> []
+      HaloLines2: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    - {}

@@ -1,0 +1,50 @@
+- !<AssetImportMetadata/465549a7-8b73-390a-538c-d55db650f109>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> dc452541-cb18-4ce2-b171-8eb0e5ea1523
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> dc452541-cb18-4ce2-b171-8eb0e5ea1523
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData: {}
+  AssetDataMap:
+    ObjectPrefab: !<own> 5b1d953b-51b7-4499-8cb5-e78edce64b05
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<VFXComponent/46333dee-b912-4ab1-b857-9a878d7a5e3a>
+  PrefabRemaps: []
+  Name: VFX Component
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  VFXAsset: !<reference> 5fa09bae-ae3c-47ae-a849-4a583cb768ce
+- !<ObjectPrefabAssetData/5b1d953b-51b7-4499-8cb5-e78edce64b05>
+  SourceRemaps:
+    - 3a657a3f-9a69-4ed5-9759-293a509edd4b: 46333dee-b912-4ab1-b857-9a878d7a5e3a
+    - a55885e9-ad87-40ac-a71f-e47a50bb7247: aba0f33b-9d58-422b-afc8-cf13a739230d
+    - dc452541-cb18-4ce2-b171-8eb0e5ea1523: 90ae9442-47cc-4942-9be1-f009c86abb9f
+  SourceState: !<own> 90ae9442-47cc-4942-9be1-f009c86abb9f
+- !<ObjectPrefab/90ae9442-47cc-4942-9be1-f009c86abb9f>
+  PackagePath: ""
+  objects:
+    - !<own> aba0f33b-9d58-422b-afc8-cf13a739230d
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/aba0f33b-9d58-422b-afc8-cf13a739230d>
+  PrefabRemaps: []
+  Name: Star Particles
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> 46333dee-b912-4ab1-b857-9a878d7a5e3a

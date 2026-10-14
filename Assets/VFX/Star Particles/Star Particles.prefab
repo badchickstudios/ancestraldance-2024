@@ -1,0 +1,31 @@
+- !<ObjectPrefab/dc452541-cb18-4ce2-b171-8eb0e5ea1523>
+  PackagePath: ""
+  objects:
+    - !<own> a55885e9-ad87-40ac-a71f-e47a50bb7247
+  LazyLoading: false
+  RetainAssets: true
+- !<VFXComponent/3a657a3f-9a69-4ed5-9759-293a509edd4b>
+  PrefabRemaps: []
+  Name: VFX Component
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  VFXAsset: !<reference> 5fa09bae-ae3c-47ae-a849-4a583cb768ce
+- !<SceneObject/a55885e9-ad87-40ac-a71f-e47a50bb7247>
+  PrefabRemaps: []
+  Name: Star Particles
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> 3a657a3f-9a69-4ed5-9759-293a509edd4b

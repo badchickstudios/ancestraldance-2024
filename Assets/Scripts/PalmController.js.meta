@@ -1,0 +1,40 @@
+- !<AssetImportMetadata/d3b8364f-a628-407e-b9a0-09758f41af18>
+  ImportedAssetIds:
+    JavaScriptAsset: !<reference> f46f8298-cd53-4501-8de8-ae61fab563dd
+  ImporterName: JavaScriptAssetImporter
+  PrimaryAsset: !<reference> f46f8298-cd53-4501-8de8-ae61fab563dd
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData: {}
+  AssetDataMap:
+    JavaScriptAsset: !<own> c3f21034-e062-4106-aff8-66484b8f66c9
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ScriptAssetData/c3f21034-e062-4106-aff8-66484b8f66c9>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: f2bc00c6-e9e8-4384-a547-6779cf926743
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    leftHandAsset: false
+    menuOffset: false
+    menuScale: false
+    palmMenu: false
+  ScriptTypesHidden: {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - palmMenu: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      leftHandAsset: !<reference.HandTracking3DAsset> 00000000-0000-0000-0000-000000000000
+      menuOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      menuScale: !<float> 1.000000
+  ScriptTypes:
+    - {}

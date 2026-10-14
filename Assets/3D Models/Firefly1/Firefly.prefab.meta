@@ -1,0 +1,118 @@
+- !<AssetImportMetadata/91911bb8-5890-fb75-a8e9-ccc5d4c07456>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> d78bd6b0-1f2c-4545-8e45-9a581765277b
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> d78bd6b0-1f2c-4545-8e45-9a581765277b
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData: {}
+  AssetDataMap:
+    ObjectPrefab: !<own> fd39b46b-d207-4537-8eb6-a27aed515c41
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<SceneObject/043dbb8c-6ab7-46db-9d2d-52996a6c9405>
+  PrefabRemaps: []
+  Name: FireFly Comp
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.407345, y: 27.759575, z: 0.000000}
+    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> fa2479cc-663a-43c8-8cf5-779e36d711f1
+    - !<own> 0625b6bf-0db2-47b4-82fa-aa396b36252a
+  Components: []
+- !<SceneObject/0625b6bf-0db2-47b4-82fa-aa396b36252a>
+  PrefabRemaps: []
+  Name: Glow
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 90.000000, y: -0.000000, z: 0.000000}
+    Scale: {x: 10.000000, y: 10.000000, z: 10.000000}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> f0d59699-5d12-45e2-8d0e-a4293650d38e
+- !<SceneObject/0ee73822-f023-4846-a3d4-604a2fab30b1>
+  PrefabRemaps: []
+  Name: Firefly
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 45.509926, y: 61.949333, z: 56.107090}
+    Rotation: {x: 0.659732, y: -8.404075, z: -156.901352}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    - !<own> 043dbb8c-6ab7-46db-9d2d-52996a6c9405
+  Components: []
+- !<ObjectPrefab/7a946fd3-4ff0-4f3e-af9a-d7d6d77257e4>
+  PackagePath: ""
+  objects:
+    - !<own> 0ee73822-f023-4846-a3d4-604a2fab30b1
+  LazyLoading: false
+  RetainAssets: true
+- !<RenderMeshVisual/81a5e649-92a8-4fff-8e0f-15e438a77492>
+  PrefabRemaps: []
+  Name: Render Mesh Visual
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> a6536c8d-c972-4a6a-be1a-8ffcaa459926
+  Mesh: !<reference> ce4eb21c-6ab8-4d48-94b8-3044ed690221
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes: {}
+- !<RenderMeshVisual/f0d59699-5d12-45e2-8d0e-a4293650d38e>
+  PrefabRemaps: []
+  Name: Render Mesh Visual
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 62aef4b2-3a51-47c8-a968-af438591c228
+  Mesh: !<reference> 690a9a1f-57bb-4873-bee8-52e89aa45199
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes: {}
+- !<SceneObject/fa2479cc-663a-43c8-8cf5-779e36d711f1>
+  PrefabRemaps: []
+  Name: Body
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: -0.000000, z: 0.000000}
+    Scale: {x: 3.000000, y: 3.000000, z: 3.000000}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> 81a5e649-92a8-4fff-8e0f-15e438a77492
+- !<ObjectPrefabAssetData/fd39b46b-d207-4537-8eb6-a27aed515c41>
+  SourceRemaps:
+    - 48069a96-0727-4146-bd2a-7c5bf4b69608: fa2479cc-663a-43c8-8cf5-779e36d711f1
+    - 55d1686b-2442-4eb8-91a9-f876c3e99624: 043dbb8c-6ab7-46db-9d2d-52996a6c9405
+    - 5f0fe423-fcab-4a2d-ab8f-fb9344a2c669: f0d59699-5d12-45e2-8d0e-a4293650d38e
+    - 70457154-f355-4c09-8567-c7763611d026: 81a5e649-92a8-4fff-8e0f-15e438a77492
+    - be0cc80a-987e-4e40-986c-c2557ee20ef0: 0625b6bf-0db2-47b4-82fa-aa396b36252a
+    - d78bd6b0-1f2c-4545-8e45-9a581765277b: 7a946fd3-4ff0-4f3e-af9a-d7d6d77257e4
+    - da3851d9-2933-42c1-ae13-1a2d0aed30a9: 0ee73822-f023-4846-a3d4-604a2fab30b1
+  SourceState: !<own> 7a946fd3-4ff0-4f3e-af9a-d7d6d77257e4

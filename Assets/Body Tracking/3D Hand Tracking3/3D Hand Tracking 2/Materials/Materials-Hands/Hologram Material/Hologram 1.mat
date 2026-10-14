@@ -1,0 +1,100 @@
+- !<Material/c051bf6c-b222-4d35-a8d8-dca301c92a95>
+  PackagePath: ""
+  PassesInfo:
+    - !<own> b1093e83-36ea-4f08-a46e-83f430b583eb
+- !<PassInfo/b1093e83-36ea-4f08-a46e-83f430b583eb>
+  CachedProperties:
+    - overrideTimeDelta:
+        typeIdx: 1
+        value: 0.000000
+    - overrideTimeElapsed:
+        typeIdx: 1
+        value: 0.000000
+    - overrideTimeEnabled:
+        typeIdx: 0
+        value: 0
+  DepthWrite: true
+  DepthTest: true
+  DepthFunction: LessEqual
+  TwoSided: false
+  ColorMask: {x: true, y: true, z: true, w: true}
+  CullMode: Back
+  PolygonOffset: {x: 0.000000, y: 0.000000}
+  FrustumCulling: Auto
+  FrustumCullPad: 0.000000
+  InstanceCount: 1
+  Defines:
+    - Tweak_N130
+    - Tweak_N75
+    - Tweak_N87
+    - Tweak_N89
+    - animated
+  BlendMode: Screen
+  Properties:
+    Offset:
+      typeIdx: 1
+      value: 0.000000
+    Port_Input1_N020:
+      typeIdx: 1
+      value: 0.400000
+    Port_Input1_N049:
+      typeIdx: 1
+      value: 0.400000
+    Port_Input1_N058:
+      typeIdx: 1
+      value: 0.000000
+    Port_Input1_N078:
+      typeIdx: 1
+      value: 0.002000
+    Port_Input2_N014:
+      typeIdx: 1
+      value: 1.000000
+    Port_Input2_N058:
+      typeIdx: 1
+      value: 1.000000
+    Port_RangeMaxA_N063:
+      typeIdx: 1
+      value: 1.000000
+    Port_RangeMaxA_N067:
+      typeIdx: 1
+      value: 1.000000
+    Port_RangeMaxB_N063:
+      typeIdx: 1
+      value: 20.000000
+    Port_RangeMaxB_N067:
+      typeIdx: 1
+      value: 100.000000
+    Port_RangeMinA_N063:
+      typeIdx: 1
+      value: 0.000000
+    Port_RangeMinA_N067:
+      typeIdx: 1
+      value: 0.000000
+    Port_RangeMinB_N063:
+      typeIdx: 1
+      value: 0.000000
+    Port_RangeMinB_N067:
+      typeIdx: 1
+      value: 0.000000
+    PreviewEnabled:
+      typeIdx: 0
+      value: 0
+    rimTint:
+      typeIdx: 5
+      value: {x: 0.795178, y: 0.667872, z: 1.000000, w: 1.000000}
+    scanlineSpeed:
+      typeIdx: 1
+      value: 0.500000
+    thickLines:
+      typeIdx: 1
+      value: 0.170000
+    thicklinesColor:
+      typeIdx: 5
+      value: {x: 0.216358, y: 0.000107, z: 0.998215, w: 1.000000}
+    thinLines:
+      typeIdx: 1
+      value: 1.800000
+    thinlinesColor:
+      typeIdx: 5
+      value: {x: 0.867323, y: 0.221820, z: 0.998459, w: 1.000000}
+  Pass: !<reference> cbb076f9-1247-4fb9-a88b-299d45b8c880

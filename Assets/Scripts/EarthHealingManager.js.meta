@@ -1,0 +1,40 @@
+- !<AssetImportMetadata/15528bd6-7701-42c5-bb22-596b2f77a09c>
+  ImportedAssetIds:
+    JavaScriptAsset: !<reference> 55716c6a-899a-452d-855a-d63a40dad3a9
+  ImporterName: JavaScriptAssetImporter
+  PrimaryAsset: !<reference> 55716c6a-899a-452d-855a-d63a40dad3a9
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData: {}
+  AssetDataMap:
+    JavaScriptAsset: !<own> b8f23601-c824-4fab-9ad0-66e675b31a51
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ScriptAssetData/b8f23601-c824-4fab-9ad0-66e675b31a51>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 427fce9e-9c68-4519-88b5-9f48891df91b
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    AncestorsShrink: false
+    HaloLines3: false
+    TrailParticles: false
+    earthOBJ: false
+  ScriptTypesHidden: {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - earthOBJ: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      AncestorsShrink: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      HaloLines3: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      TrailParticles: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    - {}

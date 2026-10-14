@@ -1,0 +1,53 @@
+- !<AssetImportMetadata/e5eb6420-b77e-5698-765a-5e4e73d9fcd1>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> d879e9d7-29e1-4181-b26c-bbb1cd0fa630
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> d879e9d7-29e1-4181-b26c-bbb1cd0fa630
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData:
+    AssetLibraryId: 19adTBsbyai6cZB0NW7u4V
+  AssetDataMap:
+    ObjectPrefab: !<own> a53a7789-a4c3-48f6-8ea2-50a6c7f59e83
+  DependentFiles: []
+  ImporterSettings: !<AssetImporterSettings> {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ObjectPrefab/4af991b1-ca0c-4164-88c6-d813f52dee77>
+  PackagePath: ""
+  objects:
+    - !<own> e5a4c81b-a75d-4efb-8b36-92e8ea44ef9e
+  LazyLoading: false
+  RetainAssets: true
+- !<ObjectPrefabAssetData/a53a7789-a4c3-48f6-8ea2-50a6c7f59e83>
+  SourceRemaps:
+    - 2d7abd50-d708-4cf6-9257-2ac5a42fe861: e5a4c81b-a75d-4efb-8b36-92e8ea44ef9e
+    - 48db6653-fe17-4058-afa2-fd297d0c94bf: ce1607f5-8971-4973-bf69-edac0b718061
+    - d879e9d7-29e1-4181-b26c-bbb1cd0fa630: 4af991b1-ca0c-4164-88c6-d813f52dee77
+  SourceState: !<own> 4af991b1-ca0c-4164-88c6-d813f52dee77
+- !<ScriptComponent/ce1607f5-8971-4973-bf69-edac0b718061>
+  PrefabRemaps: []
+  Name: GPU Particles Trail Mesh Builder
+  Enabled: true
+  ScriptAsset: !<reference> 8e0ab02a-f651-48e1-b5bc-699482e9333c
+  ScriptInputsDefault: {}
+  ScriptTypesDefault: {}
+  ScriptInputs:
+    "":
+      particleTrailsMaterial: !<reference.Material> 0fb13147-d949-40d7-b83f-bbdc1e87cb72
+      segmentCount: 25
+      addHead: true
+  ScriptTypes:
+    "": {}
+- !<SceneObject/e5a4c81b-a75d-4efb-8b36-92e8ea44ef9e>
+  PrefabRemaps: []
+  Name: GPU Particles Trails__PLACE_IN_SCENE
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children: []
+  Components:
+    - !<own> ce1607f5-8971-4973-bf69-edac0b718061

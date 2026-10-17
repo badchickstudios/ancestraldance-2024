@@ -3,49 +3,34 @@ const SIK = require('SpectaclesInteractionKit.lspkg/SIK').SIK;
 
 //@input SceneObject captions
 //@input Component.ScriptComponent createButton {"hint":"The button that will create the prefab object", "allowUndefined": true}
-//@input Component.Text captionText {"hint":"Caption text (defaults to the first Text under Captions)", "allowUndefined": true}
-//@input string instructionText = "Look at your left palm to toggle captions" {"hint":"Shown when the story starts, cleared after the first palm look"}
-
 // Reference to the stored instantiated object
 let latestObject = null;
 
-let instructionShowing = false;
+// Captions are on by default; the palm toggle flips this. They only show once the story starts.
+let captionsWanted = true;
+let storyStarted = false;
 
-function getCaptionText() {
-    if (script.captionText) return script.captionText;
-    if (!script.captions) return null;
-    for (let i = 0; i < script.captions.getChildrenCount(); i++) {
-        const text = script.captions.getChild(i).getComponent("Component.Text");
-        if (text) return text;
-    }
-    return null;
+function applyCaptionVisibility() {
+    if (script.captions) script.captions.enabled = storyStarted && captionsWanted;
 }
 
-// Called by GameManager when the intro begins: captions appear with the palm instruction
-global.startCaptions = function() {
-    global.captionsStarted = true;
-    if (script.captions) script.captions.enabled = true;
-    const text = getCaptionText();
-    if (text) {
-        text.text = script.instructionText;
-        instructionShowing = true;
-    }
+// Called by GameManager when the "Let's begin" tip shows: the palm menu becomes available
+global.enableCaptionMenu = function() {
+    global.captionMenuEnabled = true;
 };
 
-// Called by PalmController the first time the palm menu appears
-global.onPalmMenuShown = function() {
-    if (!instructionShowing) return;
-    instructionShowing = false;
-    const text = getCaptionText();
-    // Leave it alone if a story caption already replaced the instruction
-    if (text && text.text === script.instructionText) text.text = "";
+// Called by GameManager when the intro begins
+global.startCaptions = function() {
+    storyStarted = true;
+    global.captionMenuEnabled = true;
+    applyCaptionVisibility();
 };
 
 function onAwake() {
 //    print("Awake called");
     // Captions stay hidden until the story starts (global.startCaptions)
-    global.captionsStarted = false;
-    if (script.captions) script.captions.enabled = false;
+    global.captionMenuEnabled = false;
+    applyCaptionVisibility();
     // Wait for other components to initialize by deferring to OnStartEvent
     script.createEvent("OnStartEvent").bind(() => {
         onStart();
@@ -75,12 +60,8 @@ function onStart() {
     const onTriggerStartCallback = () => {
       //  print("Button triggered!");
       //  
-        if (script.captions) {
-            script.captions.enabled = !script.captions.enabled;
-           // print("Captions toggled to: " + script.captions.enabled);
-        } else {
-           // print("No captions object assigned!");
-        }
+        captionsWanted = !captionsWanted;
+        applyCaptionVisibility();
     };
 
     // UIKit buttons (SIK 2.0) expose onTriggerUp; older SIK Interactables expose onTriggerStart

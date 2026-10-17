@@ -85,6 +85,11 @@ var gameStarted = false;
 // Placement was asked for (content enabled) / this device ran the host's surface tracker
 var assetPlacementRequested = false;
 var hostPlacementStarted = false;
+// This device placed the experience (Individual / Collective host)
+var localPlacementDone = false;
+
+// Shown with "Let's begin" once the experience is placed
+var CAPTION_TIP = "Tip: captions are on by default.\nOpen the menu on your left palm to toggle.";
 
 // Audio track number
 var currentStemIndex = -1;
@@ -472,15 +477,21 @@ function showReadyToStart() {
         setUIVisibility("waitingMessage", true);
         setUIVisibility("hostWaitingMessage", false);
         setUIVisibility("playerCountText", false);
-        setUIText("waitingMessage", "");
-        
+        setUIText("waitingMessage", localPlacementDone ? CAPTION_TIP : "");
+        if (localPlacementDone) enableCaptionMenu();
+
         if (script.visualsForPlayer2) script.visualsForPlayer2.enabled = true;
     } else if (isHost()) {
         enableReadyButton(true);
         setUIVisibility("waitingMessage", true);
         setUIVisibility("hostWaitingMessage", false);
         setUIVisibility("playerCountText", true);
-        setUIText("waitingMessage", totalPlayersCount + " players here. Begin when everyone has joined.");
+        var hostMessage = totalPlayersCount + " players here. Begin when everyone has joined.";
+        if (localPlacementDone) {
+            hostMessage += "\n\n" + CAPTION_TIP;
+            enableCaptionMenu();
+        }
+        setUIText("waitingMessage", hostMessage);
         
         if (script.visualsForPlayer2) script.visualsForPlayer2.enabled = true;
     } else {
@@ -507,7 +518,8 @@ function beginGame() {
 
 function playIntro() {
     hideAllUI();
-    // Captions appear now, starting with the palm-toggle instruction
+    // Captions appear now (empty until the first line); the palm tip was shown at "Let's begin"
+    if (script.captionText) script.captionText.text = "";
     if (global.startCaptions) global.startCaptions();
 
     playStem(0);
@@ -864,6 +876,11 @@ function startAssetPlacement() {
 }
 
 function sendObjectPlaced(position, rotation, isVisible) {
+    // Called after this device places the experience: show the caption tip with "Let's begin"
+    if (!localPlacementDone) {
+        localPlacementDone = true;
+        if (currentState == GameState.READY_TO_START) showReadyToStart();
+    }
     if (syncEntity && syncEntity.doIOwnStore()) {
         var placementData = {
             position: {x: position.x, y: position.y, z: position.z},
@@ -1184,9 +1201,14 @@ function setupPlayerCountMonitoring() {
 function updateHostWaitingMessage() {
     var hostName = getHostName();
     var message = placementReceived
-        ? "Waiting for " + hostName + " to start..."
+        ? "Waiting for " + hostName + " to start...\n\n" + CAPTION_TIP
         : "Waiting for " + hostName + " to place the experience...";
+    if (placementReceived) enableCaptionMenu();
     setUIText("hostWaitingMessage", message);
+}
+
+function enableCaptionMenu() {
+    if (global.enableCaptionMenu) global.enableCaptionMenu();
 }
 
 // UI helper functions

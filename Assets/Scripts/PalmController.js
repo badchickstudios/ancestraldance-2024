@@ -36,13 +36,10 @@ function onStart() {
 function update(eventData) {
     if (!leftHand) return;
 
-    // The caption menu is only available once the story (and its captions) has started
-    if (global.captionsStarted && leftHand.getFacingCameraAngle() != null && leftHand.isFacingCamera()) {
+    // The caption menu becomes available at "Let's begin" (CaptionsController.enableCaptionMenu)
+    if (global.captionMenuEnabled && leftHand.getFacingCameraAngle() != null && leftHand.isFacingCamera()) {
         // Show the object
         if (script.palmMenu) {
-            if (!script.palmMenu.enabled && global.onPalmMenuShown) {
-                global.onPalmMenuShown();
-            }
             script.palmMenu.enabled = true;
         }
         

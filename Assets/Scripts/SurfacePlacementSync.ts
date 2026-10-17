@@ -177,6 +177,13 @@ export class SurfacePlacementSync extends BaseScriptComponent {
 
             // Share the placement in the colocated frame so other players see it in the same spot
             (global as any).sendObjectPlaced?.(this.transform.getLocalPosition(), this.transform.getLocalRotation(), true);
+
+            // Remove the placement circle: its collider stays in front of the content and
+            // would catch every later pinch (Earth, Let's begin). Next frame, so it isn't
+            // destroyed inside its own click handler.
+            const stop = this.createEvent("DelayedCallbackEvent");
+            stop.bind(() => this.surfacePlacement.stopSurfacePlacement());
+            stop.reset(0);
         }
     }
 }

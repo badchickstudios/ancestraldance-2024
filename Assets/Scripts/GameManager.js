@@ -35,6 +35,10 @@
 //@input SceneObject PlantParticlesLeft
 //@input SceneObject PlantParticlesRight
 //@input SceneObject captionTip {"hint":"Caption tip shown with Let's begin", "allowUndefined": true}
+//@input SceneObject replayButton {"hint":"Replay button shown at the end (Individual / Collective host)", "allowUndefined": true}
+//@input float replayDelay = 45 {"hint":"Seconds after the closing narration starts before Replay appears"}
+//@input SceneObject storyRoot {"hint":"Root of the placed experience; its state is restored on Replay", "allowUndefined": true}
+//@input bool debugReplayEarly = false {"hint":"Testing only: show Replay 20s into the story"}
 
 var syncEntity;
 
@@ -89,6 +93,15 @@ var hostPlacementStarted = false;
 // This device placed the experience (Individual / Collective host)
 var localPlacementDone = false;
 
+// Replay: story timers still waiting, the state captured when the story began, and
+// "On Start" Behaviors that need re-firing when their object comes back
+var pendingDelays = [];
+var storySnapshot = null;
+var turnOnBehaviors = [];
+var armedBehaviors = [];
+var replayOptionShown = false;
+var replayButtonConnected = false;
+
 // Audio track number
 var currentStemIndex = -1;
 var currentVOIndex = -1;
@@ -132,7 +145,9 @@ function init() {
     setupUI();
     setupGlobalFunctions();
     setupReadyButton();
-    
+    if (script.replayButton) script.replayButton.enabled = false;
+    script.createEvent("UpdateEvent").bind(updateReplay);
+
     isGameManagerActive = false;
     currentState = GameState.MENU;
 }
@@ -179,6 +194,7 @@ function onSyncReady() {
 
     setupPresence();
     syncReady = true;
+    syncEntity.onEventReceived.add('replayStory', onReceiveReplay);
     syncEntity.onEventReceived.add('gameInProgress', onReceiveGameInProgress);
     watchForHostRole();
     updatePlayerCount();
@@ -303,6 +319,8 @@ function delay(callback, seconds) {
     var delayedEvent = script.createEvent("DelayedCallbackEvent");
     delayedEvent.bind(callback);
     delayedEvent.reset(seconds);
+    // Replay cancels every story step still waiting to run
+    pendingDelays.push(delayedEvent);
     return delayedEvent; // Return in case you need to cancel it
 }
 
@@ -432,6 +450,9 @@ function onRoleKnown() {
         checkHostStatusAndShowUI();
     } else if (currentState == GameState.READY_TO_START) {
         showReadyToStart();
+    } else if (replayOptionShown) {
+        // The host left at the end: whoever takes over gets the Replay button
+        showReplayOption();
     }
     if (placementPending) {
         placementPending = false;
@@ -517,6 +538,9 @@ function playIntro() {
     hideAllUI();
     // Captions appear now (empty until the first line); the palm tip was shown at "Let's begin"
     hideCaptionTip();
+    // Remember how the experience looks before the story changes it (for Replay)
+    takeStorySnapshot();
+    if (script.debugReplayEarly) delay(showReplayOption, 20);
     if (script.captionText) script.captionText.text = "";
     if (global.startCaptions) global.startCaptions();
 
@@ -841,11 +865,180 @@ function showGameComplete() {
     
     
     
-           delay(function() {
+    // Offer to start the journey again (host / Individual; others wait for the host)
+    delay(showReplayOption, script.replayDelay);
+}
 
-       
-    }, 10);
-    
+// ===== REPLAY =====
+
+// Everything under these roots is restored on Replay
+function storyRoots() {
+    var roots = [];
+    var candidates = [script.storyRoot, script.voiceManager, script.giftManager, script.earthManager,
+                      script.touchtheEarth, script.PlantParticlesLeft, script.PlantParticlesRight];
+    for (var i = 0; i < candidates.length; i++) {
+        if (candidates[i]) roots.push(candidates[i]);
+    }
+    return roots;
+}
+
+function takeStorySnapshot() {
+    if (storySnapshot) return; // keep the very first one
+    storySnapshot = [];
+    turnOnBehaviors = [];
+    var roots = storyRoots();
+    for (var i = 0; i < roots.length; i++) snapshotObject(roots[i]);
+}
+
+function snapshotObject(obj) {
+    var t = obj.getTransform();
+    storySnapshot.push({
+        obj: obj,
+        enabled: obj.enabled,
+        position: t.getLocalPosition(),
+        rotation: t.getLocalRotation(),
+        scale: t.getLocalScale()
+    });
+    var scripts = obj.getComponents("Component.ScriptComponent");
+    for (var s = 0; s < scripts.length; s++) {
+        // Behavior "On Start" triggers fire once; re-fire them when their object reappears
+        if (scripts[s].triggeringEventType === "TurnOnEvent" && typeof scripts[s].trigger === "function") {
+            turnOnBehaviors.push({ obj: obj, behavior: scripts[s] });
+        }
+    }
+    for (var c = 0; c < obj.getChildrenCount(); c++) snapshotObject(obj.getChild(c));
+}
+
+function showReplayOption() {
+    replayOptionShown = true;
+    if (isHost()) {
+        setUIVisibility("hostWaitingMessage", false);
+        setUIVisibility("waitingMessage", true);
+        setUIText("waitingMessage", "The journey is complete.");
+        if (script.replayButton) script.replayButton.enabled = true;
+    } else {
+        if (script.replayButton) script.replayButton.enabled = false;
+        setUIVisibility("waitingMessage", false);
+        setUIVisibility("hostWaitingMessage", true);
+        setUIText("hostWaitingMessage", "Waiting for " + getHostName() + " to begin the journey again...");
+    }
+}
+
+function hideReplayOption() {
+    replayOptionShown = false;
+    if (script.replayButton) script.replayButton.enabled = false;
+}
+
+// Replay button: the UIKit button only exists once it's switched on, so connect lazily
+function connectReplayButton() {
+    if (replayButtonConnected || !script.replayButton || !script.replayButton.enabled) return;
+    var comps = script.replayButton.getComponents("Component.ScriptComponent");
+    for (var i = 0; i < comps.length; i++) {
+        if (comps[i].onTriggerUp && comps[i].onTriggerUp.add) {
+            comps[i].onTriggerUp.add(requestReplay);
+            replayButtonConnected = true;
+            return;
+        }
+    }
+}
+
+function requestReplay() {
+    if (!replayOptionShown || !isHost()) return;
+    if (playMode === "collective" && syncEntity) {
+        syncEntity.sendEvent('replayStory', {}, true);
+    }
+    resetStory();
+}
+
+function onReceiveReplay() {
+    if (currentState == GameState.READY_TO_START) return;
+    resetStory();
+}
+
+// Put the experience back to how it was when the story began, then wait at "Let's begin"
+function resetStory() {
+    print("Replay: resetting the story");
+    hideReplayOption();
+
+    // Story steps still waiting to run
+    for (var i = 0; i < pendingDelays.length; i++) {
+        try { pendingDelays[i].enabled = false; } catch (e) {}
+    }
+    pendingDelays = [];
+
+    stopAudio(script.voComponent);
+    stopAudio(script.musicComponent);
+    stopAudio(script.sfxComponent);
+    currentStemIndex = -1;
+    currentVOIndex = -1;
+
+    // Restore transforms first, then on/off states (switching off stops each tween script)
+    if (storySnapshot) {
+        for (var r = 0; r < storySnapshot.length; r++) {
+            var rec = storySnapshot[r];
+            var t = rec.obj.getTransform();
+            t.setLocalPosition(rec.position);
+            t.setLocalRotation(rec.rotation);
+            t.setLocalScale(rec.scale);
+        }
+        for (var e = 0; e < storySnapshot.length; e++) {
+            storySnapshot[e].obj.enabled = storySnapshot[e].enabled;
+        }
+    }
+
+    // Wrist gifts on this device's own hands
+    var wristGifts = global.localWristGifts;
+    if (wristGifts) {
+        [wristGifts.left, wristGifts.right].forEach(function(list) {
+            for (var w = 0; list && w < list.length; w++) if (list[w]) list[w].enabled = false;
+        });
+    }
+    global.localGiftIndex = -1;
+
+    // Behaviors: distance checks can fire again; "On Start" ones fire when their object reappears
+    var behaviors = global.behaviorSystem || global.scBehaviorSystem;
+    if (behaviors && behaviors.sendCustomTrigger) behaviors.sendCustomTrigger("_reinitialize_all_behaviors");
+    armedBehaviors = [];
+    for (var b = 0; b < turnOnBehaviors.length; b++) {
+        if (!turnOnBehaviors[b].obj.isEnabledInHierarchy) armedBehaviors.push(turnOnBehaviors[b]);
+    }
+
+    if (global.onEarthTouched) global.onEarthTouched(); // hide the palm-touch hint
+    if (global.stopCaptions) global.stopCaptions();
+    if (script.captionText) script.captionText.text = "";
+
+    // Story progress
+    globalSelectionCount = 0;
+    globalEarthHealedCount = 0;
+    completedSelections = {};
+    completedHealers = {};
+    fuseRequested = false;
+    ancestorSelectionStarted = false;
+    ancestorsRiseTriggered = false;
+    riseReceived = false;
+    gameStarted = false;
+    roster = null;
+
+    currentState = GameState.MENU;
+    setState(GameState.READY_TO_START);
+}
+
+function stopAudio(component) {
+    try {
+        if (component && component.isPlaying()) component.stop(false);
+    } catch (e) {}
+}
+
+// Per frame: connect the Replay button once it's on, and re-fire armed "On Start" Behaviors
+function updateReplay() {
+    connectReplayButton();
+    for (var i = armedBehaviors.length - 1; i >= 0; i--) {
+        var entry = armedBehaviors[i];
+        if (entry.obj.isEnabledInHierarchy) {
+            armedBehaviors.splice(i, 1);
+            try { entry.behavior.trigger(); } catch (e) { print("Replay: behavior trigger failed: " + e); }
+        }
+    }
 }
 
 // ===== PLACEMENT SYNC FUNCTIONS - NEW =====

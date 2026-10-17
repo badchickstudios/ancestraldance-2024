@@ -56,7 +56,11 @@ export class HandEarthGlow extends BaseScriptComponent {
     this.createEvent("OnStartEvent").bind(() => this.setUp())
     this.createEvent("UpdateEvent").bind(() => this.update())
     this.createEvent("OnDisableEvent").bind(() => this.removeGlow())
-    this.createEvent("OnEnableEvent").bind(() => this.addGlow())
+    this.createEvent("OnEnableEvent").bind(() => {
+      // Replay: a fresh first touch each time the Earth stage starts
+      for (const hand of this.hands) hand.touched = false
+      this.addGlow()
+    })
   }
 
   private setUp() {

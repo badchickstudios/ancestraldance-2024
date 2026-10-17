@@ -1,4 +1,5 @@
 import { LSTween } from "../../LSTween";
+import { ReplayableTweens } from "../../../Scripts/ReplayableTweens";
 import Easing from "../../TweenJS/Easing";
 
 @component
@@ -9,7 +10,15 @@ export class Ancestors extends BaseScriptComponent {
   @input ancestorGifts: SceneObject;
 
 
+  private replay: ReplayableTweens;
+
+  // Plays again when switched back on (Replay); see ReplayableTweens
   onAwake() {
+    this.replay = new ReplayableTweens(this, () => this.play());
+    this.replay.start();
+  }
+
+  private play() {
     const a1 = this.ancestor1.getTransform();
     const a2 = this.ancestor2.getTransform();
     const a3 = this.ancestor3.getTransform();
@@ -26,19 +35,19 @@ export class Ancestors extends BaseScriptComponent {
     gifts.setLocalScale(vec3.zero());
 
     // Staggered scale tweens
-    const tween1 = LSTween.scaleToLocal(a1, ancestorTargetScale, 9000)
+    const tween1 = this.replay.track(LSTween.scaleToLocal(a1, ancestorTargetScale, 9000))
       .easing(Easing.Quadratic.InOut)
       .delay(0);
 
-    const tween2 = LSTween.scaleToLocal(a2, ancestorTargetScale, 9000)
+    const tween2 = this.replay.track(LSTween.scaleToLocal(a2, ancestorTargetScale, 9000))
       .easing(Easing.Quadratic.InOut)
       .delay(2000);
 
-    const tween3 = LSTween.scaleToLocal(a3, ancestorTargetScale, 9000)
+    const tween3 = this.replay.track(LSTween.scaleToLocal(a3, ancestorTargetScale, 9000))
       .easing(Easing.Quadratic.InOut)
       .delay(4000);
 
-    const tweenGifts = LSTween.scaleToLocal(gifts, giftTargetScale, 9000)
+    const tweenGifts = this.replay.track(LSTween.scaleToLocal(gifts, giftTargetScale, 9000))
       .easing(Easing.Quadratic.InOut)
       .delay(9500);
 

@@ -16,6 +16,11 @@ function onAwake() {
     script.createEvent('OnStartEvent').bind(() => {
         onStart();
     });
+    // Replay: each time the story switches this back on, the Earth needs healing again
+    script.createEvent('OnEnableEvent').bind(() => {
+        isTouchingEarth = false;
+        hasCompletedEarthHealing = false;
+    });
 }
 
 function onStart() {

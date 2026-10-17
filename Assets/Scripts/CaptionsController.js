@@ -26,6 +26,13 @@ global.startCaptions = function() {
     applyCaptionVisibility();
 };
 
+// Called by GameManager on Replay: hidden again until the next intro (the on/off choice is kept)
+global.stopCaptions = function() {
+    storyStarted = false;
+    global.captionMenuEnabled = false;
+    applyCaptionVisibility();
+};
+
 function onAwake() {
 //    print("Awake called");
     // Captions stay hidden until the story starts (global.startCaptions)

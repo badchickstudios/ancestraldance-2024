@@ -1,4 +1,5 @@
 import { LSTween } from "../../LSTween";
+import { ReplayableTweens } from "../../../Scripts/ReplayableTweens";
 import Easing from "../../TweenJS/Easing";
 
 @component
@@ -26,7 +27,15 @@ export class PlantGrowthController extends BaseScriptComponent {
   @input tendrilYoung1: SceneObject;
   @input tendrilYoung2: SceneObject;
 
+  private replay: ReplayableTweens;
+
+  // Plays again when switched back on (Replay); see ReplayableTweens
   onAwake() {
+    this.replay = new ReplayableTweens(this, () => this.play());
+    this.replay.start();
+  }
+
+  private play() {
     this.animateScale(this.podsSmall1, 15, 5000, 12000);
     this.animateScale(this.podsSmall2, 20, 4000, 9000);
     this.animateScale(this.podsSmall3, 25, 6000, 10000);
@@ -56,7 +65,7 @@ export class PlantGrowthController extends BaseScriptComponent {
     const transform = target.getTransform();
     transform.setLocalScale(vec3.zero());
 
-    LSTween.scaleToLocal(transform, new vec3(size, size, size), duration)
+    this.replay.track(LSTween.scaleToLocal(transform, new vec3(size, size, size), duration))
       .easing(Easing.Quadratic.InOut)
       .delay(delay)
       .start();

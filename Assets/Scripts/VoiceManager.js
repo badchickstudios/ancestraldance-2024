@@ -247,6 +247,20 @@ function cleanup() {
     }
 }
 
+// Replay: start over each time the story switches this back on; stop when it's switched off
+var awakeTime = getTime();
+script.createEvent("OnEnableEvent").bind(function() {
+    if (getTime() === awakeTime) return; // first switch-on: initialize() already ran
+    isRiseTriggered = false;
+    voiceRiseTriggered = false;
+    startListening();
+    startFallbackTimer();
+});
+script.createEvent("OnDisableEvent").bind(function() {
+    cleanup();
+    stopListening();
+});
+
 // Initialize everything
 initialize();
 

@@ -1,4 +1,5 @@
 import { LSTween } from "../../LSTween";
+import { ReplayableTweens } from "../../../Scripts/ReplayableTweens";
 import Easing from "../../TweenJS/Easing";
 import { RotationInterpolationType } from "../../RotationInterpolationType";
 
@@ -9,7 +10,15 @@ export class FireflyController extends BaseScriptComponent {
   @input ff3: SceneObject;
 
 
+  private replay: ReplayableTweens;
+
+  // Plays again when switched back on (Replay); see ReplayableTweens
   onAwake() {
+    this.replay = new ReplayableTweens(this, () => this.play());
+    this.replay.start();
+  }
+
+  private play() {
     const ff1Transform = this.ff1.getTransform();
     const ff2Transform = this.ff2.getTransform();
     const ff3Transform = this.ff3.getTransform();
@@ -19,15 +28,15 @@ export class FireflyController extends BaseScriptComponent {
 
 
     // Staggered scale-in animations
-    const scaleFF1 = LSTween.scaleToLocal(ff1Transform, ffTargetScale, 1000)
+    const scaleFF1 = this.replay.track(LSTween.scaleToLocal(ff1Transform, ffTargetScale, 1000))
       .easing(Easing.Circular.InOut)
       .delay(0);
 
-    const scaleFF2 = LSTween.scaleToLocal(ff2Transform, ffTargetScale, 1000)
+    const scaleFF2 = this.replay.track(LSTween.scaleToLocal(ff2Transform, ffTargetScale, 1000))
       .easing(Easing.Circular.InOut)
       .delay(500);
 
-    const scaleFF3 = LSTween.scaleToLocal(ff3Transform, ffTargetScale, 1000)
+    const scaleFF3 = this.replay.track(LSTween.scaleToLocal(ff3Transform, ffTargetScale, 1000))
       .easing(Easing.Circular.InOut)
       .delay(1000);
 

@@ -41,6 +41,7 @@
     captionTime: false
     captionTip: false
     captions: false
+    debugReplayEarly: false
     earthManager: false
     gameObjects: false
     giftManager: false
@@ -53,9 +54,12 @@
     plants: false
     playerCountText: false
     readyButton: false
+    replayButton: false
+    replayDelay: false
     sfxComponent: false
     sfxTrack: false
     singlePlayerButton: false
+    storyRoot: false
     touchtheEarth: false
     uiElements: false
     visualsForPlayer2: false
@@ -115,6 +119,10 @@
       PlantParticlesLeft: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       PlantParticlesRight: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       captionTip: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      replayButton: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      replayDelay: !<float> 45.000000
+      storyRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      debugReplayEarly: false
   ScriptTypes:
     -
       {}

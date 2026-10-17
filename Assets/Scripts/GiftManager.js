@@ -14,10 +14,24 @@ var isaGiftClicked = false;
 
 
 
+var autoPick = null;
+var awakeTime = getTime();
+
 function onAwake() {
   // Wait for other components to initialize by deferring to OnStartEvent.
   script.createEvent('OnStartEvent').bind(() => {
     onStart();
+  });
+  // Replay: each time the story switches this back on, everyone picks again
+  script.createEvent('OnEnableEvent').bind(() => {
+    if (getTime() === awakeTime) return; // first switch-on: onStart handles it
+    localselections = 0;
+    isaGiftClicked = false;
+    global.localGiftIndex = -1;
+    startAutoPick();
+  });
+  script.createEvent('OnDisableEvent').bind(() => {
+    if (autoPick) autoPick.enabled = false;
   });
 }
 
@@ -33,8 +47,13 @@ function onStart() {
     }
   }
 
-  // Fallback so one player who never chooses can't stall the story for everyone
-  var autoPick = script.createEvent("DelayedCallbackEvent");
+  startAutoPick();
+}
+
+// Fallback so one player who never chooses can't stall the story for everyone
+function startAutoPick() {
+  if (autoPick) autoPick.enabled = false;
+  autoPick = script.createEvent("DelayedCallbackEvent");
   autoPick.bind(function() {
     if (!isaGiftClicked) {
       var index = Math.floor(Math.random() * script.Gifts.length);

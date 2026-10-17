@@ -39,6 +39,7 @@
     captionColor: false
     captionText: false
     captionTime: false
+    captionTip: false
     captions: false
     earthManager: false
     gameObjects: false
@@ -113,6 +114,7 @@
       instructColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
       PlantParticlesLeft: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       PlantParticlesRight: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      captionTip: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}

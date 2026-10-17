@@ -21,6 +21,10 @@ function onAwake() {
   });
 }
 
+// WristGiftShare copies these to show this gift on other players' devices
+global.localWristGifts = { left: script.leftWristGifts, right: script.rightWristGifts };
+global.localGiftIndex = -1;
+
 function onStart() {
   for (var i = 0; i < script.Gifts.length; i++) {
     var interactable = interactionManager.getInteractableBySceneObject(script.Gifts[i]);
@@ -54,6 +58,8 @@ function pickGift(index) {
   localselections += 1;
   script.leftWristGifts[index].enabled = true;
   script.rightWristGifts[index].enabled = true;
+  // Shared with the other players by WristGiftShare
+  global.localGiftIndex = index;
 
   print("local selections: " + localselections);
   checkIfAllSelected();

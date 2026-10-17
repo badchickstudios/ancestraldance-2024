@@ -2676,6 +2676,31 @@
   ScriptTypes:
     "":
       {}
+- !<ScriptComponent/0c056e70-1b5f-4eef-a413-0d18b5d32dad>
+  PrefabRemaps:
+    []
+  Name: WristGiftShare
+  Enabled: true
+  ScriptAsset: !<reference> db5f7624-e031-4826-bd26-0bd4e31fa637
+  ScriptInputsDefault:
+    sendsPerSecond: true
+    followSpeed: true
+    shareParticles: true
+    staleSeconds: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      colocatedRoot: !<reference.SceneObject> c72149a0-0662-48ad-a88d-a1933572008a
+      leftWrist: !<reference.SceneObject> 1c5e01d0-a657-40e7-8715-36833d1f1631
+      rightWrist: !<reference.SceneObject> 7cb8388b-5f82-43b7-8252-18c853e40b9f
+      sendsPerSecond: !<float> 10.000000
+      followSpeed: !<float> 14.000000
+      shareParticles: true
+      staleSeconds: !<float> 5.000000
+  ScriptTypes:
+    "":
+      {}
 - !<Text/0c0d7cc1-9e8b-4ac9-85c8-1aecabdf1075>
   PrefabRemaps:
     []
@@ -3227,6 +3252,89 @@
   ScriptTypes:
     "":
       {}
+- !<Text/10c6c8dc-d8b2-4a59-bbe0-ffbd5c4ba3ed>
+  PrefabRemaps:
+    []
+  Name: Text
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Text: |-
+    Tip: captions are on by default.
+    Open the menu on your left palm to toggle.
+  Editable: false
+  ShowEditingPreview: true
+  TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
+  SizeToFit: false
+  FontSize: 50
+  Font: !<reference> ccc79b64-cad8-4bc4-a70a-f5077a431348
+  LayoutRect:
+    left: -7.500000
+    bottom: -2.250000
+    right: 7.500000
+    top: 2.250000
+  OverflowVertical: Overflow
+  OverflowHorizontal: Overflow
+  Fill: !<TextFill>
+    Mode: Solid
+    Color: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+    Texture: !<reference> 00000000-0000-0000-0000-000000000000
+    ColorTint: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+    TileCount: 5.000000
+    TileZone: Rect
+    TextureStretch: FitWidth
+  BlendMode: PremultipliedAlpha
+  Outline: !<OutlineSettings>
+    Enabled: false
+    Fill: !<TextFill>
+      Mode: Solid
+      Color: {x: 0.000000, y: 0.000000, z: 0.000000, w: 1.000000}
+      Texture: !<reference> 00000000-0000-0000-0000-000000000000
+      ColorTint: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      TileCount: 5.000000
+      TileZone: Rect
+      TextureStretch: FitWidth
+    Size: 0.250000
+  Dropshadow: !<DropshadowSettings>
+    Enabled: false
+    Fill: !<TextFill>
+      Mode: Solid
+      Color: {x: 0.000000, y: 0.000000, z: 0.000000, w: 1.000000}
+      Texture: !<reference> 00000000-0000-0000-0000-000000000000
+      ColorTint: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      TileCount: 5.000000
+      TileZone: Rect
+      TextureStretch: FitWidth
+    OffsetX: 0.250000
+    OffsetY: 0.250000
+  Background: !<BackgroundSettings>
+    Enabled: false
+    Fill: !<TextFill>
+      Mode: Solid
+      Color: {x: 0.000000, y: 0.000000, z: 0.000000, w: 1.000000}
+      Texture: !<reference> 00000000-0000-0000-0000-000000000000
+      ColorTint: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      TileCount: 5.000000
+      TileZone: Rect
+      TextureStretch: FitWidth
+    Margins:
+      left: 0.000000
+      bottom: 0.000000
+      right: 0.000000
+      top: 0.000000
+    CornerRadius: 0.000000
+  AdvancedLayout: !<TextAdvancedLayout>
+    ExtentsTarget: !<reference> 00000000-0000-0000-0000-000000000000
+    LetterSpacing: 0.000000
+    LineSpacing: 1.000000
+    CapitalizationOverride: None
+  DepthTest: false
+  TwoSided: true
 - !<SceneObject/10c7ca04-c0cc-4415-8970-0c781096ccc8>
   PrefabRemaps:
     []
@@ -4777,6 +4885,21 @@
   Components:
     - !<own> 13e7b5e9-8ae1-4ec7-b759-84cd5fa0056e
     - !<own> e97d2418-28f9-45d2-9ed2-0779a3f95802
+- !<SceneObject/1dc07c0d-2152-47e0-82ca-898560c24963>
+  PrefabRemaps:
+    []
+  Name: WristGiftShare
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 0c056e70-1b5f-4eef-a413-0d18b5d32dad
 - !<SceneObject/1dd1a2e4-a336-49b5-acf9-cb076b27e0a5>
   PrefabRemaps:
     []
@@ -5323,6 +5446,21 @@
   BlendNormals: false
   BlendShapes:
     {}
+- !<SceneObject/218c76d9-c22d-4c24-9723-9496f27d1c74>
+  PrefabRemaps:
+    []
+  Name: CaptionTip
+  Enabled: false
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 10c6c8dc-d8b2-4a59-bbe0-ffbd5c4ba3ed
 - !<SceneObject/21e66bcb-58e9-403c-a5fd-2efc3e1d6411>
   PrefabRemaps:
     []
@@ -8095,6 +8233,7 @@
   Children:
     - !<own> c38ce44b-9d0a-45a0-9d4e-ed76ad813bfb
     - !<own> 0a9c9edb-6ba1-4674-90d5-6bddb8fcd6a7
+    - !<own> 218c76d9-c22d-4c24-9723-9496f27d1c74
   Components:
     - !<own> 865d2739-cb7d-4cf6-b27c-377c7e8d33cb
     - !<own> 68eaa52b-730e-4dbc-9916-c2074117f1f6
@@ -27481,6 +27620,7 @@
     - !<own> 020412a0-51f4-46a1-8a3e-c022b7073bfc
     - !<own> ca752bb7-219e-42c7-8c53-12083152e5d7
     - !<own> 1a334c3f-f017-4e6b-8b7d-63d0679ee33f
+    - !<own> 1dc07c0d-2152-47e0-82ca-898560c24963
   Components:
     []
 - !<ScriptComponent/c750b019-067c-464c-a139-fef7401d2b33>
@@ -31124,14 +31264,12 @@
   MeshShadowMode: None
   ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
   ShadowDensity: 1.000000
-  Text: |-
-    Look at
-     Left Palm to toggle caption settings
+  Text: ""
   Editable: false
   ShowEditingPreview: true
   TouchHandler: !<reference> 00000000-0000-0000-0000-000000000000
   SizeToFit: false
-  FontSize: 60
+  FontSize: 50
   Font: !<reference> ccc79b64-cad8-4bc4-a70a-f5077a431348
   LayoutRect:
     left: -7.500000
@@ -33895,6 +34033,7 @@
       instructColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 0.000000, w: 1.000000}
       PlantParticlesLeft: !<reference.SceneObject> 66f00f7e-a247-49cf-8f54-4a18b0adc9b9
       PlantParticlesRight: !<reference.SceneObject> 9d682882-59da-499f-ae3b-7b0d6f449d53
+      captionTip: !<reference.SceneObject> 218c76d9-c22d-4c24-9723-9496f27d1c74
   ScriptTypes:
     "":
       {}

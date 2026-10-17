@@ -1,0 +1,62 @@
+- !<AssetImportMetadata/f9e165b0-c83d-49b3-85e5-ceebb989dd87>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> db5f7624-e031-4826-bd26-0bd4e31fa637
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> db5f7624-e031-4826-bd26-0bd4e31fa637
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> f6f5aca6-2515-4f01-a2b9-291175497264
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/f6f5aca6-2515-4f01-a2b9-291175497264>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: acccc38e-125b-4e1e-991e-f85b43e0d44f
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    colocatedRoot: false
+    followSpeed: false
+    leftWrist: false
+    rightWrist: false
+    sendsPerSecond: false
+    shareParticles: false
+    staleSeconds: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - colocatedRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      leftWrist: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      rightWrist: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      sendsPerSecond: !<float> 10.000000
+      followSpeed: !<float> 14.000000
+      shareParticles: true
+      staleSeconds: !<float> 5.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input SceneObject colocatedRoot {"hint":"Shared colocated space the wrist poses are measured in (ColocatedWorld/EnableOnReady)"}'
+    - "// @input SceneObject leftWrist {\"hint\":\"This device's left wrist joint (SIK LeftHandVisual rig)\"}"
+    - "// @input SceneObject rightWrist {\"hint\":\"This device's right wrist joint (SIK RightHandVisual rig)\"}"
+    - // @input float sendsPerSecond = 10
+    - '// @input float followSpeed = 14 {"hint":"How quickly remote gifts catch up to the latest pose (higher = snappier)"}'
+    - "// @input bool shareParticles = true {\"hint\":\"Also show other players' plant particle trails at the end\"}"
+    - "// @input float staleSeconds = 5 {\"hint\":\"Hide a remote player's gifts if nothing arrives for this long (s)\"}"

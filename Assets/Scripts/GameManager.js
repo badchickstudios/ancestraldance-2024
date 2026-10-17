@@ -507,7 +507,9 @@ function beginGame() {
 
 function playIntro() {
     hideAllUI();
-  
+    // Captions appear now, starting with the palm-toggle instruction
+    if (global.startCaptions) global.startCaptions();
+
     playStem(0);
 
     

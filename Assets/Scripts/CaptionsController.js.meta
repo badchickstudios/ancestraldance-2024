@@ -26,8 +26,10 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    captionText: false
     captions: false
     createButton: false
+    instructionText: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -39,6 +41,8 @@
   DefaultScriptInputs:
     - captions: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       createButton: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
+      captionText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      instructionText: Look at your left palm to toggle captions
   ScriptTypes:
     -
       {}

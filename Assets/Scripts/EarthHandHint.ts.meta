@@ -1,0 +1,71 @@
+- !<AssetImportMetadata/ed6e572d-336e-416b-92d7-4c2c87a983d8>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 1caab7b8-3c4f-4f91-b919-2805c4fc212f
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 1caab7b8-3c4f-4f91-b919-2805c4fc212f
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 391c902e-116e-4b7f-b643-fbdea996202b
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/391c902e-116e-4b7f-b643-fbdea996202b>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 2812affb-3fce-4f27-82c8-02b89e490311
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    animationSpeed: false
+    clipName: false
+    earth: false
+    handMaterial: false
+    handMode: false
+    height: false
+    hintController: false
+    hintOffset: false
+    previewOnStart: false
+    towardViewer: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - earth: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      hintController: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
+      clipName: palm_touch_near
+      handMode: !<float> 1.000000
+      towardViewer: !<float> 35.000000
+      height: !<float> 0.000000
+      hintOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 65.000000}
+      animationSpeed: !<float> 1.000000
+      handMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      previewOnStart: false
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input SceneObject earth {"hint":"Centre of the Earth"}'
+    - '// @input Component.ScriptComponent hintController {"hint":"The Spectacles3DHandHints InteractionHintController (set its Auto Play off)"}'
+    - '// @input string clipName = "palm_touch_near" {"hint":"Animation to play (Hand Hints clip name)"}'
+    - '// @input float handMode = 1 {"widget":"combobox", "values":[{"label":"Left", "value":0}, {"label":"Right", "value":1}, {"label":"Both", "value":2}]}'
+    - "// @input float towardViewer = 50 {\"hint\":\"How far from the Earth's centre toward the viewer the hint sits (cm)\"}"
+    - "// @input float height {\"hint\":\"Height above the Earth's centre (cm)\"}"
+    - '// @input vec3 hintOffset = {0,0,0} {"hint":"Extra offset for the hint (+Z is toward the viewer, Y up)"}'
+    - // @input float animationSpeed = 1
+    - "// @input Asset.Material handMaterial {\"hint\":\"Extra material layered on the hint hands (e.g. the players' Hologram 1)\"}"
+    - '// @input bool previewOnStart {"hint":"Show the hint right away to tune its position (turn off before publishing)"}'

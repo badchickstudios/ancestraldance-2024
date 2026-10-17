@@ -98,6 +98,8 @@ export class HandEarthGlow extends BaseScriptComponent {
   }
 
   private onContact() {
+    // EarthHandHint hides its palm-touch hint on the first touch
+    ;(global as any).onEarthTouched?.()
     const behaviors = (global as any).behaviorSystem
     if (this.sendTouchTrigger && behaviors) {
       behaviors.sendCustomTrigger("earthtouched")

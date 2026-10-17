@@ -717,9 +717,11 @@ function startEarthHealing() {
    
     
      delay(function() {
-         script.earthManager.enabled = true;  
+         script.earthManager.enabled = true;
         script.touchtheEarth.enabled = true;
          script.uiElements[2].enabled = true;
+        // Palm-touch hand hint beside the Earth until the first touch (EarthHandHint)
+        if (global.showEarthHandHint) global.showEarthHandHint();
     }, 15);
     
     

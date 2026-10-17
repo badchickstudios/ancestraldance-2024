@@ -302,7 +302,7 @@
   BlendShapesEnabled: true
   BlendNormals: false
   BlendShapes:
-    {}
+    LeftHandScaleShape: 0.000000
 - !<SceneObject/1a451142-04d6-4840-6f88-9ad40dc88db3>
   PrefabRemaps:
     []
@@ -955,6 +955,8 @@
   ScriptAsset: !<reference> 368a50b0-46ef-439a-a332-a34b6e33313f
   ScriptInputsDefault:
     autoPlay: true
+    enableLogging: true
+    enableLoggingLifecycle: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -968,6 +970,8 @@
           oneHandedAnimation_r: pinch_near
           twoHandedAnimation: two_hands_pinch_scale
           position: !<Vec3> {x: 0.000000, y: 0.000000, z: -50.000000}
+      enableLogging: false
+      enableLoggingLifecycle: false
   ScriptTypes:
     "":
       {}
@@ -2475,7 +2479,7 @@
   BlendShapesEnabled: true
   BlendNormals: false
   BlendShapes:
-    {}
+    LeftHandScaleShape: 0.000000
 - !<SceneObject/96b0b9f6-4568-4c4e-5961-dcb455ebb7f8>
   PrefabRemaps:
     []
@@ -2641,7 +2645,7 @@
   BlendShapesEnabled: true
   BlendNormals: false
   BlendShapes:
-    {}
+    LeftHandScaleShape: 0.000000
 - !<SceneObject/9c440e39-0edb-45ca-6570-2c8dc853a098>
   PrefabRemaps:
     []
@@ -2753,7 +2757,7 @@
   BlendShapesEnabled: true
   BlendNormals: false
   BlendShapes:
-    {}
+    RightHandScaleShape: 0.000000
 - !<SceneObject/a1838573-d087-486f-6992-9ffda1c98af3>
   PrefabRemaps:
     []
@@ -3019,7 +3023,7 @@
   BlendShapesEnabled: true
   BlendNormals: false
   BlendShapes:
-    {}
+    RightHandScaleShape: 0.000000
 - !<AnimationPlayer/b607e935-4b92-4826-7171-9d9611998c3c>
   PrefabRemaps:
     []
@@ -3467,6 +3471,8 @@
   ScriptAsset: !<reference> 368a50b0-46ef-439a-a332-a34b6e33313f
   ScriptInputsDefault:
     autoPlay: true
+    enableLogging: true
+    enableLoggingLifecycle: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -3480,6 +3486,8 @@
           oneHandedAnimation_r: pinch_near
           twoHandedAnimation: two_hands_pinch_scale
           position: !<Vec3> {x: 0.000000, y: 0.000000, z: -50.000000}
+      enableLogging: false
+      enableLoggingLifecycle: false
   ScriptTypes:
     "":
       {}
@@ -3891,6 +3899,8 @@
   ScriptAsset: !<reference> 368a50b0-46ef-439a-a332-a34b6e33313f
   ScriptInputsDefault:
     autoPlay: true
+    enableLogging: true
+    enableLoggingLifecycle: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -3904,6 +3914,8 @@
           oneHandedAnimation_r: pinch_near
           twoHandedAnimation: two_hands_pinch_scale
           position: !<Vec3> {x: 0.000000, y: 0.000000, z: -50.000000}
+      enableLogging: false
+      enableLoggingLifecycle: false
   ScriptTypes:
     "":
       {}
@@ -4003,7 +4015,7 @@
   BlendShapesEnabled: true
   BlendNormals: false
   BlendShapes:
-    {}
+    RightHandScaleShape: 0.000000
 - !<SceneObject/d9abc980-0694-42f5-58de-4763b1657175>
   PrefabRemaps:
     []

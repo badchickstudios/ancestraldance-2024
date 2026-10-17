@@ -1,0 +1,58 @@
+- !<AssetImportMetadata/f8417d00-2803-4aa8-96e7-abaafe188986>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> f4a4c0c2-7cc9-49ac-8f8e-427a6de04a16
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> f4a4c0c2-7cc9-49ac-8f8e-427a6de04a16
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> ea0e0706-1e5f-441c-8edf-af06253dd4ce
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/ea0e0706-1e5f-441c-8edf-af06253dd4ce>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: f86ca60b-95e2-429a-a46e-8e9efd9fc139
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    confirmText: false
+    confirmTextSize: false
+    font: false
+    handMaterial: false
+    handMeshNames: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - font: !<reference.Font> 00000000-0000-0000-0000-000000000000
+      handMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      confirmText: Pinch to Confirm
+      confirmTextSize: !<float> 190.000000
+      handMeshNames: !<string[]>
+        - RightHandGeo
+        - LeftHandGeo
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - "// @input Asset.Font font {\"hint\":\"Font for Surface Placement's texts (the project font)\"}"
+    - "// @input Asset.Material handMaterial {\"hint\":\"Extra material layered on Surface Placement's hand hints (e.g. Hologram 1)\"}"
+    - '// @input string confirmText = "Pinch to Confirm" {"hint":"Text to resize (KARNIBLA is wider than the package font, so this one wraps)"}'
+    - '// @input float confirmTextSize = 190 {"hint":"Font size for that text (the package uses 250)"}'
+    - '// @input string[] handMeshNames = {"RightHandGeo","LeftHandGeo"} {"hint":"Names of the hand hint meshes to restyle"}'

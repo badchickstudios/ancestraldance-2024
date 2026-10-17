@@ -27,12 +27,20 @@ export class EarthHandHint extends BaseScriptComponent {
   handMode: number = 1
 
   @input
-  @hint("How far from the Earth's centre toward the viewer the hint sits (cm)")
+  @hint("Gap between the Earth's surface and the hint (cm); the Earth's size is measured at runtime")
+  surfaceGap: number = 8
+
+  @input
+  @hint("Fallback distance from the Earth's centre if its size can't be measured (cm)")
   towardViewer: number = 50
 
   @input
   @hint("Height above the Earth's centre (cm)")
   height: number = 0
+
+  @input
+  @hint("Never closer than this to the viewer's eyes (cm), even when standing near the Earth")
+  minDistanceFromViewer: number = 45
 
   @input
   @hint("Extra offset for the hint (+Z is toward the viewer, Y up)")
@@ -120,17 +128,42 @@ export class EarthHandHint extends BaseScriptComponent {
     }
   }
 
+  // Centre and horizontal radius of the visible Earth, from its meshes' world bounds
+  private earthBounds(): {center: vec3; radius: number} | null {
+    let min: vec3 = null
+    let max: vec3 = null
+    const visit = (obj: SceneObject) => {
+      if (!obj.isEnabledInHierarchy) return
+      for (const visual of obj.getComponents("Component.RenderMeshVisual") as RenderMeshVisual[]) {
+        const a = visual.worldAabbMin()
+        const b = visual.worldAabbMax()
+        min = min ? new vec3(Math.min(min.x, a.x), Math.min(min.y, a.y), Math.min(min.z, a.z)) : a
+        max = max ? new vec3(Math.max(max.x, b.x), Math.max(max.y, b.y), Math.max(max.z, b.z)) : b
+      }
+      for (let i = 0; i < obj.getChildrenCount(); i++) visit(obj.getChild(i))
+    }
+    visit(this.earth)
+    if (!min || !max) return null
+    return {center: min.add(max).uniformScale(0.5), radius: Math.max(max.x - min.x, max.z - min.z) / 2}
+  }
+
   // Beside the Earth on this viewer's side, turned to face them (yaw only)
   private place() {
     if (!this.earth || !this.camera) return
-    const earthPos = this.earth.getTransform().getWorldPosition()
+    const bounds = this.earthBounds()
+    const earthPos = bounds ? bounds.center : this.earth.getTransform().getWorldPosition()
     const camPos = this.camera.getWorldPosition()
     let toViewer = new vec3(camPos.x - earthPos.x, 0, camPos.z - earthPos.z)
-    if (toViewer.length < 0.001) toViewer = new vec3(0, 0, 1)
+    const viewerDistance = toViewer.length
+    if (viewerDistance < 0.001) toViewer = new vec3(0, 0, 1)
     toViewer = toViewer.normalize()
 
+    // Just outside the Earth's surface, but pulled back toward it if the viewer is standing close
+    const wanted = bounds && bounds.radius > 0 ? bounds.radius + this.surfaceGap : this.towardViewer
+    const along = Math.max(0, Math.min(wanted, viewerDistance - this.minDistanceFromViewer))
+
     const t = this.getSceneObject().getTransform()
-    t.setWorldPosition(earthPos.add(toViewer.uniformScale(this.towardViewer)).add(new vec3(0, this.height, 0)))
+    t.setWorldPosition(earthPos.add(toViewer.uniformScale(along)).add(new vec3(0, this.height, 0)))
     // The clips face +Z toward their viewer, so point +Z at this viewer
     t.setWorldRotation(quat.lookAt(toViewer, vec3.up()))
   }

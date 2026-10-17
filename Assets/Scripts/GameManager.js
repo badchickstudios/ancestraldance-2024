@@ -233,6 +233,8 @@ function setupUI() {
 // Setup global functions
 function setupGlobalFunctions() {
     global.gameManagerReady = true;
+    // EarthHealingManager plays the touch sound when the Earth is healed by pinch too
+    global.playStorySFX = playSFX;
     // WristGiftShare shows these on other players' devices once they're switched on
     global.plantParticles = { left: script.PlantParticlesLeft, right: script.PlantParticlesRight };
     global.onPlayerCompleted = sendPlayerCompleted;
@@ -895,6 +897,10 @@ function snapshotObject(obj) {
     storySnapshot.push({
         obj: obj,
         enabled: obj.enabled,
+        // Only objects the story hasn't shown yet get their transform back. Anything already
+        // visible may still be mid-animation (e.g. the Earth growing in after placement), and
+        // restoring that half-way size would leave it tiny or invisible.
+        restoreTransform: !obj.isEnabledInHierarchy,
         position: t.getLocalPosition(),
         rotation: t.getLocalRotation(),
         scale: t.getLocalScale()
@@ -934,8 +940,10 @@ function connectReplayButton() {
     if (replayButtonConnected || !script.replayButton || !script.replayButton.enabled) return;
     var comps = script.replayButton.getComponents("Component.ScriptComponent");
     for (var i = 0; i < comps.length; i++) {
-        if (comps[i].onTriggerUp && comps[i].onTriggerUp.add) {
-            comps[i].onTriggerUp.add(requestReplay);
+        // SIK PinchButton (same capsule as Let's begin) or a UIKit button
+        var event = comps[i].onButtonPinched || comps[i].onTriggerUp;
+        if (event && event.add) {
+            event.add(requestReplay);
             replayButtonConnected = true;
             return;
         }
@@ -976,6 +984,7 @@ function resetStory() {
     if (storySnapshot) {
         for (var r = 0; r < storySnapshot.length; r++) {
             var rec = storySnapshot[r];
+            if (!rec.restoreTransform) continue;
             var t = rec.obj.getTransform();
             t.setLocalPosition(rec.position);
             t.setLocalRotation(rec.rotation);

@@ -34,7 +34,9 @@
     height: false
     hintController: false
     hintOffset: false
+    minDistanceFromViewer: false
     previewOnStart: false
+    surfaceGap: false
     towardViewer: false
   ScriptTypesHidden:
     {}
@@ -49,8 +51,10 @@
       hintController: !<reference.ScriptComponent> 00000000-0000-0000-0000-000000000000
       clipName: palm_touch_near
       handMode: !<float> 1.000000
+      surfaceGap: !<float> 8.000000
       towardViewer: !<float> 35.000000
       height: !<float> 0.000000
+      minDistanceFromViewer: !<float> 45.000000
       hintOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 65.000000}
       animationSpeed: !<float> 1.000000
       handMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
@@ -63,8 +67,10 @@
     - '// @input Component.ScriptComponent hintController {"hint":"The Spectacles3DHandHints InteractionHintController (set its Auto Play off)"}'
     - '// @input string clipName = "palm_touch_near" {"hint":"Animation to play (Hand Hints clip name)"}'
     - '// @input float handMode = 1 {"widget":"combobox", "values":[{"label":"Left", "value":0}, {"label":"Right", "value":1}, {"label":"Both", "value":2}]}'
-    - "// @input float towardViewer = 50 {\"hint\":\"How far from the Earth's centre toward the viewer the hint sits (cm)\"}"
+    - "// @input float surfaceGap = 8 {\"hint\":\"Gap between the Earth's surface and the hint (cm); the Earth's size is measured at runtime\"}"
+    - "// @input float towardViewer = 50 {\"hint\":\"Fallback distance from the Earth's centre if its size can't be measured (cm)\"}"
     - "// @input float height {\"hint\":\"Height above the Earth's centre (cm)\"}"
+    - "// @input float minDistanceFromViewer = 45 {\"hint\":\"Never closer than this to the viewer's eyes (cm), even when standing near the Earth\"}"
     - '// @input vec3 hintOffset = {0,0,0} {"hint":"Extra offset for the hint (+Z is toward the viewer, Y up)"}'
     - // @input float animationSpeed = 1
     - "// @input Asset.Material handMaterial {\"hint\":\"Extra material layered on the hint hands (e.g. the players' Hologram 1)\"}"

@@ -67,6 +67,10 @@ function checkIfAllSelected() {
     if (isTouchingEarth && !hasCompletedEarthHealing) {
         print("*** Player completed earth healing! Sending sync message... ***");
         hasCompletedEarthHealing = true;
+        // Hide the palm-touch hint and play the touch sound for pinches too
+        // (a hand touch already does both through HandEarthGlow / the distance Behaviors)
+        if (global.onEarthTouched) global.onEarthTouched();
+        if (global.playStorySFX) global.playStorySFX();
         sendPlayerHealedMessage();
         print("*** Sync message sent successfully ***");
         script.HaloLines3.enabled = true;

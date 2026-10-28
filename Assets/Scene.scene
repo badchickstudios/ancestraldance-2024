@@ -34275,7 +34275,6 @@
     visualsForPlayer2: true
     playerCountText: true
     captionColor: true
-    replayDelay: true
     debugReplayEarly: true
   ScriptTypesDefault:
     {}
@@ -34426,7 +34425,7 @@
       PlantParticlesRight: !<reference.SceneObject> 9d682882-59da-499f-ae3b-7b0d6f449d53
       captionTip: !<reference.SceneObject> 218c76d9-c22d-4c24-9723-9496f27d1c74
       replayButton: !<reference.SceneObject> 120f28d9-fbf6-4734-9dd4-e751be21292d
-      replayDelay: !<float> 45.000000
+      replayDelay: !<float> 15.000000
       storyRoot: !<reference.SceneObject> c795ef1f-6034-4c12-9823-a93faee0d93a
       debugReplayEarly: false
   ScriptTypes:

@@ -312,7 +312,16 @@ function getHostName() {
 
 function enableReadyButton(enable) {
     if (script.readyButton) {
-        script.readyButton.enabled = enable;
+        setButtonShown(script.readyButton, enable);
+    }
+}
+
+// Scales a button on or off (ButtonScale.ts, registered by StartMenuBridge)
+function setButtonShown(button, show) {
+    if (global.scaleButton) {
+        global.scaleButton(button, show);
+    } else {
+        button.enabled = show;
     }
 }
 
@@ -526,6 +535,9 @@ function showReadyToStart() {
 }
 
 function beginGame() {
+    // The button can still be pinched while it scales off
+    if (currentState == GameState.INTRO_PLAYING) return;
+
     var isSinglePlayerMode = playMode !== "collective";
     
     if (isSinglePlayerMode) {
@@ -579,6 +591,9 @@ function playIntro() {
 function playAncestorIntro() {
     playVO(1);
     script.gameObjects[0].enabled = true;
+    // The Earth's grow starts here, so it's seen from the beginning
+    global.earthShown = true;
+    if (global.growEarth) global.growEarth();
     
          delay(function() {
         script.captionText.text = script.captions[3];
@@ -674,7 +689,6 @@ function startAncestorSelection() {
     
                delay(function() {
         script.captionText.text = script.captions[19];
-           script.uiElements[1].enabled = true;
     }, script.captionTime[19]);
     
                delay(function() {
@@ -685,7 +699,9 @@ function startAncestorSelection() {
 
     delay(function() {
         script.giftManager.enabled = true;
-     
+        // Stays until this player picks a gift (sendPlayerCompleted)
+        if (global.keepRingOn) global.keepRingOn(script.uiElements[1]);
+        script.uiElements[1].enabled = true;
     }, 16);
 
     resetGlobalSelections();
@@ -696,7 +712,7 @@ function startEarthHealing() {
     script.giftManager.enabled = false;
 
     playVO(3);
-     script.uiElements[1].enabled = false;
+    hideRing(script.uiElements[1], script.UIPinchShrink);
     
     
                delay(function() {
@@ -753,17 +769,29 @@ function startEarthHealing() {
     
 }
 
+// Fades a UI ring off (its Shrink object plays UI-Ring Shrink), then switches it off
+function hideRing(ring, shrink) {
+    shrink.enabled = true;
+    delay(function() {
+        ring.enabled = false;
+    }, 2);
+}
+
 function showReadyToFuse() {
     setState(GameState.EARTH_HEALING);
 }
 
 function playAncestorFusion() {
     playVO(4);
-        script.uiElements[2].enabled = false;
+    hideRing(script.uiElements[2], script.UIEarthShrink);
      script.earthManager.enabled = false;  
         script.touchtheEarth.enabled = false;
-    script.gameObjects[0].enabled = false;
-    script.gameObjects[1].enabled = true;
+    if (global.fadeToHealthyEarth) {
+        global.fadeToHealthyEarth(script.gameObjects[0], script.gameObjects[1]);
+    } else {
+        script.gameObjects[0].enabled = false;
+        script.gameObjects[1].enabled = true;
+    }
     script.plants.enabled = true;
     
     
@@ -921,9 +949,9 @@ function showReplayOption() {
         setUIVisibility("hostWaitingMessage", false);
         setUIVisibility("waitingMessage", true);
         setUIText("waitingMessage", "The journey is complete.");
-        if (script.replayButton) script.replayButton.enabled = true;
+        if (script.replayButton) setButtonShown(script.replayButton, true);
     } else {
-        if (script.replayButton) script.replayButton.enabled = false;
+        if (script.replayButton) setButtonShown(script.replayButton, false);
         setUIVisibility("waitingMessage", false);
         setUIVisibility("hostWaitingMessage", true);
         setUIText("hostWaitingMessage", "Waiting for " + getHostName() + " to begin the journey again...");
@@ -932,7 +960,7 @@ function showReplayOption() {
 
 function hideReplayOption() {
     replayOptionShown = false;
-    if (script.replayButton) script.replayButton.enabled = false;
+    if (script.replayButton) setButtonShown(script.replayButton, false);
 }
 
 // Replay button: the UIKit button only exists once it's switched on, so connect lazily
@@ -995,6 +1023,9 @@ function resetStory() {
         }
     }
 
+    // The snapshot caught this button still scaling off; keep it off so it scales back on
+    if (script.readyButton) script.readyButton.enabled = false;
+
     // Wrist gifts on this device's own hands
     var wristGifts = global.localWristGifts;
     if (wristGifts) {
@@ -1017,6 +1048,7 @@ function resetStory() {
     if (script.captionText) script.captionText.text = "";
 
     // Story progress
+    global.earthShown = false;
     globalSelectionCount = 0;
     globalEarthHealedCount = 0;
     completedSelections = {};
@@ -1166,6 +1198,7 @@ function sendReadyToFuse() {
 }
 
 function sendPlayerCompleted() {
+    hideRing(script.uiElements[1], script.UIPinchShrink);
     if (isSinglePlayerMode()) {
         totalPlayersCount = 1;
         globalSelectionCount = 0;

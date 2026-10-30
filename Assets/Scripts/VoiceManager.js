@@ -4,7 +4,6 @@ const asrModule = require("LensStudio:AsrModule");
 // @input Component.Text statusText {"hint":"Text component to show status"}
 // @input Component.Text resultText {"hint":"Text component to show results"}
 //@input SceneObject UIRiseShrink
-//@input SceneObject HaloLines1
 //@input float fallbackSeconds = 10 {"hint": "Advance automatically if nobody says 'rise' within this many seconds. In Collective on glasses the mic is blocked, so this is the only path there."}
 
 var isListening = false;
@@ -135,7 +134,6 @@ function handleRiseCommand() {
     print("🔥 RISE COMMAND TRIGGERED! 🔥");
     // shrink the Rise UI
     script.UIRiseShrink.enabled = true;
-    script.HaloLines1.enabled = true;
     
     if (voiceRiseTriggered) {
         print("*** Rise already triggered from voice - ignoring duplicate ***");

@@ -6,7 +6,6 @@ const interactionManager = SIK.InteractionManager;
 //@input SceneObject GiftsShrink
 //@input SceneObject[] leftWristGifts
 //@input SceneObject[] rightWristGifts
-//@input SceneObject HaloLines2
 //@input float autoPickSeconds = 30 {"hint": "If this player hasn't chosen a gift after this many seconds, one is picked at random"}
 var localselections = 0;
 var isaGiftClicked = false;
@@ -79,6 +78,8 @@ function pickGift(index) {
   script.rightWristGifts[index].enabled = true;
   // Shared with the other players by WristGiftShare
   global.localGiftIndex = index;
+  // Gifts Shrink scales this one out first
+  global.chosenGift = script.Gifts[index];
 
   print("local selections: " + localselections);
   checkIfAllSelected();
@@ -88,7 +89,6 @@ function pickGift(index) {
 function checkIfAllSelected() {
     if (localselections >= 1) {
         print("Player completed all selections! Sending sync message...");
-          script.HaloLines2.enabled = true;
         sendPlayerCompletedMessage();
     }
 }

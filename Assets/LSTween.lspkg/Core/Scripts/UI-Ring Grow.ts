@@ -1,6 +1,5 @@
-import { LSTween } from "../../LSTween";
 import { ReplayableTweens } from "../../../Scripts/ReplayableTweens";
-import Easing from "../../TweenJS/Easing";
+import { fadeRingOnThenOff } from "../../../Scripts/RingFade";
 
 @component
 export class UiRingScale extends BaseScriptComponent {
@@ -13,24 +12,10 @@ export class UiRingScale extends BaseScriptComponent {
   }
 
   private play() {
-    const transform = this.getTransform();
+    // The rings are placed at scale 0 in the scene; they fade now rather than grow
+    this.getTransform().setLocalScale(vec3.one());
 
-    // Start at scale 0
-    transform.setLocalScale(vec3.zero());
-
-    // Target scale
-    const targetScale = new vec3(1, 1, 1);
-
-    // Scale up to 1 over 2 seconds
-    const scaleUp = this.replay.track(LSTween.scaleToLocal(transform, targetScale, 2000))
-      .easing(Easing.Circular.InOut);
-
-    // Scale back down to 0 after 10 second delay
-    const scaleDown = this.replay.track(LSTween.scaleToLocal(transform, vec3.zero(), 2000))
-      .easing(Easing.Circular.InOut)
-      .delay(10000);
-
-    // Chain and start
-    scaleUp.chain(scaleDown).start();
+    // Fade off after 10 seconds
+    fadeRingOnThenOff(this.getSceneObject(), 10000, this.replay);
   }
 }

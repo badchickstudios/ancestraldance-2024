@@ -1,6 +1,5 @@
-import { LSTween } from "../../LSTween";
 import { ReplayableTweens } from "../../../Scripts/ReplayableTweens";
-import Easing from "../../TweenJS/Easing";
+import { fadeRingOff } from "../../../Scripts/RingFade";
 
 @component
 export class ScaleDownToZero extends BaseScriptComponent {
@@ -20,11 +19,6 @@ export class ScaleDownToZero extends BaseScriptComponent {
       return;
     }
 
-    const transform = this.targetObject.getTransform();
-
-    const scaleDown = this.replay.track(LSTween.scaleToLocal(transform, vec3.zero(), 2000))
-      .easing(Easing.Cubic.InOut);
-
-    scaleDown.start();
+    fadeRingOff(this.targetObject, this.replay);
   }
 }

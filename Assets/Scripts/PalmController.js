@@ -27,7 +27,6 @@ function onStart() {
     
     // Cache the desired scale from the editor
     if (script.palmMenu) {
-        menuScale = script.palmMenu.getTransform().getLocalScale();
         script.palmMenu.enabled = false;
     }
 }
@@ -40,7 +39,7 @@ function update(eventData) {
     if (global.captionMenuEnabled && leftHand.getFacingCameraAngle() != null && leftHand.isFacingCamera()) {
         // Show the object
         if (script.palmMenu) {
-            script.palmMenu.enabled = true;
+            setMenuShown(true);
         }
         
         // Get palm center position and offset it
@@ -63,16 +62,21 @@ function update(eventData) {
     
     // Apply rotation to our object
     script.palmMenu.getTransform().setWorldRotation(rotation);
-        
-    
-    // Restore the cached scale (PUT IT HERE)
-    script.palmMenu.getTransform().setLocalScale(menuScale);     
 }
     } else {
         // Hide the object when palm is not facing camera
         if (script.palmMenu) {
-            script.palmMenu.enabled = false;
+            setMenuShown(false);
         }
+    }
+}
+
+// Scales the menu on or off (ButtonScale.ts, registered by StartMenuBridge)
+function setMenuShown(show) {
+    if (global.scaleButton) {
+        global.scaleButton(script.palmMenu, show);
+    } else {
+        script.palmMenu.enabled = show;
     }
 }
 

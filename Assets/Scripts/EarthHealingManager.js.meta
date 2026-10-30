@@ -27,7 +27,6 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     AncestorsShrink: false
-    HaloLines3: false
     TrailParticles: false
     earthOBJ: false
   ScriptTypesHidden:
@@ -41,7 +40,6 @@
   DefaultScriptInputs:
     - earthOBJ: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       AncestorsShrink: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
-      HaloLines3: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       TrailParticles: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -

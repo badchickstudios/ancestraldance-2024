@@ -379,7 +379,7 @@
     - transmissionTexture_scale:
         typeIdx: 3
         value: {x: 1.000000, y: 1.000000}
-  DepthWrite: true
+  DepthWrite: false
   DepthTest: true
   DepthFunction: LessEqual
   TwoSided: true
@@ -413,7 +413,7 @@
     baseColorTexture:
       typeIdx: 9
       value:
-        id: 6a08e351-c2e4-429c-a333-6c96ed23ca2a
+        id: bac4fbc4-216c-448e-b81d-0ddec1949a04
         sampler:
           filteringMode: Trilinear
           wrapModeU: Repeat

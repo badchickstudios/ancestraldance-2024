@@ -5,7 +5,6 @@ const interactionConfiguration = SIK.InteractionConfiguration;
 
 //@input SceneObject earthOBJ
 //@input SceneObject AncestorsShrink
-//@input SceneObject HaloLines3
 //@input SceneObject TrailParticles
 
 
@@ -73,7 +72,6 @@ function checkIfAllSelected() {
         if (global.playStorySFX) global.playStorySFX();
         sendPlayerHealedMessage();
         print("*** Sync message sent successfully ***");
-        script.HaloLines3.enabled = true;
         script.TrailParticles.enabled = true;  
     
     } else {

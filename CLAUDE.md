@@ -34,6 +34,11 @@ before you touch `Scene.scene`.
   - `CaptionsController.js`, `PalmController.js`, `ButtonController.js` and
     `VoiceManager.js` (ASR) handle captions, the palm menu, buttons and speech.
   - `ReplayableTweens.ts` makes the one-shot grow/shrink tween scripts replay.
+  - `EarthHealFade.ts` crossfades the unhealthy Earth into the healthy one: one globe
+    drawing both materials, one dodecahedron morphing, the fires going out individually.
+  - `ButtonScale.ts` scales buttons on and off (`global.scaleButton`).
+  - `RingFade.ts` fades the UI rings. `HaloLinesPulse.ts` animates the ancestors' halo
+    lines through the texture's UVs, because those meshes are skinned.
 - Scripts talk to each other through `global.*` hooks, for example `global.beginGame`,
   `global.onEarthTouched`, `global.onPlayerHealed`, `global.sendAncestorsRise` and
   `global.isSinglePlayerMode`. Grep for a hook before you rename or remove it.

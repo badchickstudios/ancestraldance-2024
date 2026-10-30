@@ -1,5 +1,6 @@
 import { LSTween } from "../../LSTween";
 import { ReplayableTweens } from "../../../Scripts/ReplayableTweens";
+import { pulseHaloLines } from "../../../Scripts/HaloLinesPulse";
 import Easing from "../../TweenJS/Easing";
 
 @component
@@ -55,5 +56,7 @@ export class Ancestors extends BaseScriptComponent {
     tween2.start();
     tween3.start();
     tweenGifts.start();
+
+    pulseHaloLines(this.ancestor1, this.replay);
   }
 }

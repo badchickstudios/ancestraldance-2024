@@ -15,8 +15,12 @@
   ImporterSettings: !<AssetImporterSettings>
     {}
   CompressionSettings: !<SingleCompressionSettings>
-    CompressorName: None
-    CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+    CompressorName: Atlas Compressor
+    CompressionSettings: !<AnimatedCompressionSettings>
+      CompressorName: Performance
+      CompressionSettings: !<TextureCompressionMipmapSettings>
+        Level: Medium
+        Mipmap: false
 - !<AnimatedTextureData/75a6f8b0-9cf0-4dff-a438-8b671fb8e830>
   AutoPlay: false
   Reversed: true

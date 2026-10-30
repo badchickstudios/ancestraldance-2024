@@ -1,4 +1,5 @@
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
+import {scaleButton, scaleOnFromZero} from "./ButtonScale"
 
 /**
  * Shows the Hand Hints "palm touch" animation beside the Earth while players are asked
@@ -7,6 +8,7 @@ import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/
  * Not synced: each player sees their own copy, placed on the side of the Earth facing them
  * and turned toward them (yaw only), so it's always in a convenient spot.
  * Put this on an empty object and parent the Spectacles3DHandHints object under it.
+ * That empty object is what scales on and off, leaving the kit's own object alone.
  */
 @component
 export class EarthHandHint extends BaseScriptComponent {
@@ -77,6 +79,7 @@ export class EarthHandHint extends BaseScriptComponent {
     if (this.active) return
     this.active = true
     this.setHintVisible(true)
+    scaleOnFromZero(this.getSceneObject())
     this.place()
     // The controller wakes up when its object is first enabled; start playing next frame
     this.playPending = true
@@ -86,7 +89,8 @@ export class EarthHandHint extends BaseScriptComponent {
     if (!this.active) return
     this.active = false
     this.playPending = false
-    this.setHintVisible(false)
+    // Switches this object off when it's done, which hides the hint with it
+    scaleButton(this.getSceneObject(), false)
   }
 
   private setHintVisible(visible: boolean) {

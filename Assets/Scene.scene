@@ -1845,7 +1845,6 @@
       statusText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       resultText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       UIRiseShrink: !<reference.SceneObject> 406c9cf3-4aed-4f04-a4de-c00b9bff9b1a
-      HaloLines1: !<reference.SceneObject> 44fcb636-2714-4aea-a8b2-dec9bfadea81
       fallbackSeconds: !<float> 10.000000
   ScriptTypes:
     "":
@@ -3200,22 +3199,6 @@
     - !<own> a5237cb8-5232-486f-a543-5b058ed79d3f
     - !<own> 269f2a18-b43d-4038-81f4-0f8cef1e48c4
     - !<own> 16a93493-426d-4747-bcaa-9bc8cc37dd04
-- !<ScriptComponent/1066a93e-bc52-4d9a-bf21-70fc67417ae2>
-  PrefabRemaps:
-    []
-  Name: Halo Lines Grow
-  Enabled: true
-  ScriptAsset: !<reference> 5e3f66b5-58f6-472b-a247-eb318009deac
-  ScriptInputsDefault:
-    {}
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      haloLines: !<reference.SceneObject> 82dd8103-f2ad-4526-b0ed-95241e365575
-  ScriptTypes:
-    "":
-      {}
 - !<SceneObject/1076ab4c-9b61-4914-b24c-2a6ae1b285b8>
   PrefabRemaps:
     []
@@ -5687,26 +5670,6 @@
     - !<own> cb687ace-2c72-4a60-90fe-ee7595f69f62
   Components:
     []
-- !<RenderMeshVisual/2327c727-38a1-46c6-a4ba-fcb7a3d08d1c>
-  PrefabRemaps:
-    []
-  Name: Render Mesh Visual
-  Enabled: true
-  RenderOrder: 0
-  StretchMode: Stretch
-  VerticalAlignment: Center
-  HorizontalAlignment: Center
-  MeshShadowMode: None
-  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
-  ShadowDensity: 1.000000
-  Materials:
-    - !<reference> f552ee6d-8c54-4bb5-aa6d-8308e7f4389d
-  Mesh: !<reference> a453f19f-0832-419f-bd8f-b3296b433b23
-  Skin: !<reference> 00000000-0000-0000-0000-000000000000
-  BlendShapesEnabled: true
-  BlendNormals: false
-  BlendShapes:
-    {}
 - !<SceneObject/232a8d0d-2bcb-44f1-88b3-ca82f9b60519>
   PrefabRemaps:
     []
@@ -7186,7 +7149,6 @@
         - !<reference> 5c1157e6-e03b-4eb3-83a5-eabccd37d5d4
         - !<reference> 27bec6cd-8194-4031-a329-37b168055f1a
         - !<reference> 2ee3efd7-1e34-4fef-8438-03109870d650
-      HaloLines2: !<reference.SceneObject> 8bbb5c60-47b3-4457-bd19-05be5c490e94
       autoPickSeconds: !<float> 30.000000
   ScriptTypes:
     "":
@@ -10333,21 +10295,6 @@
   BlendNormals: false
   BlendShapes:
     {}
-- !<SceneObject/44fcb636-2714-4aea-a8b2-dec9bfadea81>
-  PrefabRemaps:
-    []
-  Name: HaloLines1
-  Enabled: false
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    - !<own> ad4fd6fc-91d6-4139-b7c2-870ff04db175
 - !<AnimationPlayer/4508b704-c672-4ed4-b0df-1ef7b41ac89b>
   PrefabRemaps:
     []
@@ -15042,21 +14989,6 @@
     - !<own> e0b0c071-6462-4933-b459-285d560fe203
   Components:
     []
-- !<SceneObject/6a2fe24f-6161-4d40-a726-b61549d13210>
-  PrefabRemaps:
-    []
-  Name: HaloLines3
-  Enabled: false
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    - !<own> c8b59552-d694-4313-867e-1af12f16fd8e
 - !<SceneObject/6a46d15b-ae99-42bb-944e-583ccd597cca>
   PrefabRemaps:
     []
@@ -19760,21 +19692,6 @@
     - !<own> 0db2976b-e842-4f96-9cf0-d6e5aa30a799
   Components:
     []
-- !<SceneObject/82dd8103-f2ad-4526-b0ed-95241e365575>
-  PrefabRemaps:
-    []
-  Name: lines1
-  Enabled: true
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 33.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 0.000000, y: 0.000000, z: 0.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    - !<own> 2327c727-38a1-46c6-a4ba-fcb7a3d08d1c
 - !<SceneObject/832b0591-4832-4d4b-8bc4-470f483c3bb7>
   PrefabRemaps:
     []
@@ -21144,21 +21061,6 @@
   ScriptTypes:
     "":
       {}
-- !<SceneObject/8bbb5c60-47b3-4457-bd19-05be5c490e94>
-  PrefabRemaps:
-    []
-  Name: HaloLines2
-  Enabled: false
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    - !<own> 1066a93e-bc52-4d9a-bf21-70fc67417ae2
 - !<Text/8c4e0411-8a0e-4d7b-8b92-1189cd69be1b>
   PrefabRemaps:
     []
@@ -21828,7 +21730,6 @@
     "":
       earthOBJ: !<reference.SceneObject> 1011a6d6-1116-47e0-86dd-f393bdec50c3
       AncestorsShrink: !<reference.SceneObject> 6220b531-6eba-4e3f-a886-2515bc5ef4c9
-      HaloLines3: !<reference.SceneObject> 6a2fe24f-6161-4d40-a726-b61549d13210
       TrailParticles: !<reference.SceneObject> 5354ce2f-7c28-48ef-bf23-e090262bda55
   ScriptTypes:
     "":
@@ -22674,7 +22575,7 @@
 - !<SceneObject/9db71634-c5c8-49fc-9b63-c11d9ad43460>
   PrefabRemaps:
     []
-  Name: "Example Surface [EDIT ME]"
+  Name: Content-surface placement
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
@@ -22699,10 +22600,6 @@
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 10cb8857-d85d-419c-ab7e-202f73f7ff3c
-    - !<own> 82dd8103-f2ad-4526-b0ed-95241e365575
-    - !<own> 44fcb636-2714-4aea-a8b2-dec9bfadea81
-    - !<own> 8bbb5c60-47b3-4457-bd19-05be5c490e94
-    - !<own> 6a2fe24f-6161-4d40-a726-b61549d13210
   Components:
     - !<own> 615f4825-4f42-4678-bf5b-ec708d74b84d
 - !<ColliderComponent/9e750d7f-f772-496e-819d-2f78754e1bd0>
@@ -24970,22 +24867,6 @@
     []
   Components:
     - !<own> 433926d2-9644-47bf-9165-461a4c338293
-- !<ScriptComponent/ad4fd6fc-91d6-4139-b7c2-870ff04db175>
-  PrefabRemaps:
-    []
-  Name: Halo Lines Grow
-  Enabled: true
-  ScriptAsset: !<reference> 5e3f66b5-58f6-472b-a247-eb318009deac
-  ScriptInputsDefault:
-    {}
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      haloLines: !<reference.SceneObject> 82dd8103-f2ad-4526-b0ed-95241e365575
-  ScriptTypes:
-    "":
-      {}
 - !<ColliderComponent/ada1a665-83eb-41a2-bd16-b550944e4091>
   PrefabRemaps:
     []
@@ -28118,22 +27999,6 @@
   ClipRangeType: Frames
   AnimationClips:
     []
-- !<ScriptComponent/c8b59552-d694-4313-867e-1af12f16fd8e>
-  PrefabRemaps:
-    []
-  Name: Halo Lines Grow
-  Enabled: true
-  ScriptAsset: !<reference> 5e3f66b5-58f6-472b-a247-eb318009deac
-  ScriptInputsDefault:
-    {}
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      haloLines: !<reference.SceneObject> 82dd8103-f2ad-4526-b0ed-95241e365575
-  ScriptTypes:
-    "":
-      {}
 - !<SceneObject/c8b85d41-c972-4ea8-941b-94cf11c7d8c5>
   PrefabRemaps:
     []
